@@ -84,3 +84,17 @@ export async function atualizarPublicacao(
   revalidarObra();
   return { ok: true, mensagem: "Salvo." };
 }
+
+export async function apagarPublicacao(
+  id: string,
+): Promise<{ ok: boolean; mensagem: string } | void> {
+  const supabase = await createClient();
+  const { error } = await supabase.from("publicacoes").delete().eq("id", id);
+
+  if (error) {
+    return { ok: false, mensagem: "Erro ao apagar a publicação." };
+  }
+
+  revalidarObra();
+  redirect("/painel/obra/publicacoes");
+}

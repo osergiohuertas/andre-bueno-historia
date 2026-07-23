@@ -109,3 +109,17 @@ export async function atualizarEvento(
   revalidarEventos();
   return { ok: true, mensagem: "Salvo." };
 }
+
+export async function apagarEvento(
+  id: string,
+): Promise<{ ok: boolean; mensagem: string } | void> {
+  const supabase = await createClient();
+  const { error } = await supabase.from("eventos").delete().eq("id", id);
+
+  if (error) {
+    return { ok: false, mensagem: "Erro ao apagar o evento." };
+  }
+
+  revalidarEventos();
+  redirect("/painel/agenda");
+}

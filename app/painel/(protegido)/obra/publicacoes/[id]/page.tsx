@@ -2,7 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { FormularioPublicacao } from "@/components/painel/FormularioPublicacao";
-import { atualizarPublicacao } from "@/app/painel/(protegido)/obra/publicacoes/actions";
+import { ConfirmarExclusao } from "@/components/painel/ConfirmarExclusao";
+import {
+  atualizarPublicacao,
+  apagarPublicacao,
+} from "@/app/painel/(protegido)/obra/publicacoes/actions";
 
 export default async function EditarPublicacaoPage({
   params,
@@ -21,12 +25,15 @@ export default async function EditarPublicacaoPage({
 
   return (
     <div>
-      <Link
-        href="/painel/obra/publicacoes"
-        className="meta text-chumbo hover:text-lacre"
-      >
-        ← Publicações
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link
+          href="/painel/obra/publicacoes"
+          className="meta text-chumbo hover:text-lacre"
+        >
+          ← Publicações
+        </Link>
+        <ConfirmarExclusao action={apagarPublicacao.bind(null, id)} />
+      </div>
       <h1 className="mt-3 font-display text-3xl text-ink">
         {publicacao.titulo}
       </h1>

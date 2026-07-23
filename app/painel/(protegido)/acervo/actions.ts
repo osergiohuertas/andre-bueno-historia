@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { gerarSlug } from "@/lib/slug";
 import { uploadImagem } from "@/lib/upload";
-import { commitAcervoDocumentoMdx } from "@/lib/github";
+import { redirect } from "next/navigation";
+import { commitAcervoDocumentoMdx, apagarAcervoDocumentoMdx } from "@/lib/github";
 import type { PeriodoId } from "@/data/periodos";
 
 export type EstadoAcervo =
@@ -147,6 +148,17 @@ export async function atualizarAcervo(
 
   revalidarAcervo(slug);
   return { ok: true, mensagem: "Salvo. Commit enviado para o GitHub.", url: resultado.url };
+}
+
+export async function apagarAcervoAction(
+  slug: string,
+): Promise<{ ok: boolean; mensagem: string } | void> {
+  const resultado = await apagarAcervoDocumentoMdx(slug);
+  if (!resultado.ok) {
+    return { ok: false, mensagem: resultado.erro };
+  }
+  revalidarAcervo(slug);
+  redirect("/painel/acervo");
 }
 
 function formatarValorYaml(valor: unknown): string {

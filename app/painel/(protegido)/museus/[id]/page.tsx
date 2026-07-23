@@ -3,7 +3,11 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { FormularioMuseu } from "@/components/painel/FormularioMuseu";
 import { VinculosArtigosMuseu } from "@/components/painel/VinculosArtigosMuseu";
-import { atualizarMuseu } from "@/app/painel/(protegido)/museus/actions";
+import { ConfirmarExclusao } from "@/components/painel/ConfirmarExclusao";
+import {
+  atualizarMuseu,
+  apagarMuseu,
+} from "@/app/painel/(protegido)/museus/actions";
 import { getArtigosPublicados } from "@/lib/artigos";
 
 export default async function EditarMuseuPage({
@@ -28,9 +32,15 @@ export default async function EditarMuseuPage({
 
   return (
     <div>
-      <Link href="/painel/museus" className="meta text-chumbo hover:text-lacre">
-        ← Museus
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link
+          href="/painel/museus"
+          className="meta text-chumbo hover:text-lacre"
+        >
+          ← Museus
+        </Link>
+        <ConfirmarExclusao action={apagarMuseu.bind(null, id)} />
+      </div>
       <h1 className="mt-3 font-display text-3xl text-ink">{museu.nome}</h1>
 
       <FormularioMuseu museu={museu} action={atualizarMuseu.bind(null, id)} />

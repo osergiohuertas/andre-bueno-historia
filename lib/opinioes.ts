@@ -9,6 +9,11 @@ export function getOpinioesPublicadas() {
     .sort((a, b) => (a.data < b.data ? 1 : -1));
 }
 
+/** Todas as opiniões, publicadas e rascunhos — pro painel. */
+export function getTodasOpinioes() {
+  return [...opinioes].sort((a, b) => (a.data < b.data ? 1 : -1));
+}
+
 export function getOpiniaoBySlug(slug: string) {
   return getOpinioesPublicadas().find((o) => o.slug === slug);
 }

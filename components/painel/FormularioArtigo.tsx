@@ -1,53 +1,53 @@
 "use client";
 
 import { useActionState, useRef, useState } from "react";
-import {
-  uploadImagemCapaAction,
-  publicarOpiniaoAction,
-  type EstadoPublicacaoOpiniao,
-} from "@/app/painel/(protegido)/nova-opiniao/actions";
+import { SeletorPeriodoVisual } from "@/components/painel/editor/SeletorPeriodoVisual";
+import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
+import type { EstadoArtigoEdicao } from "@/app/painel/(protegido)/artigos/actions";
 import type { PeriodoId } from "@/data/periodos";
 
-type OpiniaoPreenchida = {
+type ArtigoPreenchido = {
   slug: string;
   titulo: string;
   subtitulo?: string;
+  periodo: PeriodoId;
+  periodosSecundarios: PeriodoId[];
+  anoInicio: number;
+  anoFim?: number;
+  regiao?: string;
   excerpt: string;
   tags: string[];
-  periodosRelacionados: PeriodoId[];
-  artigosRelacionados: string[];
+  serie?: string;
+  serieOrdem?: number;
   imagemCapa?: string;
-  destaque: boolean;
+  conexaoLivro?: string;
   publicado: boolean;
   data: string;
   corpo: string;
 };
 
-export function FormularioOpiniao({
-  periodos,
-  artigos,
-  opiniao,
+export function FormularioArtigo({
+  artigo,
+  series,
+  contagens,
   action,
 }: {
-  periodos: { id: PeriodoId; label: string }[];
-  artigos: { slug: string; titulo: string }[];
-  opiniao?: OpiniaoPreenchida;
-  action?: (
-    estado: EstadoPublicacaoOpiniao,
+  artigo?: ArtigoPreenchido;
+  series: { slug: string; nome: string }[];
+  contagens: Partial<Record<PeriodoId, number>>;
+  action: (
+    estado: EstadoArtigoEdicao,
     formData: FormData,
-  ) => Promise<EstadoPublicacaoOpiniao>;
+  ) => Promise<EstadoArtigoEdicao>;
 }) {
-  const [estado, formAction, pendente] = useActionState(
-    action ?? publicarOpiniaoAction,
-    null,
+  const [estado, formAction, pendente] = useActionState(action, null);
+  const [periodo, setPeriodo] = useState<PeriodoId | null>(
+    artigo?.periodo ?? null,
   );
-  const [periodosRel, setPeriodosRel] = useState<PeriodoId[]>(
-    opiniao?.periodosRelacionados ?? [],
+  const [periodosSecundarios, setPeriodosSecundarios] = useState<PeriodoId[]>(
+    artigo?.periodosSecundarios ?? [],
   );
-  const [artigosRel, setArtigosRel] = useState<string[]>(
-    opiniao?.artigosRelacionados ?? [],
-  );
-  const [imagemCapa, setImagemCapa] = useState(opiniao?.imagemCapa ?? "");
+  const [imagemCapa, setImagemCapa] = useState(artigo?.imagemCapa ?? "");
   const [enviandoImagem, setEnviandoImagem] = useState(false);
   const [erroImagem, setErroImagem] = useState<string | null>(null);
   const inputArquivoRef = useRef<HTMLInputElement | null>(null);
@@ -57,8 +57,9 @@ export function FormularioOpiniao({
     setErroImagem(null);
     const formData = new FormData();
     formData.append("arquivo", arquivo);
-    const resultado = await uploadImagemCapaAction(formData);
+    const resultado = await uploadImagemAction(formData);
     setEnviandoImagem(false);
+
     if (!resultado.ok) {
       setErroImagem(resultado.erro);
       return;
@@ -66,27 +67,29 @@ export function FormularioOpiniao({
     setImagemCapa(resultado.url);
   }
 
-  function alternar<T>(lista: T[], valor: T): T[] {
-    return lista.includes(valor)
-      ? lista.filter((v) => v !== valor)
-      : [...lista, valor];
-  }
-
   return (
     <form action={formAction} className="mt-8 flex flex-col gap-6">
+      <input type="hidden" name="periodo" value={periodo ?? ""} />
       <input
         type="hidden"
-        name="periodosRelacionados"
-        value={periodosRel.join(",")}
-      />
-      <input
-        type="hidden"
-        name="artigosRelacionados"
-        value={artigosRel.join(",")}
+        name="periodosSecundarios"
+        value={periodosSecundarios.join(",")}
       />
       <input type="hidden" name="imagemCapa" value={imagemCapa} />
-      {opiniao && (
-        <input type="hidden" name="dataOriginal" value={opiniao.data} />
+      {artigo && (
+        <>
+          <input type="hidden" name="dataOriginal" value={artigo.data} />
+          <input
+            type="hidden"
+            name="serieOriginal"
+            value={artigo.serie ?? ""}
+          />
+          <input
+            type="hidden"
+            name="serieOrdemOriginal"
+            value={artigo.serieOrdem ?? ""}
+          />
+        </>
       )}
 
       <div>
@@ -96,7 +99,7 @@ export function FormularioOpiniao({
         <input
           id="titulo"
           name="titulo"
-          defaultValue={opiniao?.titulo}
+          defaultValue={artigo?.titulo}
           required
           className="w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
         />
@@ -109,22 +112,90 @@ export function FormularioOpiniao({
         <input
           id="subtitulo"
           name="subtitulo"
-          defaultValue={opiniao?.subtitulo}
+          defaultValue={artigo?.subtitulo}
           className="w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
         />
+      </div>
+
+      <SeletorPeriodoVisual
+        periodoSelecionado={periodo}
+        periodosSecundarios={periodosSecundarios}
+        contagens={contagens}
+        onSelecionarPrincipal={setPeriodo}
+        onAlternarSecundario={(id) =>
+          setPeriodosSecundarios((atual) =>
+            atual.includes(id) ? atual.filter((p) => p !== id) : [...atual, id],
+          )
+        }
+      />
+
+      <div className="flex gap-6">
+        <div>
+          <label htmlFor="anoInicio" className="meta mb-1 block text-chumbo-lt">
+            Ano início
+          </label>
+          <input
+            id="anoInicio"
+            name="anoInicio"
+            type="number"
+            defaultValue={artigo?.anoInicio}
+            required
+            className="w-32 border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
+          />
+        </div>
+        <div>
+          <label htmlFor="anoFim" className="meta mb-1 block text-chumbo-lt">
+            Ano fim (opcional)
+          </label>
+          <input
+            id="anoFim"
+            name="anoFim"
+            type="number"
+            defaultValue={artigo?.anoFim}
+            className="w-32 border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label htmlFor="regiao" className="meta mb-1 block text-chumbo-lt">
+          Região (opcional)
+        </label>
+        <input
+          id="regiao"
+          name="regiao"
+          defaultValue={artigo?.regiao}
+          className="w-full max-w-sm border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="serie" className="meta mb-1 block text-chumbo-lt">
+          Série (opcional)
+        </label>
+        <select
+          id="serie"
+          name="serie"
+          defaultValue={artigo?.serie ?? ""}
+          className="w-full max-w-sm border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
+        >
+          <option value="">Nenhuma</option>
+          {series.map((s) => (
+            <option key={s.slug} value={s.slug}>
+              {s.nome}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>
         <label htmlFor="excerpt" className="meta mb-1 block text-chumbo-lt">
           Excerto
         </label>
-        <p className="mb-2 font-serif text-xs text-chumbo-lt">
-          A chamada da peça — aparece nos cards e na busca.
-        </p>
         <textarea
           id="excerpt"
           name="excerpt"
-          defaultValue={opiniao?.excerpt}
+          defaultValue={artigo?.excerpt}
           rows={3}
           required
           className="w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
@@ -132,20 +203,26 @@ export function FormularioOpiniao({
       </div>
 
       <div>
-        <label htmlFor="tags" className="meta mb-1 block text-chumbo-lt">
-          Tags (separadas por vírgula)
+        <label
+          htmlFor="conexaoLivro"
+          className="meta mb-1 block text-chumbo-lt"
+        >
+          Conexão com o livro (opcional)
         </label>
-        <input
-          id="tags"
-          name="tags"
-          defaultValue={opiniao?.tags.join(", ")}
-          placeholder="democracia, memória, patrimônio…"
+        <p className="mb-2 font-serif text-xs text-chumbo-lt">
+          Preenchido, ativa o card de conexão com o livro no artigo.
+        </p>
+        <textarea
+          id="conexaoLivro"
+          name="conexaoLivro"
+          defaultValue={artigo?.conexaoLivro}
+          rows={2}
           className="w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
         />
       </div>
 
       <div>
-        <p className="meta mb-1 text-chumbo-lt">Imagem de capa (opcional)</p>
+        <p className="meta mb-1 text-chumbo-lt">Imagem de capa</p>
         <input
           ref={inputArquivoRef}
           type="file"
@@ -157,6 +234,7 @@ export function FormularioOpiniao({
             e.target.value = "";
           }}
         />
+
         {imagemCapa && (
           <div className="mb-3 flex items-center gap-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -174,6 +252,7 @@ export function FormularioOpiniao({
             </button>
           </div>
         )}
+
         <button
           type="button"
           onClick={() => inputArquivoRef.current?.click()}
@@ -194,76 +273,28 @@ export function FormularioOpiniao({
       </div>
 
       <div>
-        <p className="meta mb-1 text-chumbo-lt">
-          Períodos de contexto (opcional)
-        </p>
-        <p className="mb-3 font-serif text-xs text-chumbo-lt">
-          Com quais períodos históricos esta peça dialoga. Só cor e tema — não
-          organiza a opinião por período.
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {periodos.map((p) => {
-            const ativo = periodosRel.includes(p.id);
-            return (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setPeriodosRel((a) => alternar(a, p.id))}
-                className={`meta border px-3 py-1.5 transition-colors ${
-                  ativo
-                    ? "border-ouro bg-ouro/10 text-ouro"
-                    : "border-borda text-chumbo hover:border-lacre"
-                }`}
-              >
-                {p.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div>
-        <p className="meta mb-1 text-chumbo-lt">Base histórica (opcional)</p>
-        <p className="mb-3 font-serif text-xs text-chumbo-lt">
-          Artigos publicados que embasam a análise — viram o bloco &ldquo;Base
-          histórica&rdquo; no fim da peça.
-        </p>
-        {artigos.length === 0 ? (
-          <p className="font-serif text-xs text-chumbo-lt">
-            Nenhum artigo publicado para vincular ainda.
-          </p>
-        ) : (
-          <div className="flex max-h-56 flex-col gap-1 overflow-y-auto border border-borda p-3">
-            {artigos.map((a) => (
-              <label
-                key={a.slug}
-                className="flex cursor-pointer items-center gap-2.5 py-1"
-              >
-                <input
-                  type="checkbox"
-                  checked={artigosRel.includes(a.slug)}
-                  onChange={() => setArtigosRel((l) => alternar(l, a.slug))}
-                  className="h-4 w-4 border border-borda"
-                />
-                <span className="font-serif text-sm text-ink">{a.titulo}</span>
-              </label>
-            ))}
-          </div>
-        )}
+        <label htmlFor="tags" className="meta mb-1 block text-chumbo-lt">
+          Tags (separadas por vírgula)
+        </label>
+        <input
+          id="tags"
+          name="tags"
+          defaultValue={artigo?.tags.join(", ")}
+          className="w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
+        />
       </div>
 
       <div>
         <label htmlFor="corpo" className="meta mb-1 block text-chumbo-lt">
-          Corpo
+          Corpo (MDX)
         </label>
         <p className="mb-2 font-serif text-xs text-chumbo-lt">
-          O texto da opinião. Aceita marcação simples (## para subtítulos, &gt;
-          para citações).
+          Parágrafos separados por linha em branco. Subtítulos com ##.
         </p>
         <textarea
           id="corpo"
           name="corpo"
-          defaultValue={opiniao?.corpo}
+          defaultValue={artigo?.corpo}
           rows={18}
           required
           className="w-full border border-borda bg-paper px-4 py-3 font-serif text-ink focus:border-lacre focus:outline-none"
@@ -273,20 +304,8 @@ export function FormularioOpiniao({
       <label className="flex items-center gap-3">
         <input
           type="checkbox"
-          name="destaque"
-          defaultChecked={opiniao?.destaque ?? false}
-          className="h-5 w-5 border border-borda"
-        />
-        <span className="text-ink">
-          Destaque (abre em evidência no topo de /opinião)
-        </span>
-      </label>
-
-      <label className="flex items-center gap-3">
-        <input
-          type="checkbox"
           name="publicado"
-          defaultChecked={opiniao?.publicado ?? true}
+          defaultChecked={artigo?.publicado ?? false}
           className="h-5 w-5 border border-borda"
         />
         <span className="text-ink">Publicado (aparece no site)</span>
@@ -295,13 +314,18 @@ export function FormularioOpiniao({
       <div className="flex items-center gap-4">
         <button
           type="submit"
-          disabled={pendente}
+          disabled={pendente || !periodo}
           className="border border-ink bg-ink px-6 py-3 text-ouro transition-colors hover:bg-lacre hover:border-lacre disabled:cursor-not-allowed disabled:opacity-50"
         >
           <span className="meta text-ouro">
-            {pendente ? "Salvando…" : opiniao ? "Salvar" : "Publicar opinião"}
+            {pendente ? "Salvando…" : "Salvar"}
           </span>
         </button>
+        {!periodo && (
+          <p className="font-serif text-xs text-chumbo-lt">
+            Escolha um período pra habilitar o envio.
+          </p>
+        )}
         {estado && (
           <p className={`meta ${estado.ok ? "text-chumbo" : "text-lacre"}`}>
             {estado.mensagem}

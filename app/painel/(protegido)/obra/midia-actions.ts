@@ -113,3 +113,22 @@ export async function atualizarMidia(
   revalidarMidia(tipo);
   return { ok: true, mensagem: "Salvo." };
 }
+
+export async function apagarMidia(
+  id: string,
+  tipo: "video" | "foto",
+): Promise<{ ok: boolean; mensagem: string } | void> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("acervo_midia")
+    .delete()
+    .eq("id", id)
+    .eq("tipo", tipo);
+
+  if (error) {
+    return { ok: false, mensagem: "Erro ao apagar." };
+  }
+
+  revalidarMidia(tipo);
+  redirect(`/painel/obra/${tipo === "video" ? "videos" : "fotos"}`);
+}

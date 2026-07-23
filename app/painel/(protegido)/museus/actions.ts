@@ -108,6 +108,25 @@ export async function atualizarMuseu(
   return { ok: true, mensagem: "Salvo." };
 }
 
+export async function apagarMuseu(
+  id: string,
+): Promise<{ ok: boolean; mensagem: string } | void> {
+  const supabase = await createClient();
+
+  // Apaga primeiro os vínculos com artigos (evita violar FK caso não haja
+  // cascade configurado na migration).
+  await supabase.from("museu_artigos").delete().eq("museu_id", id);
+
+  const { error } = await supabase.from("museus").delete().eq("id", id);
+
+  if (error) {
+    return { ok: false, mensagem: "Erro ao apagar o museu." };
+  }
+
+  revalidarMuseus();
+  redirect("/painel/museus");
+}
+
 export async function alternarVinculoArtigo(
   museuId: string,
   artigoSlug: string,

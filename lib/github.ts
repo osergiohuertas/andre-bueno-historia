@@ -76,6 +76,85 @@ async function commitMdx(
   }
 }
 
+/**
+ * Apaga um arquivo do repositório via Contents API — precisa do `sha`
+ * atual do arquivo, igual o commitMdx precisa pra atualizar.
+ */
+async function apagarMdx(
+  caminho: string,
+  descricao: string,
+): Promise<{ ok: true } | { ok: false; erro: string }> {
+  const config = configuracaoGithub();
+  if (!config) {
+    return { ok: false, erro: "GitHub não está configurado neste ambiente." };
+  }
+
+  const { token, owner, repo, branch } = config;
+  const base = `https://api.github.com/repos/${owner}/${repo}/contents/${caminho}`;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    Accept: "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
+
+  try {
+    const respostaAtual = await fetch(`${base}?ref=${branch}`, { headers });
+    if (!respostaAtual.ok) {
+      if (respostaAtual.status === 404) return { ok: true };
+      const erro = await respostaAtual.json().catch(() => null);
+      return {
+        ok: false,
+        erro: erro?.message ?? "Erro ao consultar o arquivo no GitHub.",
+      };
+    }
+    const atual = await respostaAtual.json();
+
+    const resposta = await fetch(base, {
+      method: "DELETE",
+      headers: { ...headers, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: `Remove ${descricao}`,
+        sha: atual.sha,
+        branch,
+      }),
+    });
+
+    if (!resposta.ok) {
+      const dados = await resposta.json().catch(() => null);
+      return {
+        ok: false,
+        erro: dados?.message ?? "Erro ao apagar no GitHub.",
+      };
+    }
+
+    return { ok: true };
+  } catch (error) {
+    const mensagem = error instanceof Error ? error.message : "Erro desconhecido.";
+    return { ok: false, erro: `Erro ao apagar no GitHub: ${mensagem}` };
+  }
+}
+
+export async function apagarArtigoMdx(
+  slug: string,
+): Promise<{ ok: true } | { ok: false; erro: string }> {
+  return apagarMdx(`content/artigos/${slug}.mdx`, `artigo: ${slug}`);
+}
+
+export async function apagarAcervoDocumentoMdx(
+  slug: string,
+): Promise<{ ok: true } | { ok: false; erro: string }> {
+  return apagarMdx(
+    `content/acervo-documentos/${slug}.mdx`,
+    `item de acervo: ${slug}`,
+  );
+}
+
+export async function apagarOpiniaoMdx(
+  slug: string,
+): Promise<{ ok: true } | { ok: false; erro: string }> {
+  return apagarMdx(`content/opinioes/${slug}.mdx`, `opinião: ${slug}`);
+}
+
 export async function commitArtigoMdx(
   slug: string,
   conteudoMdx: string,

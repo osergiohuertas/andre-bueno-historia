@@ -2,7 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { FormularioSerie } from "@/components/painel/FormularioSerie";
-import { atualizarSerie } from "@/app/painel/(protegido)/series/actions";
+import { ConfirmarExclusao } from "@/components/painel/ConfirmarExclusao";
+import {
+  atualizarSerie,
+  apagarSerie,
+} from "@/app/painel/(protegido)/series/actions";
 
 export default async function EditarSeriePage({
   params,
@@ -21,9 +25,15 @@ export default async function EditarSeriePage({
 
   return (
     <div>
-      <Link href="/painel/series" className="meta text-chumbo hover:text-lacre">
-        ← Séries
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link
+          href="/painel/series"
+          className="meta text-chumbo hover:text-lacre"
+        >
+          ← Séries
+        </Link>
+        <ConfirmarExclusao action={apagarSerie.bind(null, id)} />
+      </div>
       <h1 className="mt-3 font-display text-3xl text-ink">{serie.nome}</h1>
 
       <FormularioSerie serie={serie} action={atualizarSerie.bind(null, id)} />

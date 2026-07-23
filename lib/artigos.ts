@@ -10,6 +10,14 @@ export function getArtigosPublicados() {
     .sort((a, b) => (a.data < b.data ? 1 : -1));
 }
 
+/**
+ * Todos os artigos, publicados e rascunhos — pro painel, onde o André
+ * precisa ver e editar tudo, não só o que já está no ar.
+ */
+export function getTodosArtigos() {
+  return [...artigos].sort((a, b) => (a.data < b.data ? 1 : -1));
+}
+
 export function getArtigoBySlug(slug: string) {
   return getArtigosPublicados().find((a) => a.slug === slug);
 }

@@ -24,7 +24,9 @@ const GRUPOS: GrupoNav[] = [
   {
     titulo: "Publicar",
     itens: [
+      { href: "/painel/artigos", label: "Artigos", icone: <IconeArtigo /> },
       { href: "/painel/novo-artigo", label: "Novo artigo", icone: <IconeArtigo /> },
+      { href: "/painel/opinioes", label: "Opiniões", icone: <IconeOpiniao /> },
       { href: "/painel/nova-opiniao", label: "Nova opinião", icone: <IconeOpiniao /> },
     ],
   },

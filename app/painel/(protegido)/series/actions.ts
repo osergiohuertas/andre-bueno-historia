@@ -68,3 +68,18 @@ export async function atualizarSerie(
   revalidatePath("/");
   return { ok: true, mensagem: "Salvo." };
 }
+
+export async function apagarSerie(
+  id: string,
+): Promise<{ ok: boolean; mensagem: string } | void> {
+  const supabase = await createClient();
+  const { error } = await supabase.from("series").delete().eq("id", id);
+
+  if (error) {
+    return { ok: false, mensagem: "Erro ao apagar a série." };
+  }
+
+  revalidatePath("/painel/series");
+  revalidatePath("/");
+  redirect("/painel/series");
+}
