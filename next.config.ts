@@ -58,6 +58,16 @@ const nextConfig: NextConfig = {
         destination: "/acervo?secao=fotos",
         permanent: true,
       },
+      {
+        source: "/museus",
+        destination: "/destinos",
+        permanent: true,
+      },
+      {
+        source: "/museus/:path*",
+        destination: "/destinos/:path*",
+        permanent: true,
+      },
     ];
   },
   images: {
@@ -67,9 +77,9 @@ const nextConfig: NextConfig = {
       // ideal migrar pro upload do painel quando o André tiver uma imagem
       // própria.
       { protocol: "https", hostname: "m.media-amazon.com" },
-      // Fotos de museus com fonte no Wikimedia Commons (domínio público /
+      // Fotos de destinos com fonte no Wikimedia Commons (domínio público /
       // CC) — cadastro inicial de exemplo, ideal migrar pro upload do
-      // painel quando o André tiver fotos próprias de cada museu.
+      // painel quando o André tiver fotos próprias de cada destino.
       { protocol: "https", hostname: "upload.wikimedia.org" },
       // Uploads do painel (foto do Sobre, capas de artigo/acervo/opinião,
       // mídia da obra) — bucket público no Supabase Storage, ver lib/upload.ts.

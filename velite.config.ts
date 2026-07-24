@@ -66,7 +66,7 @@ const artigos = defineCollection({
 
 // Fase 4: peça editorial do acervo documental. "Declara período, como o
 // artigo" — mesmo esqueleto temporal, sem coordenadas (o Atlas só tem as
-// camadas Artigos e Museus, não Acervo).
+// camadas Artigos e Destinos, não Acervo).
 const acervoDocumentos = defineCollection({
   name: "AcervoDocumento",
   pattern: "acervo-documentos/**/*.mdx",

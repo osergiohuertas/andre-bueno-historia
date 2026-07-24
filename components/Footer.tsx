@@ -17,7 +17,7 @@ const FOOTER_COLUNAS = [
     titulo: "Explorar",
     links: [
       { href: "/eventos", label: "Agenda" },
-      { href: "/museus", label: "Museus" },
+      { href: "/destinos", label: "Destinos" },
       { href: "/acervo?secao=livros", label: "Obra" },
       { href: "/livro", label: "O Livro" },
       { href: "/sobre", label: "Sobre" },

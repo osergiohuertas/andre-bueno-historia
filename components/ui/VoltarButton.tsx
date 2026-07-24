@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
  * pai fixo — diferente do padrão "← Nome" já usado no painel, que existe
  * de propósito lá (um editor sempre quer voltar pra mesma listagem,
  * não importa de onde clicou). Aqui, quem chega numa página de artigo,
- * museu, evento etc. pode ter vindo de qualquer lugar do site — a home,
+ * destino, evento etc. pode ter vindo de qualquer lugar do site — a home,
  * a busca, um link direto —, então "voltar" precisa ser literal.
  *
  * fallbackHref cobre o caso sem histórico (link direto, aba nova):

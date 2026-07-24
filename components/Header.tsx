@@ -10,7 +10,7 @@ const NAV_LINKS = [
   { href: "/opiniao", label: "Opinião" },
   { href: "/eventos", label: "Agenda" },
   { href: "/linha-do-tempo", label: "Linha do Tempo" },
-  { href: "/museus", label: "Museus" },
+  { href: "/destinos", label: "Destinos" },
   { href: "/acervo", label: "Acervo" },
   { href: "/livro", label: "O Livro" },
 ];

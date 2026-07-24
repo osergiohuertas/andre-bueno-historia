@@ -1,15 +1,15 @@
 import { AtlasMapa } from "@/components/atlas/AtlasMapa";
-import type { PontoArtigo, PontoMuseu } from "@/lib/atlas";
+import type { PontoArtigo, PontoDestino } from "@/lib/atlas";
 
 export function EstadoMapa({
   pontosArtigos,
-  pontosMuseus,
+  pontosDestinos,
   onSelecionarPonto,
 }: {
   pontosArtigos: PontoArtigo[];
-  pontosMuseus: PontoMuseu[];
+  pontosDestinos: PontoDestino[];
   onSelecionarPonto: (info: {
-    tipo: "artigo" | "museu";
+    tipo: "artigo" | "destino";
     slug: string;
     titulo: string;
     url: string;
@@ -34,7 +34,7 @@ export function EstadoMapa({
         <div className="h-full bg-paper p-3">
           <AtlasMapa
             pontosArtigos={pontosArtigos}
-            pontosMuseus={pontosMuseus}
+            pontosDestinos={pontosDestinos}
             modoQuiosque
             onSelecionarPonto={onSelecionarPonto}
             mensagemIndisponivel="O mapa está descansando — volte em breve."

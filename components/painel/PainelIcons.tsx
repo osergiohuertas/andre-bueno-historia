@@ -66,12 +66,11 @@ export function IconeAgenda() {
   );
 }
 
-export function IconeMuseus() {
+export function IconeDestino() {
   return (
     <Base>
-      <path d="M3 21h18" />
-      <path d="M4 21V10l8-6 8 6v11" />
-      <path d="M9 21v-7h6v7" />
+      <path d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z" />
+      <circle cx="12" cy="10" r="2.5" />
     </Base>
   );
 }

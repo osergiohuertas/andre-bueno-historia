@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { periodosOrdenados, type PeriodoId } from "@/data/periodos";
-import type { PontoArtigo, PontoMuseu } from "@/lib/atlas";
+import type { PontoArtigo, PontoDestino } from "@/lib/atlas";
 
 // MapLibre é open-source e não pede conta/token pra funcionar — o estilo
 // vem de um provedor de tiles livre por padrão (OpenFreeMap), mas dá pra
@@ -29,7 +29,7 @@ function artigosParaGeoJSON(pontos: PontoArtigo[]) {
   };
 }
 
-function museusParaGeoJSON(pontos: PontoMuseu[]) {
+function destinosParaGeoJSON(pontos: PontoDestino[]) {
   return {
     type: "FeatureCollection" as const,
     features: pontos.map((p) => ({
@@ -46,25 +46,25 @@ function museusParaGeoJSON(pontos: PontoMuseu[]) {
 }
 
 const CAMADAS_ARTIGOS = ["artigos-cluster", "artigos-cluster-count", "artigos-ponto"];
-const CAMADAS_MUSEUS = ["museus-cluster", "museus-cluster-count", "museus-ponto"];
+const CAMADAS_DESTINOS = ["destinos-cluster", "destinos-cluster-count", "destinos-ponto"];
 
 const CENTRO_INICIAL: [number, number] = [-47, -15];
 const ZOOM_INICIAL = 3.2;
 
 export function AtlasMapa({
   pontosArtigos,
-  pontosMuseus,
+  pontosDestinos,
   modoQuiosque = false,
   onSelecionarPonto,
   mensagemIndisponivel,
 }: {
   pontosArtigos: PontoArtigo[];
-  pontosMuseus: PontoMuseu[];
+  pontosDestinos: PontoDestino[];
   /** Desabilita gestos de mouse/multitoque (rotação, inclinação) e troca o chrome por controles maiores — para o totem (Fase 6). */
   modoQuiosque?: boolean;
-  /** Se definido, tocar num ponto chama isto em vez de abrir o popup com link — o totem decide se mostra a ficha do museu ou a prévia do artigo. */
+  /** Se definido, tocar num ponto chama isto em vez de abrir o popup com link — o totem decide se mostra a ficha do destino ou a prévia do artigo. */
   onSelecionarPonto?: (info: {
-    tipo: "artigo" | "museu";
+    tipo: "artigo" | "destino";
     slug: string;
     titulo: string;
     url: string;
@@ -75,7 +75,7 @@ export function AtlasMapa({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [camadaArtigos, setCamadaArtigos] = useState(true);
-  const [camadaMuseus, setCamadaMuseus] = useState(true);
+  const [camadaDestinos, setCamadaDestinos] = useState(true);
   const [periodoFiltro, setPeriodoFiltro] = useState<PeriodoId | null>(null);
   // Diferente do Mapbox, não há token pra checar de antemão — a
   // indisponibilidade só aparece se o carregamento do estilo/tiles falhar
@@ -102,7 +102,7 @@ export function AtlasMapa({
 
     if (modoQuiosque) {
       // Só pan + pinça-pra-zoom sobrevivem — rotação e inclinação por
-      // multitoque desorientam um visitante de museu sem querer, e não têm
+      // multitoque desorientam um visitante sem querer, e não têm
       // como "desfazer" fácil num quiosque sem mouse.
       map.scrollZoom.disable();
       map.doubleClickZoom.disable();
@@ -117,9 +117,9 @@ export function AtlasMapa({
         cluster: true,
         clusterRadius: 40,
       });
-      map.addSource("museus", {
+      map.addSource("destinos", {
         type: "geojson",
-        data: museusParaGeoJSON(pontosMuseus),
+        data: destinosParaGeoJSON(pontosDestinos),
         cluster: true,
         clusterRadius: 40,
       });
@@ -153,24 +153,24 @@ export function AtlasMapa({
       });
 
       map.addLayer({
-        id: "museus-cluster",
+        id: "destinos-cluster",
         type: "circle",
-        source: "museus",
+        source: "destinos",
         filter: ["has", "point_count"],
         paint: { "circle-color": "#B8902A", "circle-radius": 16, "circle-opacity": 0.85 },
       });
       map.addLayer({
-        id: "museus-cluster-count",
+        id: "destinos-cluster-count",
         type: "symbol",
-        source: "museus",
+        source: "destinos",
         filter: ["has", "point_count"],
         layout: { "text-field": "{point_count_abbreviated}", "text-size": 12, "text-font": ["DIN Pro Bold"] },
         paint: { "text-color": "#0E1B33" },
       });
       map.addLayer({
-        id: "museus-ponto",
+        id: "destinos-ponto",
         type: "circle",
-        source: "museus",
+        source: "destinos",
         filter: ["!", ["has", "point_count"]],
         paint: {
           "circle-color": "#B8902A",
@@ -180,7 +180,7 @@ export function AtlasMapa({
         },
       });
 
-      for (const layerId of ["artigos-ponto", "museus-ponto"] as const) {
+      for (const layerId of ["artigos-ponto", "destinos-ponto"] as const) {
         map.on("click", layerId, (e) => {
           const feature = e.features?.[0];
           if (!feature || feature.geometry.type !== "Point") return;
@@ -188,10 +188,10 @@ export function AtlasMapa({
           const titulo = String(feature.properties?.titulo ?? "");
           const url = String(feature.properties?.url ?? "#");
           const slug = String(feature.properties?.slug ?? "");
-          const tipo = layerId === "artigos-ponto" ? "artigo" : "museu";
+          const tipo = layerId === "artigos-ponto" ? "artigo" : "destino";
 
           // Totem: nunca navega direto, um toque num ponto abre a ficha
-          // rápida (museu) ou a prévia do artigo — nunca a ponte QR direto.
+          // rápida (destino) ou a prévia do artigo — nunca a ponte QR direto.
           if (onSelecionarPonto) {
             onSelecionarPonto({ tipo, slug, titulo, url });
             return;
@@ -215,7 +215,7 @@ export function AtlasMapa({
 
       for (const [layerId, sourceId] of [
         ["artigos-cluster", "artigos"],
-        ["museus-cluster", "museus"],
+        ["destinos-cluster", "destinos"],
       ] as const) {
         map.on("click", layerId, (e) => {
           const feature = e.features?.[0];
@@ -251,14 +251,15 @@ export function AtlasMapa({
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !map.isStyleLoaded()) return;
-    const visibilidade = camadaMuseus ? "visible" : "none";
-    for (const id of CAMADAS_MUSEUS) {
+    const visibilidade = camadaDestinos ? "visible" : "none";
+    for (const id of CAMADAS_DESTINOS) {
       if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", visibilidade);
     }
-  }, [camadaMuseus]);
+  }, [camadaDestinos]);
 
-  // Filtro temporal só afeta a camada de artigos — museus não têm `periodo`
-  // (são atemporais: o museu existe hoje, independente do período do acervo).
+  // Filtro temporal só afeta a camada de artigos — destinos não têm
+  // `periodo` (são atemporais: o destino existe hoje, independente do
+  // período que documenta).
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !map.isStyleLoaded()) return;
@@ -315,16 +316,16 @@ export function AtlasMapa({
           </button>
           <button
             type="button"
-            onClick={() => setCamadaMuseus((v) => !v)}
-            aria-pressed={camadaMuseus}
+            onClick={() => setCamadaDestinos((v) => !v)}
+            aria-pressed={camadaDestinos}
             className={`meta flex flex-1 items-center justify-center gap-2 border px-4 py-3 transition-transform active:scale-[0.97] ${
-              camadaMuseus
+              camadaDestinos
                 ? "border-ouro bg-ouro text-ink"
                 : "border-borda text-chumbo-lt"
             }`}
           >
             <span className="inline-block h-3 w-3 rounded-full bg-current" aria-hidden />
-            Museus
+            Destinos
           </button>
         </div>
 
@@ -361,12 +362,12 @@ export function AtlasMapa({
         <label className="flex items-center gap-2">
           <input
             type="checkbox"
-            checked={camadaMuseus}
-            onChange={(e) => setCamadaMuseus(e.target.checked)}
+            checked={camadaDestinos}
+            onChange={(e) => setCamadaDestinos(e.target.checked)}
             className="h-4 w-4"
           />
           <span className="inline-block h-3 w-3 rounded-full bg-ouro" aria-hidden />
-          <span className="meta text-chumbo">Museus</span>
+          <span className="meta text-chumbo">Destinos</span>
         </label>
       </div>
 

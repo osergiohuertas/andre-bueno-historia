@@ -4,8 +4,8 @@ import { getIdentidadeConfig } from "@/lib/identidade";
 import { getSobreConfig } from "@/lib/sobre";
 import { getArtigosPorPeriodo, getSeries, type Artigo } from "@/lib/artigos";
 import { getAcervoPorPeriodo, type AcervoDocumento } from "@/lib/acervo";
-import { getPontosArtigos, getPontosMuseus } from "@/lib/atlas";
-import { getMuseus, type Museu } from "@/lib/museus";
+import { getPontosArtigos, getPontosDestinos } from "@/lib/atlas";
+import { getDestinos, type Destino } from "@/lib/destinos";
 import { extrairPreviaTexto } from "@/lib/mdxPreview";
 import { periodosOrdenados, getPeriodo } from "@/data/periodos";
 import { SITE_URL } from "@/lib/site";
@@ -13,18 +13,18 @@ import type { PeriodoComArtigos } from "@/components/totem/EstadoTimeline";
 import type { ArtigoPreviewData } from "@/components/totem/EstadoArtigoPreview";
 import type { PeriodoComAcervo } from "@/components/totem/EstadoAcervo";
 import type { AcervoPreviewData } from "@/components/totem/EstadoAcervoPreview";
-import type { MuseuPreviewData } from "@/components/totem/EstadoMuseuPreview";
+import type { DestinoPreviewData } from "@/components/totem/EstadoDestinoPreview";
 
 export const revalidate = 300;
 
 export default async function ModoTotemPage() {
-  const [config, identidade, sobre, pontosMuseus, series, museus] = await Promise.all([
+  const [config, identidade, sobre, pontosDestinos, series, destinos] = await Promise.all([
     getTotemConfig(),
     getIdentidadeConfig(),
     getSobreConfig(),
-    getPontosMuseus(),
+    getPontosDestinos(),
     getSeries(),
-    getMuseus(),
+    getDestinos(),
   ]);
 
   const frases = getFrasesComFallback(config);
@@ -84,22 +84,22 @@ export default async function ModoTotemPage() {
     documentos: getAcervoPorPeriodo(p.id).map(construirAcervoPreview),
   }));
 
-  function construirMuseuPreview(m: Museu): MuseuPreviewData {
+  function construirDestinoPreview(d: Destino): DestinoPreviewData {
     return {
-      slug: m.slug,
-      nome: m.nome,
-      tipologia: m.tipologia,
-      cidade: m.cidade,
-      endereco: m.endereco,
-      horario: m.horario,
-      ingresso: m.ingresso,
-      textoAutoral: m.textoAutoral,
-      foto: m.foto,
-      url: `/museus/${m.slug}`,
+      slug: d.slug,
+      nome: d.nome,
+      tipologia: d.tipologia,
+      cidade: d.cidade,
+      endereco: d.endereco,
+      horario: d.horario,
+      ingresso: d.ingresso,
+      textoAutoral: d.textoAutoral,
+      foto: d.foto,
+      url: `/destinos/${d.slug}`,
     };
   }
 
-  const museusPreview = museus.map(construirMuseuPreview);
+  const destinosPreview = destinos.map(construirDestinoPreview);
 
   return (
     <TotemApp
@@ -115,8 +115,8 @@ export default async function ModoTotemPage() {
       periodos={periodos}
       periodosAcervo={periodosAcervo}
       pontosArtigos={pontosArtigos}
-      pontosMuseus={pontosMuseus}
-      museus={museusPreview}
+      pontosDestinos={pontosDestinos}
+      destinos={destinosPreview}
       sobre={{
         manifesto: sobre.manifesto,
         trajetoria: sobre.trajetoria,

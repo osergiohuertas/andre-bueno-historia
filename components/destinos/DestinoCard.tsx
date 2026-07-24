@@ -1,36 +1,36 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { Museu } from "@/lib/museus";
+import type { Destino } from "@/lib/destinos";
 
-export function MuseuCard({ museu }: { museu: Museu }) {
+export function DestinoCard({ destino }: { destino: Destino }) {
   return (
     <Link
-      href={`/museus/${museu.slug}`}
+      href={`/destinos/${destino.slug}`}
       className="group flex flex-col border border-borda bg-paper transition-colors hover:border-lacre"
     >
       <div className="relative aspect-[16/9] w-full overflow-hidden bg-paper-mid">
-        {museu.foto ? (
+        {destino.foto ? (
           <Image
-            src={museu.foto}
-            alt={museu.nome}
+            src={destino.foto}
+            alt={destino.nome}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
             <span className="font-display text-3xl text-borda">
-              {museu.cidade}
+              {destino.cidade}
             </span>
           </div>
         )}
       </div>
 
       <div className="flex flex-1 flex-col gap-2 p-6">
-        <p className="meta text-lacre">{museu.tipologia}</p>
+        <p className="meta text-lacre">{destino.tipologia}</p>
         <h3 className="font-display text-xl leading-snug text-ink">
-          {museu.nome}
+          {destino.nome}
         </h3>
-        <p className="meta mt-auto text-chumbo-lt">{museu.cidade}</p>
+        <p className="meta mt-auto text-chumbo-lt">{destino.cidade}</p>
       </div>
     </Link>
   );

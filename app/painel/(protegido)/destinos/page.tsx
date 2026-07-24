@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function MuseusPainelPage() {
+export default async function DestinosPainelPage() {
   const supabase = await createClient();
-  const { data: museus } = await supabase
-    .from("museus")
+  const { data: destinos } = await supabase
+    .from("destinos")
     .select("*")
     .order("nome", { ascending: true });
 
@@ -13,36 +13,36 @@ export default async function MuseusPainelPage() {
       <div className="flex items-center justify-between">
         <div>
           <p className="meta text-lacre">Painel</p>
-          <h1 className="mt-3 font-display text-3xl text-ink">Museus</h1>
+          <h1 className="mt-3 font-display text-3xl text-ink">Destinos</h1>
         </div>
         <Link
-          href="/painel/museus/novo"
+          href="/painel/destinos/novo"
           className="border border-ink bg-ink px-5 py-2.5 text-ouro hover:bg-lacre hover:border-lacre"
         >
-          <span className="meta text-ouro">Novo museu</span>
+          <span className="meta text-ouro">Novo destino</span>
         </Link>
       </div>
 
       <div className="mt-10 flex flex-col gap-3">
-        {(museus ?? []).length === 0 && (
-          <p className="meta text-chumbo-lt">Nenhum museu ainda.</p>
+        {(destinos ?? []).length === 0 && (
+          <p className="meta text-chumbo-lt">Nenhum destino ainda.</p>
         )}
-        {(museus ?? []).map((museu) => (
+        {(destinos ?? []).map((destino) => (
           <Link
-            key={museu.id}
-            href={`/painel/museus/${museu.id}`}
+            key={destino.id}
+            href={`/painel/destinos/${destino.id}`}
             className="flex items-center justify-between border border-borda p-6 hover:border-lacre"
           >
             <div>
               <p className="meta text-chumbo-lt">
-                {museu.tipologia} · {museu.cidade}
+                {destino.tipologia} · {destino.cidade}
               </p>
               <p className="mt-1 font-display text-xl text-ink">
-                {museu.nome}
+                {destino.nome}
               </p>
             </div>
             <span className="meta text-chumbo-lt">
-              {museu.publicado ? "Publicado" : "Rascunho"}
+              {destino.publicado ? "Publicado" : "Rascunho"}
             </span>
           </Link>
         ))}

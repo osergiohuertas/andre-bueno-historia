@@ -8,12 +8,12 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { ArticleCard } from "@/components/ui/ArticleCard";
 import { VoltarButton } from "@/components/ui/VoltarButton";
 import {
-  getMuseuPorSlug,
-  getArtigoSlugsVinculadosAoMuseu,
-} from "@/lib/museus";
+  getDestinoPorSlug,
+  getArtigoSlugsVinculadosAoDestino,
+} from "@/lib/destinos";
 import { getArtigoBySlug } from "@/lib/artigos";
 import { formatarData } from "@/lib/format";
-import { museumSchema } from "@/lib/schema";
+import { destinoSchema } from "@/lib/schema";
 
 export const revalidate = 86400;
 
@@ -23,27 +23,27 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const museu = await getMuseuPorSlug(slug);
-  if (!museu) return {};
+  const destino = await getDestinoPorSlug(slug);
+  if (!destino) return {};
 
   return {
-    title: `${museu.nome} — André Bueno`,
-    description: `${museu.nome}, ${museu.cidade}.`,
+    title: `${destino.nome} — André Bueno`,
+    description: `${destino.nome}, ${destino.cidade}.`,
   };
 }
 
-export default async function MuseuPage({
+export default async function DestinoPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const museu = await getMuseuPorSlug(slug);
+  const destino = await getDestinoPorSlug(slug);
 
-  if (!museu) notFound();
+  if (!destino) notFound();
 
-  const artigosSlugsVinculados = await getArtigoSlugsVinculadosAoMuseu(
-    museu.id,
+  const artigosSlugsVinculados = await getArtigoSlugsVinculadosAoDestino(
+    destino.id,
   );
   const artigosVinculados = artigosSlugsVinculados
     .map((s) => getArtigoBySlug(s))
@@ -51,65 +51,65 @@ export default async function MuseuPage({
 
   return (
     <Section>
-      <JsonLd data={museumSchema(museu)} />
+      <JsonLd data={destinoSchema(destino)} />
       <Container className="max-w-3xl">
-        <VoltarButton fallbackHref="/museus" className="mb-8" />
+        <VoltarButton fallbackHref="/destinos" className="mb-8" />
 
-        {museu.foto && (
+        {destino.foto && (
           <div className="relative mb-10 aspect-[16/9] w-full overflow-hidden border border-borda bg-paper-mid">
-            <Image src={museu.foto} alt={museu.nome} fill className="object-cover" />
+            <Image src={destino.foto} alt={destino.nome} fill className="object-cover" />
           </div>
         )}
 
         <div className="flex flex-wrap items-center gap-3">
           <Link
-            href={`/museus/tipo/${encodeURIComponent(museu.tipologia)}`}
+            href={`/destinos/tipo/${encodeURIComponent(destino.tipologia)}`}
             className="meta border border-lacre px-2 py-1 text-lacre hover:bg-lacre hover:text-ouro"
           >
-            {museu.tipologia}
+            {destino.tipologia}
           </Link>
           <Link
-            href={`/museus/cidade/${encodeURIComponent(museu.cidade)}`}
+            href={`/destinos/cidade/${encodeURIComponent(destino.cidade)}`}
             className="meta text-chumbo-lt hover:text-lacre"
           >
-            {museu.cidade}
+            {destino.cidade}
           </Link>
         </div>
 
         <h1 className="mt-4 font-display text-3xl leading-tight text-ink md:text-4xl">
-          {museu.nome}
+          {destino.nome}
         </h1>
 
-        {museu.textoAutoral && (
+        {destino.textoAutoral && (
           <div className="prose-artigo mt-6">
-            <p>{museu.textoAutoral}</p>
+            <p>{destino.textoAutoral}</p>
           </div>
         )}
 
         <dl className="mt-10 grid gap-6 border-t border-borda pt-8 sm:grid-cols-2">
           <div>
             <dt className="meta text-chumbo-lt">Endereço</dt>
-            <dd className="mt-1 font-serif text-ink">{museu.endereco}</dd>
+            <dd className="mt-1 font-serif text-ink">{destino.endereco}</dd>
           </div>
           <div>
             <dt className="meta text-chumbo-lt">Horário</dt>
-            <dd className="mt-1 font-serif text-ink">{museu.horario}</dd>
+            <dd className="mt-1 font-serif text-ink">{destino.horario}</dd>
           </div>
           <div>
             <dt className="meta text-chumbo-lt">Ingresso</dt>
-            <dd className="mt-1 font-serif text-ink">{museu.ingresso}</dd>
+            <dd className="mt-1 font-serif text-ink">{destino.ingresso}</dd>
           </div>
-          {museu.telefone && (
+          {destino.telefone && (
             <div>
               <dt className="meta text-chumbo-lt">Telefone</dt>
-              <dd className="mt-1 font-serif text-ink">{museu.telefone}</dd>
+              <dd className="mt-1 font-serif text-ink">{destino.telefone}</dd>
             </div>
           )}
         </dl>
 
-        {museu.site && (
+        {destino.site && (
           <a
-            href={museu.site}
+            href={destino.site}
             target="_blank"
             rel="noreferrer"
             className="mt-8 inline-flex border border-ink bg-ink px-6 py-3 text-ouro transition-colors hover:bg-lacre hover:border-lacre"
@@ -120,8 +120,8 @@ export default async function MuseuPage({
 
         <div className="mt-8 border-t border-borda pt-6">
           <p className="meta text-chumbo-lt">
-            Dados verificados em {formatarData(museu.dataVerificacao)}. O
-            site oficial do museu é a fonte definitiva para horário e
+            Dados verificados em {formatarData(destino.dataVerificacao)}. O
+            site oficial do lugar é a fonte definitiva para horário e
             ingresso.
           </p>
         </div>

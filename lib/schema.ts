@@ -1,6 +1,6 @@
 import type { Artigo, Opiniao } from "@/.velite";
 import type { Evento } from "@/lib/eventos";
-import type { Museu } from "@/lib/museus";
+import type { Destino } from "@/lib/destinos";
 import { SITE_URL } from "@/lib/site";
 
 const NOME_AUTOR = "André Bueno";
@@ -84,24 +84,24 @@ export function eventSchema(evento: Evento) {
   };
 }
 
-export function museumSchema(museu: Museu) {
+export function destinoSchema(destino: Destino) {
   return {
     "@context": "https://schema.org",
-    "@type": "Museum",
-    name: museu.nome,
+    "@type": destino.tipologia === "Museu" ? "Museum" : "TouristAttraction",
+    name: destino.nome,
     address: {
       "@type": "PostalAddress",
-      streetAddress: museu.endereco,
-      addressLocality: museu.cidade,
+      streetAddress: destino.endereco,
+      addressLocality: destino.cidade,
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: museu.coordenadas.lat,
-      longitude: museu.coordenadas.lng,
+      latitude: destino.coordenadas.lat,
+      longitude: destino.coordenadas.lng,
     },
-    url: `${SITE_URL}/museus/${museu.slug}`,
-    ...(museu.telefone ? { telephone: museu.telefone } : {}),
-    ...(museu.site ? { sameAs: museu.site } : {}),
-    ...(museu.foto ? { image: museu.foto } : {}),
+    url: `${SITE_URL}/destinos/${destino.slug}`,
+    ...(destino.telefone ? { telephone: destino.telefone } : {}),
+    ...(destino.site ? { sameAs: destino.site } : {}),
+    ...(destino.foto ? { image: destino.foto } : {}),
   };
 }

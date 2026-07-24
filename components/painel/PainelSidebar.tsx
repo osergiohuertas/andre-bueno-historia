@@ -10,7 +10,7 @@ import {
   IconeSeries,
   IconeAcervo,
   IconeAgenda,
-  IconeMuseus,
+  IconeDestino,
   IconeObra,
   IconeTotem,
   IconeSite,
@@ -41,7 +41,7 @@ const GRUPOS: GrupoNav[] = [
     titulo: "Agenda & Lugares",
     itens: [
       { href: "/painel/agenda", label: "Agenda", icone: <IconeAgenda /> },
-      { href: "/painel/museus", label: "Museus", icone: <IconeMuseus /> },
+      { href: "/painel/destinos", label: "Destinos", icone: <IconeDestino /> },
     ],
   },
   {

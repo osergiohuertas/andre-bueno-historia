@@ -8,14 +8,14 @@ import { EstadoArtigoPreview, type ArtigoPreviewData } from "@/components/totem/
 import { EstadoAcervo, type PeriodoComAcervo } from "@/components/totem/EstadoAcervo";
 import { EstadoAcervoPreview, type AcervoPreviewData } from "@/components/totem/EstadoAcervoPreview";
 import { EstadoMapa } from "@/components/totem/EstadoMapa";
-import { EstadoMuseuPreview, type MuseuPreviewData } from "@/components/totem/EstadoMuseuPreview";
+import { EstadoDestinoPreview, type DestinoPreviewData } from "@/components/totem/EstadoDestinoPreview";
 import { EstadoSobre } from "@/components/totem/EstadoSobre";
 import { PonteQR } from "@/components/totem/PonteQR";
 import { BotaoInicio } from "@/components/totem/BotaoInicio";
 import { ResetAviso } from "@/components/totem/ResetAviso";
 import { TotemErrorBoundary } from "@/components/totem/TotemErrorBoundary";
 import type { FraseAtracao } from "@/lib/totem";
-import type { PontoArtigo, PontoMuseu } from "@/lib/atlas";
+import type { PontoArtigo, PontoDestino } from "@/lib/atlas";
 
 type Estado =
   | { tipo: "atracao" }
@@ -25,7 +25,7 @@ type Estado =
   | { tipo: "acervo" }
   | { tipo: "acervo-preview"; documento: AcervoPreviewData }
   | { tipo: "mapa" }
-  | { tipo: "museu-preview"; museu: MuseuPreviewData }
+  | { tipo: "destino-preview"; destino: DestinoPreviewData }
   | { tipo: "sobre" }
   | { tipo: "qr"; titulo: string; url: string };
 
@@ -55,8 +55,8 @@ export function TotemApp({
   periodos,
   periodosAcervo,
   pontosArtigos,
-  pontosMuseus,
-  museus,
+  pontosDestinos,
+  destinos,
   sobre,
 }: {
   nomeSite: string;
@@ -67,8 +67,8 @@ export function TotemApp({
   periodos: PeriodoComArtigos[];
   periodosAcervo: PeriodoComAcervo[];
   pontosArtigos: PontoArtigo[];
-  pontosMuseus: PontoMuseu[];
-  museus: MuseuPreviewData[];
+  pontosDestinos: PontoDestino[];
+  destinos: DestinoPreviewData[];
   sobre: { manifesto: string; trajetoria: string; fotoUrl: string };
 }) {
   const [estado, setEstado] = useState<Estado>({ tipo: "atracao" });
@@ -84,9 +84,9 @@ export function TotemApp({
     return mapa;
   }, [periodos]);
 
-  const museusPorSlug = useMemo(
-    () => new Map(museus.map((m) => [m.slug, m])),
-    [museus],
+  const destinosPorSlug = useMemo(
+    () => new Map(destinos.map((d) => [d.slug, d])),
+    [destinos],
   );
 
   const estadoRef = useRef(estado);
@@ -107,15 +107,15 @@ export function TotemApp({
   }
 
   function aoSelecionarPontoNoMapa(info: {
-    tipo: "artigo" | "museu";
+    tipo: "artigo" | "destino";
     slug: string;
     titulo: string;
     url: string;
   }) {
-    if (info.tipo === "museu") {
-      const museu = museusPorSlug.get(info.slug);
-      if (museu) {
-        irPara({ tipo: "museu-preview", museu });
+    if (info.tipo === "destino") {
+      const destino = destinosPorSlug.get(info.slug);
+      if (destino) {
+        irPara({ tipo: "destino-preview", destino });
         return;
       }
     } else {
@@ -245,16 +245,16 @@ export function TotemApp({
         {estado.tipo === "mapa" && (
           <EstadoMapa
             pontosArtigos={pontosArtigos}
-            pontosMuseus={pontosMuseus}
+            pontosDestinos={pontosDestinos}
             onSelecionarPonto={aoSelecionarPontoNoMapa}
           />
         )}
 
-        {estado.tipo === "museu-preview" && (
-          <EstadoMuseuPreview
-            museu={estado.museu}
+        {estado.tipo === "destino-preview" && (
+          <EstadoDestinoPreview
+            destino={estado.destino}
             onContinuarNoCelular={() =>
-              abrirPonteQR({ titulo: estado.museu.nome, url: estado.museu.url })
+              abrirPonteQR({ titulo: estado.destino.nome, url: estado.destino.url })
             }
             onVoltar={() => irPara({ tipo: "mapa" })}
           />

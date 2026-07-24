@@ -43,7 +43,7 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["eventos"]["Insert"]>;
         Relationships: [];
       };
-      museus: {
+      destinos: {
         Row: {
           id: string;
           slug: string;
@@ -64,10 +64,10 @@ export interface Database {
           updated_at: string;
         };
         Insert: Omit<
-          Database["public"]["Tables"]["museus"]["Row"],
+          Database["public"]["Tables"]["destinos"]["Row"],
           "id" | "created_at" | "updated_at" | "publicado"
         > & { id?: string; publicado?: boolean };
-        Update: Partial<Database["public"]["Tables"]["museus"]["Insert"]>;
+        Update: Partial<Database["public"]["Tables"]["destinos"]["Insert"]>;
         Relationships: [];
       };
       publicacoes: {
@@ -118,19 +118,19 @@ export interface Database {
         >;
         Relationships: [];
       };
-      museu_artigos: {
+      destino_artigos: {
         Row: {
           id: string;
-          museu_id: string;
+          destino_id: string;
           artigo_slug: string;
           created_at: string;
         };
         Insert: Omit<
-          Database["public"]["Tables"]["museu_artigos"]["Row"],
+          Database["public"]["Tables"]["destino_artigos"]["Row"],
           "id" | "created_at"
         > & { id?: string };
         Update: Partial<
-          Database["public"]["Tables"]["museu_artigos"]["Insert"]
+          Database["public"]["Tables"]["destino_artigos"]["Insert"]
         >;
         Relationships: [];
       };

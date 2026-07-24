@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
-import { MuseuCard } from "@/components/museus/MuseuCard";
+import { DestinoCard } from "@/components/destinos/DestinoCard";
 import { VoltarButton } from "@/components/ui/VoltarButton";
-import { getMuseusPorCidade } from "@/lib/museus";
+import { getDestinosPorCidade } from "@/lib/destinos";
 
 export const revalidate = 86400;
 
@@ -15,34 +15,34 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { cidade } = await params;
   return {
-    title: `Museus em ${decodeURIComponent(cidade)} — André Bueno`,
+    title: `Destinos em ${decodeURIComponent(cidade)} — André Bueno`,
   };
 }
 
-export default async function MuseusPorCidadePage({
+export default async function DestinosPorCidadePage({
   params,
 }: {
   params: Promise<{ cidade: string }>;
 }) {
   const { cidade } = await params;
-  const museus = await getMuseusPorCidade(decodeURIComponent(cidade));
+  const destinos = await getDestinosPorCidade(decodeURIComponent(cidade));
 
-  if (museus.length === 0) notFound();
+  if (destinos.length === 0) notFound();
 
   return (
     <Section>
       <Container>
         <div className="mb-12">
-          <VoltarButton fallbackHref="/museus" className="mb-4" />
-          <p className="meta text-lacre">Museus</p>
+          <VoltarButton fallbackHref="/destinos" className="mb-4" />
+          <p className="meta text-lacre">Destinos</p>
           <h1 className="mt-3 font-display text-4xl text-ink md:text-5xl">
             {decodeURIComponent(cidade)}
           </h1>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {museus.map((museu) => (
-            <MuseuCard key={museu.slug} museu={museu} />
+          {destinos.map((destino) => (
+            <DestinoCard key={destino.slug} destino={destino} />
           ))}
         </div>
       </Container>

@@ -5,12 +5,12 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { gerarSlug } from "@/lib/slug";
 
-export type EstadoMuseu = { ok: boolean; mensagem: string } | null;
+export type EstadoDestino = { ok: boolean; mensagem: string } | null;
 
-function revalidarMuseus(slug?: string) {
-  revalidatePath("/painel/museus");
-  revalidatePath("/museus");
-  if (slug) revalidatePath(`/museus/${slug}`);
+function revalidarDestinos(slug?: string) {
+  revalidatePath("/painel/destinos");
+  revalidatePath("/destinos");
+  if (slug) revalidatePath(`/destinos/${slug}`);
 }
 
 function lerFormulario(formData: FormData) {
@@ -34,10 +34,10 @@ function lerFormulario(formData: FormData) {
   };
 }
 
-export async function criarMuseu(
-  _estadoAnterior: EstadoMuseu,
+export async function criarDestino(
+  _estadoAnterior: EstadoDestino,
   formData: FormData,
-): Promise<EstadoMuseu> {
+): Promise<EstadoDestino> {
   const dados = lerFormulario(formData);
 
   if (
@@ -53,7 +53,7 @@ export async function criarMuseu(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.from("museus").insert({
+  const { error } = await supabase.from("destinos").insert({
     ...dados,
     slug: gerarSlug(dados.nome),
   });
@@ -63,20 +63,20 @@ export async function criarMuseu(
       ok: false,
       mensagem:
         error.code === "23505"
-          ? "Já existe um museu com um nome muito parecido."
-          : "Erro ao criar o museu.",
+          ? "Já existe um destino com um nome muito parecido."
+          : "Erro ao criar o destino.",
     };
   }
 
-  revalidarMuseus();
-  redirect("/painel/museus");
+  revalidarDestinos();
+  redirect("/painel/destinos");
 }
 
-export async function atualizarMuseu(
+export async function atualizarDestino(
   id: string,
-  _estadoAnterior: EstadoMuseu,
+  _estadoAnterior: EstadoDestino,
   formData: FormData,
-): Promise<EstadoMuseu> {
+): Promise<EstadoDestino> {
   const dados = lerFormulario(formData);
 
   if (
@@ -93,42 +93,42 @@ export async function atualizarMuseu(
 
   const supabase = await createClient();
   const { data: atual } = await supabase
-    .from("museus")
+    .from("destinos")
     .select("slug")
     .eq("id", id)
     .single();
 
-  const { error } = await supabase.from("museus").update(dados).eq("id", id);
+  const { error } = await supabase.from("destinos").update(dados).eq("id", id);
 
   if (error) {
-    return { ok: false, mensagem: "Erro ao salvar o museu." };
+    return { ok: false, mensagem: "Erro ao salvar o destino." };
   }
 
-  revalidarMuseus(atual?.slug);
+  revalidarDestinos(atual?.slug);
   return { ok: true, mensagem: "Salvo." };
 }
 
-export async function apagarMuseu(
+export async function apagarDestino(
   id: string,
 ): Promise<{ ok: boolean; mensagem: string } | void> {
   const supabase = await createClient();
 
   // Apaga primeiro os vínculos com artigos (evita violar FK caso não haja
   // cascade configurado na migration).
-  await supabase.from("museu_artigos").delete().eq("museu_id", id);
+  await supabase.from("destino_artigos").delete().eq("destino_id", id);
 
-  const { error } = await supabase.from("museus").delete().eq("id", id);
+  const { error } = await supabase.from("destinos").delete().eq("id", id);
 
   if (error) {
-    return { ok: false, mensagem: "Erro ao apagar o museu." };
+    return { ok: false, mensagem: "Erro ao apagar o destino." };
   }
 
-  revalidarMuseus();
-  redirect("/painel/museus");
+  revalidarDestinos();
+  redirect("/painel/destinos");
 }
 
 export async function alternarVinculoArtigo(
-  museuId: string,
+  destinoId: string,
   artigoSlug: string,
   vincular: boolean,
 ): Promise<{ ok: boolean }> {
@@ -136,25 +136,25 @@ export async function alternarVinculoArtigo(
 
   if (vincular) {
     await supabase
-      .from("museu_artigos")
+      .from("destino_artigos")
       .upsert(
-        { museu_id: museuId, artigo_slug: artigoSlug },
-        { onConflict: "museu_id,artigo_slug" },
+        { destino_id: destinoId, artigo_slug: artigoSlug },
+        { onConflict: "destino_id,artigo_slug" },
       );
   } else {
     await supabase
-      .from("museu_artigos")
+      .from("destino_artigos")
       .delete()
-      .eq("museu_id", museuId)
+      .eq("destino_id", destinoId)
       .eq("artigo_slug", artigoSlug);
   }
 
-  const { data: museu } = await supabase
-    .from("museus")
+  const { data: destino } = await supabase
+    .from("destinos")
     .select("slug")
-    .eq("id", museuId)
+    .eq("id", destinoId)
     .single();
 
-  revalidarMuseus(museu?.slug);
+  revalidarDestinos(destino?.slug);
   return { ok: true };
 }

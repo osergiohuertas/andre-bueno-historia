@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { alternarVinculoArtigo } from "@/app/painel/(protegido)/museus/actions";
+import { alternarVinculoArtigo } from "@/app/painel/(protegido)/destinos/actions";
 
-export function VinculosArtigosMuseu({
-  museuId,
+export function VinculosArtigosDestino({
+  destinoId,
   artigos,
   vinculadosIniciais,
 }: {
-  museuId: string;
+  destinoId: string;
   artigos: { slug: string; titulo: string }[];
   vinculadosIniciais: string[];
 }) {
@@ -24,7 +24,7 @@ export function VinculosArtigosMuseu({
       return proximo;
     });
     iniciarTransicao(async () => {
-      await alternarVinculoArtigo(museuId, slug, vincularAgora);
+      await alternarVinculoArtigo(destinoId, slug, vincularAgora);
     });
   }
 

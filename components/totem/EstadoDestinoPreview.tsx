@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { ZonaAlcance } from "@/components/totem/ZonaAlcance";
 
-export type MuseuPreviewData = {
+export type DestinoPreviewData = {
   slug: string;
   nome: string;
   tipologia: string;
@@ -14,12 +14,12 @@ export type MuseuPreviewData = {
   url: string;
 };
 
-export function EstadoMuseuPreview({
-  museu,
+export function EstadoDestinoPreview({
+  destino,
   onContinuarNoCelular,
   onVoltar,
 }: {
-  museu: MuseuPreviewData;
+  destino: DestinoPreviewData;
   onContinuarNoCelular: () => void;
   onVoltar: () => void;
 }) {
@@ -29,9 +29,9 @@ export function EstadoMuseuPreview({
         className="absolute inset-x-0 top-0 flex flex-col items-center justify-end px-10 text-center"
         style={{ height: "20vh" }}
       >
-        <p className="meta text-ouro">{museu.tipologia}</p>
+        <p className="meta text-ouro">{destino.tipologia}</p>
         <h1 className="mt-2 line-clamp-2 font-display text-xl text-paper">
-          {museu.nome}
+          {destino.nome}
         </h1>
       </div>
 
@@ -40,9 +40,9 @@ export function EstadoMuseuPreview({
           ← Voltar
         </button>
 
-        {museu.foto && (
+        {destino.foto && (
           <div className="relative h-28 w-full shrink-0 overflow-hidden bg-paper-mid">
-            <Image src={museu.foto} alt="" fill sizes="405px" className="object-cover" />
+            <Image src={destino.foto} alt="" fill sizes="405px" className="object-cover" />
           </div>
         )}
 
@@ -50,22 +50,22 @@ export function EstadoMuseuPreview({
           <div>
             <dt className="meta text-paper/40">Endereço</dt>
             <dd>
-              {museu.endereco}, {museu.cidade}
+              {destino.endereco}, {destino.cidade}
             </dd>
           </div>
           <div>
             <dt className="meta text-paper/40">Horário</dt>
-            <dd>{museu.horario}</dd>
+            <dd>{destino.horario}</dd>
           </div>
           <div>
             <dt className="meta text-paper/40">Ingresso</dt>
-            <dd>{museu.ingresso}</dd>
+            <dd>{destino.ingresso}</dd>
           </div>
         </dl>
 
-        {museu.textoAutoral && (
+        {destino.textoAutoral && (
           <p className="shrink-0 font-serif text-sm leading-relaxed text-paper/70">
-            {museu.textoAutoral}
+            {destino.textoAutoral}
           </p>
         )}
 
