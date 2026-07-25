@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useActionState } from "react";
+import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
 import type { EstadoDestino } from "@/app/painel/(protegido)/destinos/actions";
 import { TIPOLOGIAS_DESTINO } from "@/lib/destinos";
 import type { Database } from "@/types/supabase";
@@ -31,9 +32,30 @@ export function FormularioDestino({
 
   const tipologiaFinal = categoria === "Outro" ? outroTexto : categoria;
 
+  const [foto, setFoto] = useState(destino?.foto ?? "");
+  const [enviandoFoto, setEnviandoFoto] = useState(false);
+  const [erroFoto, setErroFoto] = useState<string | null>(null);
+  const inputArquivoRef = useRef<HTMLInputElement | null>(null);
+
+  async function lidarComUploadFoto(arquivo: File) {
+    setEnviandoFoto(true);
+    setErroFoto(null);
+    const formData = new FormData();
+    formData.append("arquivo", arquivo);
+    const resultado = await uploadImagemAction(formData);
+    setEnviandoFoto(false);
+
+    if (!resultado.ok) {
+      setErroFoto(resultado.erro);
+      return;
+    }
+    setFoto(resultado.url);
+  }
+
   return (
     <form action={formAction} className="mt-8 flex flex-col gap-6">
       <input type="hidden" name="tipologia" value={tipologiaFinal} />
+      <input type="hidden" name="foto" value={foto} />
 
       <div>
         <label htmlFor="nome" className="meta mb-1 block text-chumbo-lt">
@@ -194,16 +216,50 @@ export function FormularioDestino({
       </div>
 
       <div>
-        <label htmlFor="foto" className="meta mb-1 block text-chumbo-lt">
-          URL da foto (opcional)
-        </label>
+        <p className="meta mb-1 text-chumbo-lt">Foto (opcional)</p>
         <input
-          id="foto"
-          name="foto"
-          type="url"
-          defaultValue={destino?.foto ?? ""}
-          className="w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
+          ref={inputArquivoRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const arquivo = e.target.files?.[0];
+            if (arquivo) lidarComUploadFoto(arquivo);
+            e.target.value = "";
+          }}
         />
+
+        {foto && (
+          <div className="mb-3 flex items-center gap-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={foto}
+              alt=""
+              className="h-24 w-40 border border-borda object-cover"
+            />
+            <button
+              type="button"
+              onClick={() => setFoto("")}
+              className="meta text-chumbo hover:text-lacre"
+            >
+              Remover
+            </button>
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={() => inputArquivoRef.current?.click()}
+          disabled={enviandoFoto}
+          className="border border-borda px-4 py-2 text-ink hover:border-lacre disabled:opacity-50"
+        >
+          <span className="meta">
+            {enviandoFoto ? "Enviando…" : foto ? "Trocar foto" : "Escolher foto"}
+          </span>
+        </button>
+        {erroFoto && (
+          <p className="mt-2 font-serif text-xs text-lacre">{erroFoto}</p>
+        )}
       </div>
 
       <div>
