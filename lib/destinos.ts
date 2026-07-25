@@ -20,9 +20,9 @@ export type Destino = {
 };
 
 export const TIPOLOGIAS_DESTINO = [
-  "Museu",
-  "Patrimônio Cultural",
-  "Lugar",
+  "Museus",
+  "Patrimônios Culturais",
+  "Lugares",
 ] as const;
 
 async function getTodosOsDestinos(): Promise<Destino[]> {

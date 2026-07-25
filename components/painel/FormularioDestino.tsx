@@ -25,12 +25,7 @@ export function FormularioDestino({
   const eraPadrao = (TIPOLOGIAS_DESTINO as readonly string[]).includes(
     tipologiaInicial,
   );
-  const [categoria, setCategoria] = useState(
-    eraPadrao ? tipologiaInicial : tipologiaInicial ? "Outro" : "",
-  );
-  const [outroTexto, setOutroTexto] = useState(eraPadrao ? "" : tipologiaInicial);
-
-  const tipologiaFinal = categoria === "Outro" ? outroTexto : categoria;
+  const [categoria, setCategoria] = useState(eraPadrao ? tipologiaInicial : "");
 
   const [foto, setFoto] = useState(destino?.foto ?? "");
   const [enviandoFoto, setEnviandoFoto] = useState(false);
@@ -54,7 +49,7 @@ export function FormularioDestino({
 
   return (
     <form action={formAction} className="mt-8 flex flex-col gap-6">
-      <input type="hidden" name="tipologia" value={tipologiaFinal} />
+      <input type="hidden" name="tipologia" value={categoria} />
       <input type="hidden" name="foto" value={foto} />
 
       <div>
@@ -102,17 +97,7 @@ export function FormularioDestino({
                 {t}
               </option>
             ))}
-            <option value="Outro">Outro…</option>
           </select>
-          {categoria === "Outro" && (
-            <input
-              value={outroTexto}
-              onChange={(e) => setOutroTexto(e.target.value)}
-              placeholder="Digite a categoria"
-              required
-              className="mt-2 w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
-            />
-          )}
         </div>
       </div>
 
@@ -312,7 +297,7 @@ export function FormularioDestino({
       <div className="flex items-center gap-4">
         <button
           type="submit"
-          disabled={pendente || !tipologiaFinal}
+          disabled={pendente || !categoria}
           className="border border-ink bg-ink px-6 py-3 text-ouro transition-colors hover:bg-lacre hover:border-lacre disabled:cursor-not-allowed disabled:opacity-50"
         >
           <span className="meta text-ouro">{pendente ? "Salvando…" : "Salvar"}</span>

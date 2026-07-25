@@ -87,7 +87,7 @@ export function eventSchema(evento: Evento) {
 export function destinoSchema(destino: Destino) {
   return {
     "@context": "https://schema.org",
-    "@type": destino.tipologia === "Museu" ? "Museum" : "TouristAttraction",
+    "@type": destino.tipologia === "Museus" ? "Museum" : "TouristAttraction",
     name: destino.nome,
     address: {
       "@type": "PostalAddress",
