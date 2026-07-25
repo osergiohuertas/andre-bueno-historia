@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { DestinoCard } from "@/components/destinos/DestinoCard";
-import { getDestinos } from "@/lib/destinos";
+import { DestinoTabs } from "@/components/destinos/DestinoTabs";
+import { getDestinos, getTipologiasComDestinos } from "@/lib/destinos";
 
 export const revalidate = 86400;
 
@@ -12,7 +13,10 @@ export const metadata: Metadata = {
 };
 
 export default async function DestinosPage() {
-  const destinos = await getDestinos();
+  const [destinos, tipologias] = await Promise.all([
+    getDestinos(),
+    getTipologiasComDestinos(),
+  ]);
 
   return (
     <Section>
@@ -28,6 +32,10 @@ export default async function DestinosPage() {
             autoridade sobre relevância histórica.
           </p>
         </div>
+
+        {tipologias.length > 0 && (
+          <DestinoTabs tipologias={tipologias} ativa={null} />
+        )}
 
         {destinos.length === 0 ? (
           <p className="meta text-chumbo-lt">Nenhum destino cadastrado ainda.</p>
