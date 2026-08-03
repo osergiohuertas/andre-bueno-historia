@@ -31,14 +31,18 @@ export function EstadoSobre({
           </div>
         )}
 
-        <p className="text-center font-serif text-lg leading-relaxed text-paper/85">
-          {manifesto}
-        </p>
+        <div className="mx-auto w-full max-w-[40ch] shrink-0">
+          <p className="totem-texto-editorial totem-capitular font-serif text-lg leading-relaxed text-paper/85">
+            {manifesto}
+          </p>
+        </div>
 
         {trajetoria && (
-          <p className="text-center font-serif text-sm leading-relaxed text-paper/60">
-            {trajetoria}
-          </p>
+          <div className="mx-auto w-full max-w-[40ch] shrink-0 border-t border-paper/15 pt-5">
+            <p className="totem-texto-editorial font-serif text-sm leading-relaxed text-paper/60">
+              {trajetoria}
+            </p>
+          </div>
         )}
 
         <button

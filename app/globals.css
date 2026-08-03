@@ -200,6 +200,26 @@
     transform: scale(0.97) translateY(1px);
     box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
   }
+
+  /* Modo Totem: diagramação editorial do texto "O Historiador" — medida
+     de linha controlada (ver max-w no componente), justificado com
+     hifenização, letra capitular na abertura do manifesto. */
+  .totem-shell .totem-texto-editorial {
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+  }
+
+  .totem-shell .totem-texto-editorial.totem-capitular::first-letter {
+    float: left;
+    font-family: var(--font-playfair);
+    font-style: italic;
+    font-size: 3.6em;
+    line-height: 0.78;
+    padding-right: 0.09em;
+    padding-top: 0.04em;
+    color: theme("colors.ouro");
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
