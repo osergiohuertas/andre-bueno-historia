@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import { ZonaAlcance } from "@/components/totem/ZonaAlcance";
+import { SeloLacre } from "@/components/totem/SeloLacre";
 
 export function PonteQR({
   titulo,
@@ -51,19 +52,25 @@ export function PonteQR({
       </div>
 
       <ZonaAlcance className="items-center justify-center gap-5">
-        <div className="flex h-52 w-52 items-center justify-center bg-paper p-3">
-          {estadoQr.status === "carregando" && (
-            <div className="h-full w-full animate-pulse bg-paper-mid" aria-hidden />
-          )}
-          {estadoQr.status === "pronto" && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={estadoQr.dataUrl} alt="QR code" className="h-full w-full" />
-          )}
-          {estadoQr.status === "erro" && (
-            <p className="meta px-4 text-center text-lacre">
-              Não deu pra gerar o código agora
-            </p>
-          )}
+        <div className="relative">
+          <SeloLacre
+            size="lg"
+            className="absolute -top-6 left-1/2 z-10 -translate-x-1/2"
+          />
+          <div className="flex h-52 w-52 items-center justify-center border-2 border-ouro/40 bg-paper p-3">
+            {estadoQr.status === "carregando" && (
+              <div className="h-full w-full animate-pulse bg-paper-mid" aria-hidden />
+            )}
+            {estadoQr.status === "pronto" && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={estadoQr.dataUrl} alt="QR code" className="h-full w-full" />
+            )}
+            {estadoQr.status === "erro" && (
+              <p className="meta px-4 text-center text-lacre">
+                Não deu pra gerar o código agora
+              </p>
+            )}
+          </div>
         </div>
 
         <p className="meta text-paper/60">
@@ -73,7 +80,7 @@ export function PonteQR({
         <button
           type="button"
           onClick={onExplorarMais}
-          className="mt-4 flex items-center gap-3 border border-paper/25 bg-paper/5 px-6 text-paper transition-transform active:scale-[0.98] active:bg-ouro/15"
+          className="totem-botao mt-4 flex items-center gap-3 border border-paper/25 bg-paper/5 px-6 text-paper active:bg-ouro/15"
           style={{ minHeight: "58px" }}
         >
           Explorar mais

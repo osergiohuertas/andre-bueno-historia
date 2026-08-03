@@ -8,6 +8,7 @@ import { EstadoArtigoPreview, type ArtigoPreviewData } from "@/components/totem/
 import { EstadoAcervo, type PeriodoComAcervo } from "@/components/totem/EstadoAcervo";
 import { EstadoAcervoPreview, type AcervoPreviewData } from "@/components/totem/EstadoAcervoPreview";
 import { EstadoMapa } from "@/components/totem/EstadoMapa";
+import { TransicaoEstado } from "@/components/totem/TransicaoEstado";
 import { EstadoDestinoPreview, type DestinoPreviewData } from "@/components/totem/EstadoDestinoPreview";
 import { EstadoSobre } from "@/components/totem/EstadoSobre";
 import { PonteQR } from "@/components/totem/PonteQR";
@@ -199,85 +200,105 @@ export function TotemApp({
     <div className="totem-shell relative h-full w-full">
       <TotemErrorBoundary key={chaveEstado(estado)} onErro={() => irPara({ tipo: "atracao" })}>
         {estado.tipo === "atracao" && (
-          <EstadoAtracao frases={frases} onTocar={() => irPara({ tipo: "menu" })} />
+          <TransicaoEstado>
+            <EstadoAtracao frases={frases} onTocar={() => irPara({ tipo: "menu" })} />
+          </TransicaoEstado>
         )}
 
         {estado.tipo === "menu" && (
-          <EstadoMenu nomeSite={nomeSite} onEscolher={(destino) => irPara({ tipo: destino })} />
+          <TransicaoEstado>
+            <EstadoMenu nomeSite={nomeSite} onEscolher={(destino) => irPara({ tipo: destino })} />
+          </TransicaoEstado>
         )}
 
         {estado.tipo === "timeline" && (
-          <EstadoTimeline
-            periodos={periodos}
-            onAbrirPreviaArtigo={(artigo) =>
-              irPara({ tipo: "artigo-preview", artigo, voltarPara: "timeline" })
-            }
-          />
+          <TransicaoEstado>
+            <EstadoTimeline
+              periodos={periodos}
+              onAbrirPreviaArtigo={(artigo) =>
+                irPara({ tipo: "artigo-preview", artigo, voltarPara: "timeline" })
+              }
+            />
+          </TransicaoEstado>
         )}
 
         {estado.tipo === "artigo-preview" && (
-          <EstadoArtigoPreview
-            artigo={estado.artigo}
-            onContinuarNoCelular={() =>
-              abrirPonteQR({ titulo: estado.artigo.titulo, url: estado.artigo.url })
-            }
-            onVoltar={() => irPara({ tipo: estado.voltarPara })}
-          />
+          <TransicaoEstado>
+            <EstadoArtigoPreview
+              artigo={estado.artigo}
+              onContinuarNoCelular={() =>
+                abrirPonteQR({ titulo: estado.artigo.titulo, url: estado.artigo.url })
+              }
+              onVoltar={() => irPara({ tipo: estado.voltarPara })}
+            />
+          </TransicaoEstado>
         )}
 
         {estado.tipo === "acervo" && (
-          <EstadoAcervo
-            periodos={periodosAcervo}
-            onAbrirPreviaDocumento={(documento) => irPara({ tipo: "acervo-preview", documento })}
-          />
+          <TransicaoEstado>
+            <EstadoAcervo
+              periodos={periodosAcervo}
+              onAbrirPreviaDocumento={(documento) => irPara({ tipo: "acervo-preview", documento })}
+            />
+          </TransicaoEstado>
         )}
 
         {estado.tipo === "acervo-preview" && (
-          <EstadoAcervoPreview
-            documento={estado.documento}
-            onContinuarNoCelular={() =>
-              abrirPonteQR({ titulo: estado.documento.titulo, url: estado.documento.pdfUrl })
-            }
-            onVoltar={() => irPara({ tipo: "acervo" })}
-          />
+          <TransicaoEstado>
+            <EstadoAcervoPreview
+              documento={estado.documento}
+              onContinuarNoCelular={() =>
+                abrirPonteQR({ titulo: estado.documento.titulo, url: estado.documento.pdfUrl })
+              }
+              onVoltar={() => irPara({ tipo: "acervo" })}
+            />
+          </TransicaoEstado>
         )}
 
         {estado.tipo === "mapa" && (
-          <EstadoMapa
-            pontosArtigos={pontosArtigos}
-            pontosDestinos={pontosDestinos}
-            onSelecionarPonto={aoSelecionarPontoNoMapa}
-          />
+          <TransicaoEstado>
+            <EstadoMapa
+              pontosArtigos={pontosArtigos}
+              pontosDestinos={pontosDestinos}
+              onSelecionarPonto={aoSelecionarPontoNoMapa}
+            />
+          </TransicaoEstado>
         )}
 
         {estado.tipo === "destino-preview" && (
-          <EstadoDestinoPreview
-            destino={estado.destino}
-            onContinuarNoCelular={() =>
-              abrirPonteQR({ titulo: estado.destino.nome, url: estado.destino.url })
-            }
-            onVoltar={() => irPara({ tipo: "mapa" })}
-          />
+          <TransicaoEstado>
+            <EstadoDestinoPreview
+              destino={estado.destino}
+              onContinuarNoCelular={() =>
+                abrirPonteQR({ titulo: estado.destino.nome, url: estado.destino.url })
+              }
+              onVoltar={() => irPara({ tipo: "mapa" })}
+            />
+          </TransicaoEstado>
         )}
 
         {estado.tipo === "sobre" && (
-          <EstadoSobre
-            nomeSite={nomeSite}
-            manifesto={sobre.manifesto}
-            trajetoria={sobre.trajetoria}
-            fotoUrl={sobre.fotoUrl}
-            onConhecerObra={() =>
-              abrirPonteQR({ titulo: "O Livro", url: "/livro" })
-            }
-          />
+          <TransicaoEstado>
+            <EstadoSobre
+              nomeSite={nomeSite}
+              manifesto={sobre.manifesto}
+              trajetoria={sobre.trajetoria}
+              fotoUrl={sobre.fotoUrl}
+              onConhecerObra={() =>
+                abrirPonteQR({ titulo: "O Livro", url: "/livro" })
+              }
+            />
+          </TransicaoEstado>
         )}
 
         {estado.tipo === "qr" && (
-          <PonteQR
-            titulo={estado.titulo}
-            url={estado.url}
-            onExplorarMais={() => irPara({ tipo: "menu" })}
-          />
+          <TransicaoEstado>
+            <PonteQR
+              titulo={estado.titulo}
+              url={estado.url}
+              onExplorarMais={() => irPara({ tipo: "menu" })}
+            />
+          </TransicaoEstado>
         )}
       </TotemErrorBoundary>
 

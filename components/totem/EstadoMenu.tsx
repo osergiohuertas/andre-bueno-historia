@@ -1,4 +1,5 @@
 import { ZonaAlcance } from "@/components/totem/ZonaAlcance";
+import { SeloLacre } from "@/components/totem/SeloLacre";
 import {
   IconeLinhaDoTempo,
   IconeMapa,
@@ -43,6 +44,7 @@ export function EstadoMenu({
   return (
     <>
       <div className="absolute inset-x-0 top-0 flex flex-col items-center justify-end px-10 text-center" style={{ height: "20vh" }}>
+        <SeloLacre size="sm" className="mb-2" />
         <p className="meta text-ouro">{nomeSite}</p>
         <h1 className="mt-3 font-display text-2xl text-paper">O que você quer explorar?</h1>
       </div>
@@ -53,7 +55,7 @@ export function EstadoMenu({
             key={porta.id}
             type="button"
             onClick={() => onEscolher(porta.id)}
-            className="flex shrink-0 items-center gap-5 border border-paper/20 bg-paper/5 px-6 text-left text-ouro transition-transform active:scale-[0.98] active:bg-ouro/15"
+            className="totem-botao flex shrink-0 items-center gap-5 border border-paper/20 bg-paper/5 px-6 text-left text-ouro transition-transform active:bg-ouro/15"
             style={{ minHeight: "88px" }}
           >
             <porta.Icone />

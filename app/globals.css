@@ -142,6 +142,64 @@
   .totem-fade-in {
     animation: totem-fade-in 0.6s ease-out;
   }
+
+  /* Modo Totem: transição de entrada entre estados — substitui o corte
+     seco de antes. Remonta sozinha porque TotemErrorBoundary já troca de
+     key a cada mudança de estado (ver TransicaoEstado.tsx). */
+  @keyframes totem-transicao-entrada {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .totem-transicao-entrada {
+    animation: totem-transicao-entrada 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Modo Totem: zoom lento contínuo no attract loop (Ken Burns) — o shell
+     em app/modototem/layout.tsx já é overflow-hidden, então o excesso do
+     zoom é cortado sem precisar de wrapper extra aqui. */
+  @keyframes totem-ken-burns {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.12);
+    }
+  }
+
+  .totem-ken-burns {
+    animation: totem-ken-burns 14s ease-out infinite alternate;
+  }
+
+  /* Modo Totem: botões com presença física — textura sutil em repouso e
+     afundamento real no toque, em vez do active:scale isolado que era
+     igual em todo botão. Escopado a .totem-shell pra não vazar pro resto
+     do site. */
+  .totem-shell .totem-botao {
+    background-image: radial-gradient(
+      circle at 18% 18%,
+      rgba(247, 243, 236, 0.07),
+      rgba(247, 243, 236, 0.02) 60%
+    );
+    box-shadow:
+      inset 0 1px 0 rgba(247, 243, 236, 0.08),
+      0 1px 2px rgba(0, 0, 0, 0.2);
+    transition:
+      transform 150ms ease,
+      box-shadow 150ms ease,
+      background-color 150ms ease;
+  }
+
+  .totem-shell .totem-botao:active {
+    transform: scale(0.97) translateY(1px);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

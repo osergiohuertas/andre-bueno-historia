@@ -44,7 +44,7 @@ export function EstadoSobre({
         <button
           type="button"
           onClick={onConhecerObra}
-          className="mx-auto mt-2 flex shrink-0 items-center gap-3 border border-ouro bg-ouro/10 px-6 text-ouro transition-transform active:scale-[0.98] active:bg-ouro/25"
+          className="totem-botao mx-auto mt-2 flex shrink-0 items-center gap-3 border border-ouro bg-ouro/10 px-6 text-ouro active:bg-ouro/25"
           style={{ minHeight: "58px" }}
         >
           Conheça a obra →

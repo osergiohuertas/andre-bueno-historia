@@ -63,7 +63,7 @@ export function EstadoAtracao({
               alt=""
               fill
               sizes="100vw"
-              className="object-cover opacity-40"
+              className="totem-ken-burns object-cover opacity-40"
               priority={i === 0}
             />
           )}
@@ -87,7 +87,7 @@ export function EstadoAtracao({
           )}
           <p
             className="line-clamp-5 font-display leading-tight text-paper"
-            style={{ fontSize: "clamp(1.2rem, 2.7vh, 2.2rem)" }}
+            style={{ fontSize: "clamp(1.4rem, 3.2vh, 2.6rem)" }}
           >
             {frases[indice].texto}
           </p>

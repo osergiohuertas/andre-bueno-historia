@@ -63,7 +63,7 @@ export function EstadoAcervoPreview({
         <button
           type="button"
           onClick={onContinuarNoCelular}
-          className="mt-2 flex shrink-0 items-center gap-3 border border-ouro bg-ouro/10 px-6 text-ouro transition-transform active:scale-[0.98] active:bg-ouro/25"
+          className="totem-botao mt-2 flex shrink-0 items-center gap-3 border border-ouro bg-ouro/10 px-6 text-ouro active:bg-ouro/25"
           style={{ minHeight: "58px" }}
         >
           Ver documento completo no celular →

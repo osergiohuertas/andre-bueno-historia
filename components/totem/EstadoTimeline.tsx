@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { ZonaAlcance } from "@/components/totem/ZonaAlcance";
 import type { ArtigoPreviewData } from "@/components/totem/EstadoArtigoPreview";
 import type { PeriodoId } from "@/data/periodos";
@@ -53,7 +54,7 @@ export function EstadoTimeline({
                 type="button"
                 disabled={vazio}
                 onClick={() => setPeriodoAberto(p.id)}
-                className={`flex shrink-0 items-center justify-between border px-6 text-left transition-transform active:scale-[0.98] ${
+                className={`totem-botao flex shrink-0 items-center justify-between border px-6 text-left ${
                   vazio
                     ? "border-paper/10 text-paper/30"
                     : "border-paper/20 bg-paper/5 text-paper active:bg-ouro/15"
@@ -84,13 +85,26 @@ export function EstadoTimeline({
               key={artigo.slug}
               type="button"
               onClick={() => onAbrirPreviaArtigo(artigo)}
-              className="shrink-0 border border-paper/20 bg-paper/5 px-6 py-5 text-left transition-transform active:scale-[0.98] active:bg-ouro/15"
+              className="totem-botao flex shrink-0 items-center gap-4 border border-paper/20 bg-paper/5 px-6 py-5 text-left active:bg-ouro/15"
             >
-              <span className="block font-display text-lg text-paper">
-                {artigo.titulo}
-              </span>
-              <span className="mt-2 block font-serif text-xs text-paper/60 line-clamp-2">
-                {artigo.excerpt}
+              {artigo.imagemCapa && (
+                <div className="relative h-14 w-14 shrink-0 overflow-hidden bg-paper-mid">
+                  <Image
+                    src={artigo.imagemCapa}
+                    alt=""
+                    fill
+                    sizes="56px"
+                    className="object-cover"
+                  />
+                </div>
+              )}
+              <span className="min-w-0">
+                <span className="block font-display text-lg text-paper">
+                  {artigo.titulo}
+                </span>
+                <span className="mt-2 block font-serif text-xs text-paper/60 line-clamp-2">
+                  {artigo.excerpt}
+                </span>
               </span>
             </button>
           ))}
