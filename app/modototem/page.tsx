@@ -54,7 +54,7 @@ export default async function ModoTotemPage() {
       imagemCapa: a.imagemCapa ?? null,
       tags: a.tags,
       leituraMinutos: a.leituraMinutos,
-      previaTexto: extrairPreviaTexto(a.slug, "artigos", 90),
+      previaTexto: extrairPreviaTexto(a.slug, "artigos", 135),
       serie: serieInfoPorSlug.get(a.slug) ?? null,
     };
   }
@@ -73,7 +73,7 @@ export default async function ModoTotemPage() {
       pdfUrl: a.pdfUrl,
       fonte: a.fonte ?? null,
       imagemCapa: a.imagemCapa ?? null,
-      previaTexto: extrairPreviaTexto(a.slug, "acervo-documentos", 90),
+      previaTexto: extrairPreviaTexto(a.slug, "acervo-documentos", 135),
       periodoLabel: getPeriodo(a.periodo).label,
     };
   }

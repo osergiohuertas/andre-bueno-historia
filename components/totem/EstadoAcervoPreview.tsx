@@ -56,9 +56,13 @@ export function EstadoAcervoPreview({
           <p className="meta shrink-0 text-paper/40">Fonte: {documento.fonte}</p>
         )}
 
-        <p className="shrink-0 font-serif text-base leading-relaxed text-paper/90">
-          {documento.previaTexto ?? documento.excerpt}
-        </p>
+        <div className="totem-texto-editorial shrink-0 space-y-3">
+          {(documento.previaTexto ?? documento.excerpt).split("\n\n").map((paragrafo, i) => (
+            <p key={i} className="font-serif text-base leading-relaxed text-paper/90">
+              {paragrafo}
+            </p>
+          ))}
+        </div>
 
         <button
           type="button"

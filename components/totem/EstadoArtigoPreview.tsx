@@ -65,9 +65,13 @@ export function EstadoArtigoPreview({
           </p>
         )}
 
-        <p className="shrink-0 font-serif text-base leading-relaxed text-paper/90">
-          {artigo.previaTexto ?? artigo.excerpt}
-        </p>
+        <div className="totem-texto-editorial shrink-0 space-y-3">
+          {(artigo.previaTexto ?? artigo.excerpt).split("\n\n").map((paragrafo, i) => (
+            <p key={i} className="font-serif text-base leading-relaxed text-paper/90">
+              {paragrafo}
+            </p>
+          ))}
+        </div>
 
         <p className="meta shrink-0 text-paper/40">{artigo.leituraMinutos} min de leitura</p>
 
