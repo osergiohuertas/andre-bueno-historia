@@ -45,6 +45,25 @@ export async function getPublicacoes(
   }
 }
 
+export async function getPublicacaoPorSlug(
+  slug: string,
+): Promise<Publicacao | null> {
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase
+      .from("publicacoes")
+      .select("slug, titulo, tipo, veiculo, ano, coautores, link, resumo, capa")
+      .eq("publicado", true)
+      .eq("slug", slug)
+      .maybeSingle();
+
+    if (error || !data) return null;
+    return data;
+  } catch {
+    return null;
+  }
+}
+
 export async function getAcervoMidia(
   tipo: "video" | "foto",
   categoria?: CategoriaVideo,
