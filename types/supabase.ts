@@ -57,6 +57,10 @@ export interface Database {
           site: string | null;
           foto: string | null;
           tipologia: string;
+          categoria_protecao: "Inventário" | "Tombamento" | "Registro" | null;
+          ano_reconhecimento: number | null;
+          esfera_protecao: "Municipal" | "Estadual" | "Federal" | null;
+          link_dossie: string | null;
           data_verificacao: string;
           texto_autoral: string | null;
           publicado: boolean;

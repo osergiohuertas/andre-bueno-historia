@@ -107,6 +107,53 @@ export default async function DestinoPage({
           )}
         </dl>
 
+        {(destino.categoriaProtecao ||
+          destino.anoReconhecimento ||
+          destino.esferaProtecao ||
+          destino.linkDossie) && (
+          <dl className="mt-8 grid gap-6 border-t border-borda pt-8 sm:grid-cols-2">
+            {destino.categoriaProtecao && (
+              <div>
+                <dt className="meta text-chumbo-lt">Categoria de proteção</dt>
+                <dd className="mt-1 font-serif text-ink">
+                  {destino.categoriaProtecao}
+                </dd>
+              </div>
+            )}
+            {destino.anoReconhecimento && (
+              <div>
+                <dt className="meta text-chumbo-lt">Ano do reconhecimento</dt>
+                <dd className="mt-1 font-serif text-ink">
+                  {destino.anoReconhecimento}
+                </dd>
+              </div>
+            )}
+            {destino.esferaProtecao && (
+              <div>
+                <dt className="meta text-chumbo-lt">Esfera de proteção</dt>
+                <dd className="mt-1 font-serif text-ink">
+                  {destino.esferaProtecao}
+                </dd>
+              </div>
+            )}
+            {destino.linkDossie && (
+              <div>
+                <dt className="meta text-chumbo-lt">Estudo / dossiê</dt>
+                <dd className="mt-1 font-serif text-ink">
+                  <a
+                    href={destino.linkDossie}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-lacre underline hover:no-underline"
+                  >
+                    Acessar estudo completo
+                  </a>
+                </dd>
+              </div>
+            )}
+          </dl>
+        )}
+
         {destino.site && (
           <a
             href={destino.site}

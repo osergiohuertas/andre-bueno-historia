@@ -171,7 +171,7 @@ export function FormularioAcervo({
 
       <div>
         <label htmlFor="pdfUrl" className="meta mb-1 block text-chumbo-lt">
-          Link do PDF
+          Link para download do documento (PDF)
         </label>
         <input
           id="pdfUrl"

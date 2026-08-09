@@ -28,6 +28,22 @@ function lerFormulario(formData: FormData) {
     site: String(formData.get("site") ?? "").trim() || null,
     foto: String(formData.get("foto") ?? "").trim() || null,
     tipologia: String(formData.get("tipologia") ?? "").trim(),
+    categoria_protecao:
+      (String(formData.get("categoria_protecao") ?? "").trim() || null) as
+        | "Inventário"
+        | "Tombamento"
+        | "Registro"
+        | null,
+    ano_reconhecimento: formData.get("ano_reconhecimento")
+      ? Number(formData.get("ano_reconhecimento"))
+      : null,
+    esfera_protecao:
+      (String(formData.get("esfera_protecao") ?? "").trim() || null) as
+        | "Municipal"
+        | "Estadual"
+        | "Federal"
+        | null,
+    link_dossie: String(formData.get("link_dossie") ?? "").trim() || null,
     data_verificacao: String(formData.get("data_verificacao") ?? ""),
     texto_autoral: String(formData.get("texto_autoral") ?? "").trim() || null,
     publicado: formData.get("publicado") === "on",

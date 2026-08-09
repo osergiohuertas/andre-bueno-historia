@@ -26,7 +26,7 @@ export default async function EditarAcervoPage({
           href="/painel/acervo"
           className="meta text-chumbo hover:text-lacre"
         >
-          ← Acervo documental
+          ← Trabalhos técnicos
         </Link>
         <ConfirmarExclusao action={apagarAcervoAction.bind(null, slug)} />
       </div>

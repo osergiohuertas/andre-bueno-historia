@@ -35,7 +35,7 @@ export function EstadoAcervo({
         className="absolute inset-x-0 top-0 flex flex-col items-center justify-end px-10 text-center"
         style={{ height: "20vh" }}
       >
-        <p className="meta text-ouro">Acervo documental</p>
+        <p className="meta text-ouro">Trabalhos técnicos</p>
         <h1 className="mt-3 font-display text-2xl text-paper">
           {periodo ? periodo.label : "Escolha um período"}
         </h1>

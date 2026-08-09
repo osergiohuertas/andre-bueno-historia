@@ -15,6 +15,10 @@ export type Destino = {
   site: string | null;
   foto: string | null;
   tipologia: string;
+  categoriaProtecao: "Inventário" | "Tombamento" | "Registro" | null;
+  anoReconhecimento: number | null;
+  esferaProtecao: "Municipal" | "Estadual" | "Federal" | null;
+  linkDossie: string | null;
   dataVerificacao: string;
   textoAutoral: string | null;
 };
@@ -24,6 +28,14 @@ export const TIPOLOGIAS_DESTINO = [
   "Patrimônios Culturais",
   "Lugares",
 ] as const;
+
+export const CATEGORIAS_PROTECAO = [
+  "Inventário",
+  "Tombamento",
+  "Registro",
+] as const;
+
+export const ESFERAS_PROTECAO = ["Municipal", "Estadual", "Federal"] as const;
 
 async function getTodosOsDestinos(): Promise<Destino[]> {
   try {
@@ -48,6 +60,10 @@ async function getTodosOsDestinos(): Promise<Destino[]> {
       site: d.site,
       foto: d.foto,
       tipologia: d.tipologia,
+      categoriaProtecao: d.categoria_protecao,
+      anoReconhecimento: d.ano_reconhecimento,
+      esferaProtecao: d.esfera_protecao,
+      linkDossie: d.link_dossie,
       dataVerificacao: d.data_verificacao,
       textoAutoral: d.texto_autoral,
     }));

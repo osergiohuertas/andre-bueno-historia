@@ -11,7 +11,7 @@ export default function AcervoPainelPage() {
         <div>
           <p className="meta text-lacre">Painel</p>
           <h1 className="mt-3 font-display text-3xl text-ink">
-            Acervo documental
+            Trabalhos técnicos desenvolvidos
           </h1>
         </div>
         <Link

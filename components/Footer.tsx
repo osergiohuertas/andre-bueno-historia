@@ -9,7 +9,7 @@ const FOOTER_COLUNAS = [
       { href: "/artigos", label: "Todos os artigos" },
       { href: "/opiniao", label: "Opinião" },
       { href: "/linha-do-tempo", label: "Linha do tempo" },
-      { href: "/acervo?secao=documentos", label: "Acervo de documentos" },
+      { href: "/acervo?secao=documentos", label: "Trabalhos técnicos desenvolvidos" },
       { href: "/acervo?secao=atlas", label: "Atlas" },
     ],
   },

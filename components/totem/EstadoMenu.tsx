@@ -17,8 +17,8 @@ const PORTAS = [
   {
     id: "acervo" as const,
     Icone: IconeAcervo,
-    titulo: "Acervo Documental",
-    subtitulo: "Documentos originais, com fonte declarada",
+    titulo: "Trabalhos Técnicos",
+    subtitulo: "Dados de cada trabalho e link para download",
   },
   {
     id: "mapa" as const,

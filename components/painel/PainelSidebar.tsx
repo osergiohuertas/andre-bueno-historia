@@ -34,7 +34,7 @@ const GRUPOS: GrupoNav[] = [
     titulo: "Conteúdo",
     itens: [
       { href: "/painel/series", label: "Séries", icone: <IconeSeries /> },
-      { href: "/painel/acervo", label: "Acervo", icone: <IconeAcervo /> },
+      { href: "/painel/acervo", label: "Trabalhos técnicos", icone: <IconeAcervo /> },
     ],
   },
   {

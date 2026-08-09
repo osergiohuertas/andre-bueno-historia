@@ -75,6 +75,13 @@ export default async function AcervoDocumentoPage({
 
         <div className="mt-10">
           <PDFViewer url={item.pdfUrl} titulo={item.titulo} />
+          <a
+            href={item.pdfUrl}
+            download
+            className="mt-4 inline-flex border border-ink bg-ink px-6 py-3 text-ouro transition-colors hover:bg-lacre hover:border-lacre"
+          >
+            <span className="meta text-ouro">Baixar documento</span>
+          </a>
         </div>
 
         <div className="mt-12 border-t border-borda pt-10">

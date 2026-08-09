@@ -4,7 +4,11 @@ import { useRef, useState } from "react";
 import { useActionState } from "react";
 import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
 import type { EstadoDestino } from "@/app/painel/(protegido)/destinos/actions";
-import { TIPOLOGIAS_DESTINO } from "@/lib/destinos";
+import {
+  TIPOLOGIAS_DESTINO,
+  CATEGORIAS_PROTECAO,
+  ESFERAS_PROTECAO,
+} from "@/lib/destinos";
 import type { Database } from "@/types/supabase";
 
 type Destino = Database["public"]["Tables"]["destinos"]["Row"];
@@ -100,6 +104,89 @@ export function FormularioDestino({
           </select>
         </div>
       </div>
+
+      {categoria === "Patrimônios Culturais" && (
+        <div className="flex flex-col gap-6 border border-borda p-6">
+          <p className="meta text-lacre">Proteção do patrimônio</p>
+
+          <div className="flex gap-6">
+            <div className="flex-1">
+              <label
+                htmlFor="categoria_protecao"
+                className="meta mb-1 block text-chumbo-lt"
+              >
+                Categoria de proteção
+              </label>
+              <select
+                id="categoria_protecao"
+                name="categoria_protecao"
+                defaultValue={destino?.categoria_protecao ?? ""}
+                className="w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
+              >
+                <option value="">Não informado</option>
+                {CATEGORIAS_PROTECAO.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label
+                htmlFor="ano_reconhecimento"
+                className="meta mb-1 block text-chumbo-lt"
+              >
+                Ano do reconhecimento
+              </label>
+              <input
+                id="ano_reconhecimento"
+                name="ano_reconhecimento"
+                type="number"
+                defaultValue={destino?.ano_reconhecimento ?? ""}
+                className="w-32 border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="esfera_protecao"
+              className="meta mb-1 block text-chumbo-lt"
+            >
+              Esfera de proteção
+            </label>
+            <select
+              id="esfera_protecao"
+              name="esfera_protecao"
+              defaultValue={destino?.esfera_protecao ?? ""}
+              className="w-full max-w-xs border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
+            >
+              <option value="">Não informado</option>
+              {ESFERAS_PROTECAO.map((e) => (
+                <option key={e} value={e}>
+                  {e}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="link_dossie"
+              className="meta mb-1 block text-chumbo-lt"
+            >
+              Link do estudo/dossiê (opcional)
+            </label>
+            <input
+              id="link_dossie"
+              name="link_dossie"
+              type="url"
+              defaultValue={destino?.link_dossie ?? ""}
+              className="w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
+            />
+          </div>
+        </div>
+      )}
 
       <div>
         <label htmlFor="endereco" className="meta mb-1 block text-chumbo-lt">

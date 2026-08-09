@@ -85,8 +85,8 @@ export default async function AcervoPage({
   const tiles = [
     {
       id: "documentos",
-      label: "Documentos",
-      descricao: "Peças originais com anotação autoral.",
+      label: "Trabalhos técnicos",
+      descricao: "Dados de cada trabalho e link para download.",
       contagem: todosDocumentos.length,
     },
     {

@@ -15,13 +15,13 @@ export function DocumentosSection({
   return (
     <section className="py-10 md:py-14">
       <div className="mb-10">
-        <p className="meta text-lacre">Peças originais</p>
+        <p className="meta text-lacre">Produção técnica</p>
         <h2 className="mt-3 font-display text-3xl text-ink md:text-4xl">
-          Acervo documental
+          Trabalhos técnicos desenvolvidos
         </h2>
         <p className="mt-4 max-w-prose font-serif text-chumbo">
-          Cada peça com anotação autoral — não é um repositório, é uma
-          leitura curada.
+          Dados, informações e o documento pronto pra download — não é um
+          repositório, é uma leitura curada de cada trabalho.
         </p>
       </div>
 
