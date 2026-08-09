@@ -2,7 +2,8 @@
 
 import { uploadImagem } from "@/lib/upload";
 import { commitOpiniaoMdx } from "@/lib/github";
-import { gerarSlug } from "@/lib/slug";
+import { slugUnico } from "@/lib/slug";
+import { getOpiniaoBySlug } from "@/lib/opinioes";
 import type { PeriodoId } from "@/data/periodos";
 
 export async function uploadImagemCapaAction(
@@ -54,7 +55,7 @@ export async function publicarOpiniaoAction(
     return { ok: false, mensagem: "Título, excerto e corpo são obrigatórios." };
   }
 
-  const slug = gerarSlug(titulo);
+  const slug = slugUnico(titulo, (s) => !!getOpiniaoBySlug(s));
   const leituraMinutos = Math.max(
     1,
     Math.round(corpo.split(/\s+/).length / 200),

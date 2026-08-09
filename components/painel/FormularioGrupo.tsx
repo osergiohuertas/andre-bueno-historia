@@ -1,10 +1,11 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { salvarGrupo } from "@/app/painel/(protegido)/conteudo/actions";
 import { Campo } from "@/components/painel/Campo";
 import { CampoTextoRico } from "@/components/painel/CampoTextoRico";
 import { ReverterCampo } from "@/components/painel/ReverterCampo";
+import { useAvisoSairSemSalvar } from "@/lib/hooks/useAvisoSairSemSalvar";
 import type { Database } from "@/types/supabase";
 
 type LinhaConfig = Database["public"]["Tables"]["site_config"]["Row"];
@@ -22,10 +23,22 @@ export function FormularioGrupo({
     salvarGrupo.bind(null, grupo),
     null,
   );
+  const [sujo, setSujo] = useState(false);
+  useAvisoSairSemSalvar(sujo);
+
+  // Ajusta `sujo` durante o render (não em efeito nem ref) quando `estado`
+  // muda pra sucesso — padrão do React pra "resetar estado quando algo
+  // muda" sem o round-trip extra de um useEffect.
+  const [estadoAnterior, setEstadoAnterior] = useState(estado);
+  if (estadoAnterior !== estado) {
+    setEstadoAnterior(estado);
+    if (estado?.ok && sujo) setSujo(false);
+  }
 
   return (
     <form
       action={formAction}
+      onChange={() => setSujo(true)}
       onSubmit={(e) => {
         if (!window.confirm("Salvar as alterações deste grupo?")) {
           e.preventDefault();
@@ -57,6 +70,9 @@ export function FormularioGrupo({
         >
           <span className="meta text-ouro">{pendente ? "Salvando…" : "Salvar"}</span>
         </button>
+        {sujo && !pendente && (
+          <p className="meta text-ouro">Alterações não salvas</p>
+        )}
         {estado && (
           <p
             className={`meta ${estado.ok ? "text-chumbo" : "text-lacre"}`}

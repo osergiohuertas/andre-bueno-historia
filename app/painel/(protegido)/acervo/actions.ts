@@ -1,10 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { gerarSlug } from "@/lib/slug";
+import { slugUnico } from "@/lib/slug";
 import { uploadImagem } from "@/lib/upload";
 import { redirect } from "next/navigation";
 import { commitAcervoDocumentoMdx, apagarAcervoDocumentoMdx } from "@/lib/github";
+import { getAcervoPorSlug } from "@/lib/acervo";
 import type { PeriodoId } from "@/data/periodos";
 
 export type EstadoAcervo =
@@ -123,7 +124,7 @@ export async function criarAcervo(
   const erro = validar(dados);
   if (erro) return { ok: false, mensagem: erro };
 
-  const slug = gerarSlug(dados.titulo);
+  const slug = slugUnico(dados.titulo, (s) => !!getAcervoPorSlug(s));
   const data = new Date().toISOString().slice(0, 10);
   const frontmatter = montarFrontmatter(dados, slug, data);
   const conteudoMdx = montarConteudoMdx(frontmatter, dados.corpo);

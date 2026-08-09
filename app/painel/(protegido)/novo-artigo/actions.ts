@@ -3,10 +3,11 @@
 import { uploadImagem } from "@/lib/upload";
 import { commitArtigoMdx } from "@/lib/github";
 import { createClient } from "@/lib/supabase/server";
-import { gerarSlug } from "@/lib/slug";
+import { slugUnico } from "@/lib/slug";
 import { getSeguidoresDaSerie } from "@/lib/series-seguidas";
 import { enviarEmailNotificacaoSerie } from "@/lib/brevo";
 import { SITE_URL } from "@/lib/site";
+import { getArtigoBySlug } from "@/lib/artigos";
 import type { PeriodoId } from "@/data/periodos";
 
 export async function uploadImagemAction(
@@ -39,6 +40,7 @@ export async function publicarArtigoAction(input: {
   tags: string[];
   imagemCapa?: string;
   corpoMdx: string;
+  publicado?: boolean;
 }): Promise<EstadoPublicacao> {
   if (!input.periodo) {
     return {
@@ -50,7 +52,8 @@ export async function publicarArtigoAction(input: {
     return { status: "erro", mensagem: "Título e corpo são obrigatórios." };
   }
 
-  const slug = gerarSlug(input.titulo);
+  const slug = slugUnico(input.titulo, (s) => !!getArtigoBySlug(s));
+  const publicado = input.publicado ?? true;
   const leituraMinutos = Math.max(
     1,
     Math.round(input.corpoMdx.split(/\s+/).length / 200),
@@ -94,7 +97,7 @@ export async function publicarArtigoAction(input: {
     tags: input.tags,
     ...(input.serie ? { serie: input.serie, serieOrdem } : {}),
     ...(input.imagemCapa ? { imagemCapa: input.imagemCapa } : {}),
-    publicado: true,
+    publicado,
     data: new Date().toISOString().slice(0, 10),
   };
 
@@ -111,8 +114,9 @@ export async function publicarArtigoAction(input: {
   }
 
   // Notificação pra quem segue a série — melhor esforço: uma falha aqui
-  // não desfaz a publicação, que já aconteceu (commit no GitHub).
-  if (input.serie && serieNome) {
+  // não desfaz a publicação, que já aconteceu (commit no GitHub). Rascunho
+  // não notifica ninguém.
+  if (publicado && input.serie && serieNome) {
     try {
       const seguidores = await getSeguidoresDaSerie(input.serie);
       await enviarEmailNotificacaoSerie({

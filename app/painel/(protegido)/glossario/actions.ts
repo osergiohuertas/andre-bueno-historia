@@ -2,8 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { gerarSlug } from "@/lib/slug";
+import { slugUnico } from "@/lib/slug";
 import { commitGlossarioJson, apagarGlossarioJson } from "@/lib/github";
+import { lerTermoGlossarioBruto } from "@/lib/glossarioAdmin";
 
 export type EstadoGlossario =
   | { ok: boolean; mensagem: string; url?: string }
@@ -39,7 +40,7 @@ export async function criarTermoGlossario(
   const erro = validar(dados);
   if (erro) return { ok: false, mensagem: erro };
 
-  const slug = gerarSlug(dados.termo);
+  const slug = slugUnico(dados.termo, (s) => !!lerTermoGlossarioBruto(s));
   const conteudoJson = montarJson(dados, slug);
 
   const resultado = await commitGlossarioJson(slug, conteudoJson);

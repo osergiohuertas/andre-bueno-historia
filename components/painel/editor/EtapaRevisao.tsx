@@ -33,12 +33,15 @@ export function EtapaRevisao({
   estado,
   atualizar,
   onVoltar,
+  onPublicado,
 }: {
   estado: EstadoArtigo;
   atualizar: (parcial: Partial<EstadoArtigo>) => void;
   onVoltar: () => void;
+  onPublicado: () => void;
 }) {
   const [tagsTexto, setTagsTexto] = useState(estado.tags.join(", "));
+  const [publicarAgora, setPublicarAgora] = useState(true);
   const [publicando, iniciarPublicacao] = useTransition();
   const [erro, setErro] = useState<string | null>(null);
   const [sucesso, setSucesso] = useState<{ url: string; slug: string } | null>(
@@ -74,6 +77,7 @@ export function EtapaRevisao({
         tags,
         imagemCapa: estado.imagens[0]?.url,
         corpoMdx: estado.corpoMdx,
+        publicado: publicarAgora,
       });
 
       if (resultado.status !== "ok") {
@@ -86,13 +90,16 @@ export function EtapaRevisao({
       }
 
       setSucesso({ url: resultado.url, slug: resultado.slug });
+      onPublicado();
     });
   }
 
   if (sucesso) {
     return (
       <div className="border border-ink bg-paper-mid p-6">
-        <p className="meta text-lacre">Publicado</p>
+        <p className="meta text-lacre">
+          {publicarAgora ? "Publicado" : "Salvo como rascunho"}
+        </p>
         <h2 className="mt-2 font-display text-xl text-ink">
           {estado.titulo}
         </h2>
@@ -187,6 +194,40 @@ export function EtapaRevisao({
         </div>
       </div>
 
+      <div className="flex gap-4 border border-borda p-4">
+        <label className="flex flex-1 items-start gap-3">
+          <input
+            type="radio"
+            name="publicarAgora"
+            checked={publicarAgora}
+            onChange={() => setPublicarAgora(true)}
+            className="mt-1"
+          />
+          <span>
+            <span className="block text-ink">Publicar agora</span>
+            <span className="block font-serif text-xs text-chumbo-lt">
+              Vai ao ar no commit e notifica seguidores da série, se houver.
+            </span>
+          </span>
+        </label>
+        <label className="flex flex-1 items-start gap-3">
+          <input
+            type="radio"
+            name="publicarAgora"
+            checked={!publicarAgora}
+            onChange={() => setPublicarAgora(false)}
+            className="mt-1"
+          />
+          <span>
+            <span className="block text-ink">Salvar como rascunho</span>
+            <span className="block font-serif text-xs text-chumbo-lt">
+              Commit vai pro GitHub, mas fica fora do site até você publicar
+              (em Artigos → editar → Publicado).
+            </span>
+          </span>
+        </label>
+      </div>
+
       {erro && <p className="font-serif text-sm text-lacre">{erro}</p>}
 
       <div className="flex items-center gap-4">
@@ -204,7 +245,11 @@ export function EtapaRevisao({
           className="border border-ink bg-ink px-6 py-3 text-ouro transition-colors hover:bg-lacre hover:border-lacre disabled:cursor-not-allowed disabled:opacity-40"
         >
           <span className="meta text-ouro">
-            {publicando ? "Publicando…" : "Publicar"}
+            {publicando
+              ? "Salvando…"
+              : publicarAgora
+                ? "Publicar"
+                : "Salvar rascunho"}
           </span>
         </button>
       </div>
