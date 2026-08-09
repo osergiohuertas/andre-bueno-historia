@@ -183,3 +183,20 @@ export async function commitOpiniaoMdx(
     `opinião: ${slug}`,
   );
 }
+
+export async function apagarGlossarioJson(
+  slug: string,
+): Promise<{ ok: true } | { ok: false; erro: string }> {
+  return apagarMdx(`content/glossario/${slug}.json`, `termo do glossário: ${slug}`);
+}
+
+export async function commitGlossarioJson(
+  slug: string,
+  conteudoJson: string,
+): Promise<{ ok: true; url: string } | { ok: false; erro: string }> {
+  return commitMdx(
+    `content/glossario/${slug}.json`,
+    conteudoJson,
+    `termo do glossário: ${slug}`,
+  );
+}

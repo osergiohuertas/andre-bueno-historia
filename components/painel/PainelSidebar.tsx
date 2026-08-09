@@ -11,6 +11,7 @@ import {
   IconeAcervo,
   IconeAgenda,
   IconeDestino,
+  IconeGlossario,
   IconeTotem,
   IconeSite,
   IconeAnalytics,
@@ -34,6 +35,7 @@ const GRUPOS: GrupoNav[] = [
     itens: [
       { href: "/painel/series", label: "Séries", icone: <IconeSeries /> },
       { href: "/painel/acervo", label: "Acervo", icone: <IconeAcervo /> },
+      { href: "/painel/glossario", label: "Glossário", icone: <IconeGlossario /> },
     ],
   },
   {

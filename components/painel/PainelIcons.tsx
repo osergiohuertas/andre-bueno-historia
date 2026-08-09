@@ -75,7 +75,7 @@ export function IconeDestino() {
   );
 }
 
-export function IconeObra() {
+export function IconeGlossario() {
   return (
     <Base>
       <path d="M4 5a1.5 1.5 0 0 1 1.5-1.5H10V19H5.5A1.5 1.5 0 0 1 4 17.5z" />
