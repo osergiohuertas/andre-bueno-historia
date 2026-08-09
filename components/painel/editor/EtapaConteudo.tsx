@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
+import { CampoCorpoMdx } from "@/components/painel/CampoCorpoMdx";
 import type { EstadoArtigo } from "@/components/painel/editor/NovoArtigoWizard";
 
 export function EtapaConteudo({
@@ -41,21 +42,13 @@ export function EtapaConteudo({
 
   return (
     <div className="flex flex-col gap-8">
-      <div>
-        <label htmlFor="corpoMdx" className="meta mb-2 block text-chumbo-lt">
-          Corpo do artigo (MDX)
-        </label>
-        <p className="mb-2 font-serif text-xs text-chumbo-lt">
-          Parágrafos separados por linha em branco. Subtítulos com ##.
-        </p>
-        <textarea
-          id="corpoMdx"
-          value={estado.corpoMdx}
-          onChange={(e) => atualizar({ corpoMdx: e.target.value })}
-          rows={18}
-          className="w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
-        />
-      </div>
+      <CampoCorpoMdx
+        id="corpoMdx"
+        label="Corpo do artigo (MDX)"
+        valorInicial={estado.corpoMdx}
+        onChange={(texto) => atualizar({ corpoMdx: texto })}
+        required={false}
+      />
 
       <div>
         <p className="meta mb-2 text-chumbo-lt">Imagens</p>

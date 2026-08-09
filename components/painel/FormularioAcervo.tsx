@@ -2,6 +2,7 @@
 
 import { useActionState, useRef, useState } from "react";
 import { SeletorPeriodoVisual } from "@/components/painel/editor/SeletorPeriodoVisual";
+import { CampoCorpoMdx } from "@/components/painel/CampoCorpoMdx";
 import {
   uploadImagemCapaAction,
   uploadDocumentoAction,
@@ -322,23 +323,14 @@ export function FormularioAcervo({
         />
       </div>
 
-      <div>
-        <label htmlFor="corpo" className="meta mb-1 block text-chumbo-lt">
-          Corpo
-        </label>
-        <p className="mb-2 font-serif text-xs text-chumbo-lt">
-          Transcrição, contexto e leitura do documento. Aceita marcação
-          simples (## para subtítulos).
-        </p>
-        <textarea
-          id="corpo"
-          name="corpo"
-          defaultValue={acervo?.corpo}
-          rows={14}
-          required
-          className="w-full border border-borda bg-paper px-4 py-3 font-serif text-ink focus:border-lacre focus:outline-none"
-        />
-      </div>
+      <CampoCorpoMdx
+        id="corpo"
+        name="corpo"
+        label="Corpo"
+        ajuda="Transcrição, contexto e leitura do documento. Aceita marcação simples (## para subtítulos)."
+        valorInicial={acervo?.corpo ?? ""}
+        rows={14}
+      />
 
       <label className="flex items-center gap-3">
         <input

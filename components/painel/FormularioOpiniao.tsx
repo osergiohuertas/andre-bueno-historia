@@ -6,6 +6,7 @@ import {
   publicarOpiniaoAction,
   type EstadoPublicacaoOpiniao,
 } from "@/app/painel/(protegido)/nova-opiniao/actions";
+import { CampoCorpoMdx } from "@/components/painel/CampoCorpoMdx";
 import type { PeriodoId } from "@/data/periodos";
 
 type OpiniaoPreenchida = {
@@ -252,23 +253,13 @@ export function FormularioOpiniao({
         )}
       </div>
 
-      <div>
-        <label htmlFor="corpo" className="meta mb-1 block text-chumbo-lt">
-          Corpo
-        </label>
-        <p className="mb-2 font-serif text-xs text-chumbo-lt">
-          O texto da opinião. Aceita marcação simples (## para subtítulos, &gt;
-          para citações).
-        </p>
-        <textarea
-          id="corpo"
-          name="corpo"
-          defaultValue={opiniao?.corpo}
-          rows={18}
-          required
-          className="w-full border border-borda bg-paper px-4 py-3 font-serif text-ink focus:border-lacre focus:outline-none"
-        />
-      </div>
+      <CampoCorpoMdx
+        id="corpo"
+        name="corpo"
+        label="Corpo"
+        ajuda="O texto da opinião. Aceita marcação simples (## para subtítulos, > para citações)."
+        valorInicial={opiniao?.corpo ?? ""}
+      />
 
       <label className="flex items-center gap-3">
         <input
