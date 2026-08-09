@@ -12,6 +12,7 @@ const CATEGORIAS: CategoriaVideo[] = [
   "congresso",
   "simposio",
   "seminario",
+  "documentario",
 ];
 
 export function FormularioMidia({

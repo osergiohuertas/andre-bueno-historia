@@ -8,6 +8,7 @@ const CATEGORIAS: { id: CategoriaVideo; label: string }[] = [
   { id: "congresso", label: "Congresso" },
   { id: "simposio", label: "Simpósio" },
   { id: "seminario", label: "Seminário" },
+  { id: "documentario", label: "Documentário" },
 ];
 
 export function VideosSection({

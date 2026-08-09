@@ -1,7 +1,12 @@
 import { createPublicClient } from "@/lib/supabase/public";
 
 export type TipoPublicacao = "livro" | "artigo_academico" | "capitulo" | "ensaio";
-export type CategoriaVideo = "entrevista" | "congresso" | "simposio" | "seminario";
+export type CategoriaVideo =
+  | "entrevista"
+  | "congresso"
+  | "simposio"
+  | "seminario"
+  | "documentario";
 
 export type Publicacao = {
   slug: string;
