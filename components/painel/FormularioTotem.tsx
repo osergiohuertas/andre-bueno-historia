@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useRef, useState } from "react";
 import { periodosOrdenados, type PeriodoId } from "@/data/periodos";
+import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
 import type { EstadoTotem } from "@/app/painel/(protegido)/totem/actions";
 
 type Frase = { periodo: PeriodoId | ""; texto: string; imagem_url: string };
@@ -29,6 +30,9 @@ export function FormularioTotem({
       imagem_url: f.imagem_url,
     })),
   );
+  const [enviandoImagem, setEnviandoImagem] = useState<Record<number, boolean>>({});
+  const [erroImagem, setErroImagem] = useState<Record<number, string>>({});
+  const inputsArquivoRef = useRef<Record<number, HTMLInputElement | null>>({});
 
   function adicionarFrase() {
     setFrases((atual) => [...atual, { periodo: "", texto: "", imagem_url: "" }]);
@@ -40,6 +44,21 @@ export function FormularioTotem({
 
   function removerFrase(i: number) {
     setFrases((atual) => atual.filter((_, idx) => idx !== i));
+  }
+
+  async function lidarComUploadFrase(i: number, arquivo: File) {
+    setEnviandoImagem((atual) => ({ ...atual, [i]: true }));
+    setErroImagem((atual) => ({ ...atual, [i]: "" }));
+    const formData = new FormData();
+    formData.append("arquivo", arquivo);
+    const resultado = await uploadImagemAction(formData);
+    setEnviandoImagem((atual) => ({ ...atual, [i]: false }));
+
+    if (!resultado.ok) {
+      setErroImagem((atual) => ({ ...atual, [i]: resultado.erro }));
+      return;
+    }
+    atualizarFrase(i, { imagem_url: resultado.url });
   }
 
   return (
@@ -132,13 +151,60 @@ export function FormularioTotem({
                 </div>
                 <div className="flex-[2]">
                   <label className="meta mb-1 block text-chumbo-lt">
-                    URL da imagem (opcional)
+                    Imagem (opcional)
                   </label>
+
                   <input
-                    value={frase.imagem_url}
-                    onChange={(e) => atualizarFrase(i, { imagem_url: e.target.value })}
-                    className="w-full border border-borda bg-paper px-3 py-2 text-ink focus:border-lacre focus:outline-none"
+                    ref={(el) => {
+                      inputsArquivoRef.current[i] = el;
+                    }}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const arquivo = e.target.files?.[0];
+                      if (arquivo) lidarComUploadFrase(i, arquivo);
+                      e.target.value = "";
+                    }}
                   />
+
+                  {frase.imagem_url && (
+                    <div className="mb-2 flex items-center gap-3">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={frase.imagem_url}
+                        alt=""
+                        className="h-14 w-24 border border-borda object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => atualizarFrase(i, { imagem_url: "" })}
+                        className="meta text-chumbo hover:text-lacre"
+                      >
+                        Remover
+                      </button>
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => inputsArquivoRef.current[i]?.click()}
+                    disabled={enviandoImagem[i]}
+                    className="border border-borda px-3 py-1.5 text-ink hover:border-lacre disabled:opacity-50"
+                  >
+                    <span className="meta">
+                      {enviandoImagem[i]
+                        ? "Enviando…"
+                        : frase.imagem_url
+                          ? "Trocar imagem"
+                          : "Escolher imagem"}
+                    </span>
+                  </button>
+                  {erroImagem[i] && (
+                    <p className="mt-1 font-serif text-xs text-lacre">
+                      {erroImagem[i]}
+                    </p>
+                  )}
                 </div>
               </div>
 

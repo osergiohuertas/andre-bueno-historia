@@ -69,18 +69,14 @@ export async function salvarGrupo(
   return { ok: true, mensagem: "Salvo." };
 }
 
-export async function reverterCampo(chave: string) {
+/**
+ * Reverte um campo pro `valor` passado — a página já leu o histórico
+ * inteiro (`site_config_history`) e mostra cada versão com seu próprio
+ * botão de reverter, então a action só precisa gravar o valor escolhido
+ * (o próprio update já vira uma entrada nova no histórico via trigger).
+ */
+export async function reverterCampo(chave: string, valor: string) {
   const supabase = await createClient();
-
-  const { data: historico } = await supabase
-    .from("site_config_history")
-    .select("id, valor_anterior")
-    .eq("chave", chave)
-    .order("alterado_em", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (!historico) return;
 
   const { data: config } = await supabase
     .from("site_config")
@@ -88,10 +84,7 @@ export async function reverterCampo(chave: string) {
     .eq("chave", chave)
     .single();
 
-  await supabase
-    .from("site_config")
-    .update({ valor: historico.valor_anterior })
-    .eq("chave", chave);
+  await supabase.from("site_config").update({ valor }).eq("chave", chave);
 
   if (config) revalidarPorGrupo(config.grupo);
 }

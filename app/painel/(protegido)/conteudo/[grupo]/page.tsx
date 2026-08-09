@@ -51,9 +51,15 @@ export default async function GrupoPage({
     )
     .order("alterado_em", { ascending: false });
 
-  const historico: Record<string, string> = {};
+  // Até 5 versões anteriores por campo — a query já vem ordenada por mais
+  // recente primeiro (`alterado_em desc`), então só limitar o tamanho.
+  const historico: Record<string, { valor: string; alteradoEm: string }[]> = {};
   for (const linha of historicoBruto ?? []) {
-    if (!(linha.chave in historico)) historico[linha.chave] = linha.valor_anterior;
+    const lista = historico[linha.chave] ?? [];
+    if (lista.length < 5) {
+      lista.push({ valor: linha.valor_anterior, alteradoEm: linha.alterado_em });
+      historico[linha.chave] = lista;
+    }
   }
 
   return (

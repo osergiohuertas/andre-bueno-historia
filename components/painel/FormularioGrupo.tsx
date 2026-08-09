@@ -17,32 +17,34 @@ export function FormularioGrupo({
 }: {
   grupo: string;
   campos: LinhaConfig[];
-  historico: Record<string, string>;
+  historico: Record<string, { valor: string; alteradoEm: string }[]>;
 }) {
   const [estado, formAction, pendente] = useActionState(
     salvarGrupo.bind(null, grupo),
     null,
   );
   const [sujo, setSujo] = useState(false);
+  const [confirmando, setConfirmando] = useState(false);
   useAvisoSairSemSalvar(sujo);
 
-  // Ajusta `sujo` durante o render (não em efeito nem ref) quando `estado`
-  // muda pra sucesso — padrão do React pra "resetar estado quando algo
-  // muda" sem o round-trip extra de um useEffect.
+  // Ajusta `sujo`/`confirmando` durante o render (não em efeito nem ref)
+  // quando `estado` muda pra sucesso — padrão do React pra "resetar estado
+  // quando algo muda" sem o round-trip extra de um useEffect.
   const [estadoAnterior, setEstadoAnterior] = useState(estado);
   if (estadoAnterior !== estado) {
     setEstadoAnterior(estado);
-    if (estado?.ok && sujo) setSujo(false);
+    if (estado?.ok) {
+      if (sujo) setSujo(false);
+      if (confirmando) setConfirmando(false);
+    }
   }
 
   return (
     <form
       action={formAction}
-      onChange={() => setSujo(true)}
-      onSubmit={(e) => {
-        if (!window.confirm("Salvar as alterações deste grupo?")) {
-          e.preventDefault();
-        }
+      onChange={() => {
+        setSujo(true);
+        setConfirmando(false);
       }}
       className="mt-8 flex flex-col gap-10"
     >
@@ -53,24 +55,47 @@ export function FormularioGrupo({
           ) : (
             <Campo campo={campo} />
           )}
-          {historico[campo.chave] !== undefined && (
+          {historico[campo.chave] && historico[campo.chave].length > 0 && (
             <ReverterCampo
               chave={campo.chave}
-              valorAnterior={historico[campo.chave]}
+              versoes={historico[campo.chave]}
             />
           )}
         </div>
       ))}
 
       <div className="flex items-center gap-4">
-        <button
-          type="submit"
-          disabled={pendente}
-          className="border border-ink bg-ink px-6 py-3 text-ouro transition-colors hover:bg-lacre hover:border-lacre disabled:opacity-50"
-        >
-          <span className="meta text-ouro">{pendente ? "Salvando…" : "Salvar"}</span>
-        </button>
-        {sujo && !pendente && (
+        {!confirmando ? (
+          <button
+            type="button"
+            onClick={() => setConfirmando(true)}
+            disabled={pendente}
+            className="border border-ink bg-ink px-6 py-3 text-ouro transition-colors hover:bg-lacre hover:border-lacre disabled:opacity-50"
+          >
+            <span className="meta text-ouro">Salvar</span>
+          </button>
+        ) : (
+          <>
+            <button
+              type="submit"
+              disabled={pendente}
+              className="border border-ink bg-ink px-6 py-3 text-ouro transition-colors hover:bg-lacre hover:border-lacre disabled:opacity-50"
+            >
+              <span className="meta text-ouro">
+                {pendente ? "Salvando…" : "Confirmar e salvar"}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirmando(false)}
+              disabled={pendente}
+              className="meta text-chumbo-lt hover:text-ink"
+            >
+              Cancelar
+            </button>
+          </>
+        )}
+        {sujo && !pendente && !confirmando && (
           <p className="meta text-ouro">Alterações não salvas</p>
         )}
         {estado && (
