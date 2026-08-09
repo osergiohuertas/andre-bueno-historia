@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import { publicarArtigoAction } from "@/app/painel/(protegido)/novo-artigo/actions";
 import { gerarSlug } from "@/lib/slug";
+import { blocosMdxSimples } from "@/lib/mdxSimplePreview";
 import { PERIODOS, type PeriodoId } from "@/data/periodos";
 import type { EstadoArtigo } from "@/components/painel/editor/NovoArtigoWizard";
 
@@ -12,21 +13,17 @@ function labelPeriodo(id: PeriodoId | null): string {
 }
 
 function renderizarMdxSimples(mdx: string) {
-  const blocos = mdx.trim().split(/\n{2,}/);
-  return blocos.map((bloco, i) => {
-    if (bloco.startsWith("## ")) {
-      return (
-        <h2 key={i} className="mt-8 mb-3 font-display text-2xl text-ink">
-          {bloco.replace(/^##\s+/, "")}
-        </h2>
-      );
-    }
-    return (
+  return blocosMdxSimples(mdx).map((bloco, i) =>
+    bloco.tipo === "h2" ? (
+      <h2 key={i} className="mt-8 mb-3 font-display text-2xl text-ink">
+        {bloco.texto}
+      </h2>
+    ) : (
       <p key={i} className="mb-4 font-serif text-ink leading-relaxed">
-        {bloco}
+        {bloco.texto}
       </p>
-    );
-  });
+    ),
+  );
 }
 
 export function EtapaRevisao({

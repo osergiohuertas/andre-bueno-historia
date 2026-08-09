@@ -12,6 +12,9 @@ import {
   IconeAgenda,
   IconeDestino,
   IconeGlossario,
+  IconePublicacao,
+  IconeVideo,
+  IconeFoto,
   IconeTotem,
   IconeSite,
   IconeAnalytics,
@@ -36,6 +39,13 @@ const GRUPOS: GrupoNav[] = [
       { href: "/painel/series", label: "Séries", icone: <IconeSeries /> },
       { href: "/painel/acervo", label: "Acervo", icone: <IconeAcervo /> },
       { href: "/painel/glossario", label: "Glossário", icone: <IconeGlossario /> },
+      {
+        href: "/painel/obra/publicacoes",
+        label: "Publicações",
+        icone: <IconePublicacao />,
+      },
+      { href: "/painel/obra/videos", label: "Vídeos", icone: <IconeVideo /> },
+      { href: "/painel/obra/fotos", label: "Fotos", icone: <IconeFoto /> },
     ],
   },
   {

@@ -38,13 +38,13 @@ export default async function AcervoPainelPage() {
       contagem: documentos,
     },
     {
-      href: "/painel/obra/publicacoes",
+      href: "/painel/obra/publicacoes?tipo=livro",
       titulo: "Livros",
       descricao: "Catálogo completo de livros.",
       contagem: livros ?? 0,
     },
     {
-      href: "/painel/obra/publicacoes",
+      href: "/painel/obra/publicacoes?tipo=nao-livro",
       titulo: "Publicações",
       descricao: "Artigos acadêmicos, capítulos e ensaios.",
       contagem: publicacoes ?? 0,

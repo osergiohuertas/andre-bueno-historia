@@ -4,6 +4,7 @@ import { useActionState, useRef, useState } from "react";
 import { SeletorPeriodoVisual } from "@/components/painel/editor/SeletorPeriodoVisual";
 import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
 import type { EstadoArtigoEdicao } from "@/app/painel/(protegido)/artigos/actions";
+import { blocosMdxSimples } from "@/lib/mdxSimplePreview";
 import type { PeriodoId } from "@/data/periodos";
 
 type ArtigoPreenchido = {
@@ -51,6 +52,9 @@ export function FormularioArtigo({
   const [enviandoImagem, setEnviandoImagem] = useState(false);
   const [erroImagem, setErroImagem] = useState<string | null>(null);
   const inputArquivoRef = useRef<HTMLInputElement | null>(null);
+  const corpoRef = useRef<HTMLTextAreaElement | null>(null);
+  const [mostrarPreview, setMostrarPreview] = useState(false);
+  const [previewTexto, setPreviewTexto] = useState(artigo?.corpo ?? "");
 
   async function lidarComUpload(arquivo: File) {
     setEnviandoImagem(true);
@@ -292,6 +296,7 @@ export function FormularioArtigo({
           Parágrafos separados por linha em branco. Subtítulos com ##.
         </p>
         <textarea
+          ref={corpoRef}
           id="corpo"
           name="corpo"
           defaultValue={artigo?.corpo}
@@ -299,6 +304,37 @@ export function FormularioArtigo({
           required
           className="w-full border border-borda bg-paper px-4 py-3 font-serif text-ink focus:border-lacre focus:outline-none"
         />
+
+        <button
+          type="button"
+          onClick={() => {
+            setPreviewTexto(corpoRef.current?.value ?? "");
+            setMostrarPreview((v) => !v);
+          }}
+          className="meta mt-2 text-lacre hover:underline"
+        >
+          {mostrarPreview ? "Ocultar prévia" : "Ver prévia"}
+        </button>
+
+        {mostrarPreview && (
+          <div className="prose-artigo mt-3 border border-borda bg-paper-mid p-6">
+            {blocosMdxSimples(previewTexto).length === 0 ? (
+              <p className="meta text-chumbo-lt">Corpo vazio.</p>
+            ) : (
+              blocosMdxSimples(previewTexto).map((bloco, i) =>
+                bloco.tipo === "h2" ? (
+                  <h2 key={i} className="mt-6 mb-3 font-display text-2xl text-ink">
+                    {bloco.texto}
+                  </h2>
+                ) : (
+                  <p key={i} className="mb-4 font-serif text-ink leading-relaxed">
+                    {bloco.texto}
+                  </p>
+                ),
+              )
+            )}
+          </div>
+        )}
       </div>
 
       <label className="flex items-center gap-3">
