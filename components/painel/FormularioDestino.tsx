@@ -9,6 +9,7 @@ import {
   CATEGORIAS_PROTECAO,
   ESFERAS_PROTECAO,
 } from "@/lib/destinos";
+import { SeletorCoordenadas } from "@/components/painel/SeletorCoordenadas";
 import type { Database } from "@/types/supabase";
 
 type Destino = Database["public"]["Tables"]["destinos"]["Row"];
@@ -32,6 +33,8 @@ export function FormularioDestino({
   const [categoria, setCategoria] = useState(eraPadrao ? tipologiaInicial : "");
 
   const [foto, setFoto] = useState(destino?.foto ?? "");
+  const [lat, setLat] = useState(destino?.coordenadas?.lat ?? 0);
+  const [lng, setLng] = useState(destino?.coordenadas?.lng ?? 0);
   const [enviandoFoto, setEnviandoFoto] = useState(false);
   const [erroFoto, setErroFoto] = useState<string | null>(null);
   const inputArquivoRef = useRef<HTMLInputElement | null>(null);
@@ -201,6 +204,18 @@ export function FormularioDestino({
         />
       </div>
 
+      <div>
+        <p className="meta mb-1 text-chumbo-lt">Localização</p>
+        <SeletorCoordenadas
+          lat={lat}
+          lng={lng}
+          onMudar={(novaLat, novaLng) => {
+            setLat(novaLat);
+            setLng(novaLng);
+          }}
+        />
+      </div>
+
       <div className="flex gap-6">
         <div>
           <label htmlFor="lat" className="meta mb-1 block text-chumbo-lt">
@@ -211,7 +226,8 @@ export function FormularioDestino({
             name="lat"
             type="number"
             step="any"
-            defaultValue={destino?.coordenadas?.lat}
+            value={lat}
+            onChange={(e) => setLat(Number(e.target.value))}
             required
             className="w-40 border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
           />
@@ -225,7 +241,8 @@ export function FormularioDestino({
             name="lng"
             type="number"
             step="any"
-            defaultValue={destino?.coordenadas?.lng}
+            value={lng}
+            onChange={(e) => setLng(Number(e.target.value))}
             required
             className="w-40 border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
           />

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { ListaFiltravel } from "@/components/painel/ListaFiltravel";
 
 export default async function DestinosPainelPage() {
   const supabase = await createClient();
@@ -23,29 +24,32 @@ export default async function DestinosPainelPage() {
         </Link>
       </div>
 
-      <div className="mt-10 flex flex-col gap-3">
-        {(destinos ?? []).length === 0 && (
-          <p className="meta text-chumbo-lt">Nenhum destino ainda.</p>
-        )}
-        {(destinos ?? []).map((destino) => (
-          <Link
-            key={destino.id}
-            href={`/painel/destinos/${destino.id}`}
-            className="flex items-center justify-between border border-borda p-6 hover:border-lacre"
-          >
-            <div>
-              <p className="meta text-chumbo-lt">
-                {destino.tipologia} · {destino.cidade}
-              </p>
-              <p className="mt-1 font-display text-xl text-ink">
-                {destino.nome}
-              </p>
-            </div>
-            <span className="meta text-chumbo-lt">
-              {destino.publicado ? "Publicado" : "Rascunho"}
-            </span>
-          </Link>
-        ))}
+      <div className="mt-10">
+        <ListaFiltravel
+          placeholder="Buscar por nome ou cidade…"
+          itens={(destinos ?? []).map((destino) => ({
+            chave: destino.id,
+            busca: `${destino.nome} ${destino.cidade}`,
+            node: (
+              <Link
+                href={`/painel/destinos/${destino.id}`}
+                className="flex items-center justify-between border border-borda p-6 hover:border-lacre"
+              >
+                <div>
+                  <p className="meta text-chumbo-lt">
+                    {destino.tipologia} · {destino.cidade}
+                  </p>
+                  <p className="mt-1 font-display text-xl text-ink">
+                    {destino.nome}
+                  </p>
+                </div>
+                <span className="meta text-chumbo-lt">
+                  {destino.publicado ? "Publicado" : "Rascunho"}
+                </span>
+              </Link>
+            ),
+          }))}
+        />
       </div>
     </div>
   );

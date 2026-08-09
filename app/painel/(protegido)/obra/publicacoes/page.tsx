@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { ListaFiltravel } from "@/components/painel/ListaFiltravel";
 
 const TIPOS_VALIDOS = [
   "livro",
@@ -73,38 +74,41 @@ export default async function PublicacoesPainelPage({
         ))}
       </div>
 
-      <div className="mt-8 flex flex-col gap-3">
-        {(publicacoes ?? []).length === 0 && (
-          <p className="meta text-chumbo-lt">
-            {tipo
-              ? `Nenhuma publicação do tipo "${LABEL_TIPO[tipo]}" ainda.`
+      <div className="mt-8">
+        <ListaFiltravel
+          mensagemVazia={
+            tipo
+              ? `Nenhuma publicação do tipo "${LABEL_TIPO[tipo]}" com essa busca.`
               : naoLivro
-                ? "Nenhuma publicação (fora livros) ainda."
-                : "Nenhuma publicação ainda."}
-          </p>
-        )}
-        {(publicacoes ?? []).map((publicacao) => (
-          <Link
-            key={publicacao.id}
-            href={`/painel/obra/publicacoes/${publicacao.id}`}
-            className="flex items-center justify-between border border-borda p-6 hover:border-lacre"
-          >
-            <div>
-              <p className="meta text-chumbo-lt">
-                {LABEL_TIPO[publicacao.tipo as Tipo] ?? publicacao.tipo} ·{" "}
-                {publicacao.ano}
-              </p>
-              <p className="mt-1 font-display text-xl text-ink">
-                {publicacao.titulo}
-              </p>
-            </div>
-            <span className="meta text-chumbo-lt">
-              {publicacao.capa ? "Com capa" : "Sem capa"} ·{" "}
-              {publicacao.link ? "Com link" : "Sem link"} ·{" "}
-              {publicacao.publicado ? "Publicada" : "Rascunho"}
-            </span>
-          </Link>
-        ))}
+                ? "Nenhuma publicação (fora livros) com essa busca."
+                : "Nada encontrado com essa busca."
+          }
+          itens={(publicacoes ?? []).map((publicacao) => ({
+            chave: publicacao.id,
+            busca: publicacao.titulo,
+            node: (
+              <Link
+                href={`/painel/obra/publicacoes/${publicacao.id}`}
+                className="flex items-center justify-between border border-borda p-6 hover:border-lacre"
+              >
+                <div>
+                  <p className="meta text-chumbo-lt">
+                    {LABEL_TIPO[publicacao.tipo as Tipo] ?? publicacao.tipo} ·{" "}
+                    {publicacao.ano}
+                  </p>
+                  <p className="mt-1 font-display text-xl text-ink">
+                    {publicacao.titulo}
+                  </p>
+                </div>
+                <span className="meta text-chumbo-lt">
+                  {publicacao.capa ? "Com capa" : "Sem capa"} ·{" "}
+                  {publicacao.link ? "Com link" : "Sem link"} ·{" "}
+                  {publicacao.publicado ? "Publicada" : "Rascunho"}
+                </span>
+              </Link>
+            ),
+          }))}
+        />
       </div>
     </div>
   );

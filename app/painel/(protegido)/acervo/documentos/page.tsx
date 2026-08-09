@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getTodosAcervoDocumentos } from "@/lib/acervo";
 import { getPeriodo } from "@/data/periodos";
+import { ListaFiltravel } from "@/components/painel/ListaFiltravel";
 
 export default function AcervoDocumentosPainelPage() {
   const documentos = getTodosAcervoDocumentos();
@@ -28,30 +29,32 @@ export default function AcervoDocumentosPainelPage() {
         observa o repo e o deploy acontece sozinho depois do push.
       </p>
 
-      <div className="mt-10 flex flex-col gap-3">
-        {documentos.length === 0 && (
-          <p className="meta text-chumbo-lt">Nenhum documento ainda.</p>
-        )}
-        {documentos.map((doc) => (
-          <Link
-            key={doc.slug}
-            href={`/painel/acervo/documentos/${doc.slug}`}
-            className="flex items-center justify-between border border-borda p-6 hover:border-lacre"
-          >
-            <div>
-              <p className="meta text-chumbo-lt">
-                {getPeriodo(doc.periodo).label}
-              </p>
-              <p className="mt-1 font-display text-xl text-ink">
-                {doc.titulo}
-              </p>
-            </div>
-            <span className="meta text-chumbo-lt">
-              {doc.imagemCapa ? "Com imagem" : "Sem imagem"} ·{" "}
-              {doc.publicado ? "Publicado" : "Rascunho"}
-            </span>
-          </Link>
-        ))}
+      <div className="mt-10">
+        <ListaFiltravel
+          itens={documentos.map((doc) => ({
+            chave: doc.slug,
+            busca: doc.titulo,
+            node: (
+              <Link
+                href={`/painel/acervo/documentos/${doc.slug}`}
+                className="flex items-center justify-between border border-borda p-6 hover:border-lacre"
+              >
+                <div>
+                  <p className="meta text-chumbo-lt">
+                    {getPeriodo(doc.periodo).label}
+                  </p>
+                  <p className="mt-1 font-display text-xl text-ink">
+                    {doc.titulo}
+                  </p>
+                </div>
+                <span className="meta text-chumbo-lt">
+                  {doc.imagemCapa ? "Com imagem" : "Sem imagem"} ·{" "}
+                  {doc.publicado ? "Publicado" : "Rascunho"}
+                </span>
+              </Link>
+            ),
+          }))}
+        />
       </div>
     </div>
   );

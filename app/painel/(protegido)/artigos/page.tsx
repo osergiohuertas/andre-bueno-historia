@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getTodosArtigos } from "@/lib/artigos";
 import { getPeriodo } from "@/data/periodos";
+import { ListaFiltravel } from "@/components/painel/ListaFiltravel";
 
 export default function ArtigosPainelPage() {
   const artigos = getTodosArtigos();
@@ -25,29 +26,31 @@ export default function ArtigosPainelPage() {
         observa o repo e o deploy acontece sozinho depois do push.
       </p>
 
-      <div className="mt-10 flex flex-col gap-3">
-        {artigos.length === 0 && (
-          <p className="meta text-chumbo-lt">Nenhum artigo ainda.</p>
-        )}
-        {artigos.map((artigo) => (
-          <Link
-            key={artigo.slug}
-            href={`/painel/artigos/${artigo.slug}`}
-            className="flex items-center justify-between border border-borda p-6 hover:border-lacre"
-          >
-            <div>
-              <p className="meta text-chumbo-lt">
-                {getPeriodo(artigo.periodo).label}
-              </p>
-              <p className="mt-1 font-display text-xl text-ink">
-                {artigo.titulo}
-              </p>
-            </div>
-            <span className="meta text-chumbo-lt">
-              {artigo.publicado ? "Publicado" : "Rascunho"}
-            </span>
-          </Link>
-        ))}
+      <div className="mt-10">
+        <ListaFiltravel
+          itens={artigos.map((artigo) => ({
+            chave: artigo.slug,
+            busca: artigo.titulo,
+            node: (
+              <Link
+                href={`/painel/artigos/${artigo.slug}`}
+                className="flex items-center justify-between border border-borda p-6 hover:border-lacre"
+              >
+                <div>
+                  <p className="meta text-chumbo-lt">
+                    {getPeriodo(artigo.periodo).label}
+                  </p>
+                  <p className="mt-1 font-display text-xl text-ink">
+                    {artigo.titulo}
+                  </p>
+                </div>
+                <span className="meta text-chumbo-lt">
+                  {artigo.publicado ? "Publicado" : "Rascunho"}
+                </span>
+              </Link>
+            ),
+          }))}
+        />
       </div>
     </div>
   );
