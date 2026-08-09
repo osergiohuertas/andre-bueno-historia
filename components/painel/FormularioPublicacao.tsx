@@ -134,12 +134,17 @@ export function FormularioPublicacao({
 
       <div>
         <label htmlFor="link" className="meta mb-1 block text-chumbo-lt">
-          Link (opcional)
+          Link direto para a publicação (opcional)
         </label>
+        <p className="mb-2 font-serif text-xs text-chumbo-lt">
+          Preenchido, o card inteiro em /acervo vira link pra essa URL,
+          abrindo em nova aba.
+        </p>
         <input
           id="link"
           name="link"
           type="url"
+          placeholder="https://…"
           defaultValue={publicacao?.link ?? ""}
           className="w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
         />
@@ -149,7 +154,7 @@ export function FormularioPublicacao({
         <p className="meta mb-1 text-chumbo-lt">Imagem de capa (opcional)</p>
         <p className="mb-3 font-serif text-xs text-chumbo-lt">
           A identidade visual do seminário, congresso, evento ou da própria
-          publicação.
+          publicação. Sem imagem, o card mostra o ano no lugar.
         </p>
 
         <input

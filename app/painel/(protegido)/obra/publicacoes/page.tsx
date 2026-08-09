@@ -42,6 +42,8 @@ export default async function PublicacoesPainelPage() {
               </p>
             </div>
             <span className="meta text-chumbo-lt">
+              {publicacao.capa ? "Com capa" : "Sem capa"} ·{" "}
+              {publicacao.link ? "Com link" : "Sem link"} ·{" "}
               {publicacao.publicado ? "Publicada" : "Rascunho"}
             </span>
           </Link>
