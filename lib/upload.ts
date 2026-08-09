@@ -1,5 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
+import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 
 const BUCKET = "uploads";
 
@@ -42,6 +43,20 @@ export async function uploadImagem(
 
     if (!resposta.ok) {
       const erro = await resposta.json().catch(() => null);
+
+      if (erro?.error === "invalid_mime_type") {
+        return {
+          ok: false,
+          erro: `Formato não aceito. Use: ${FORMATOS_IMAGEM_ACEITOS} (ou PDF, no caso de documentos).`,
+        };
+      }
+      if (resposta.status === 413 || erro?.error === "Payload too large") {
+        return {
+          ok: false,
+          erro: `Arquivo maior que o limite de ${TAMANHO_MAXIMO_MB}MB.`,
+        };
+      }
+
       return {
         ok: false,
         erro: erro?.message ?? "Erro ao enviar imagem para o Supabase.",
@@ -58,19 +73,29 @@ export async function uploadImagem(
   }
 }
 
+// Precisa bater exatamente com o `allowed_mime_types` do bucket "uploads"
+// no Supabase Storage — um tipo aceito aqui mas fora da lista do bucket
+// falha silenciosamente com 400 "InvalidMimeType" no upload.
 function tipoMimePorExtensao(extensao: string): string {
   switch (extensao.toLowerCase()) {
     case ".png":
       return "image/png";
+    case ".jpg":
+    case ".jpeg":
+      return "image/jpeg";
     case ".webp":
       return "image/webp";
     case ".gif":
       return "image/gif";
+    case ".bmp":
+      return "image/bmp";
+    case ".avif":
+      return "image/avif";
+    case ".tif":
+    case ".tiff":
+      return "image/tiff";
     case ".pdf":
       return "application/pdf";
-    case ".jpg":
-    case ".jpeg":
-      return "image/jpeg";
     default:
       return "application/octet-stream";
   }

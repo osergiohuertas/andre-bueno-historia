@@ -42,6 +42,7 @@ const CATEGORIAS_VIDEO: CategoriaVideo[] = [
   "simposio",
   "seminario",
   "documentario",
+  "reportagem",
 ];
 
 export default async function AcervoPage({

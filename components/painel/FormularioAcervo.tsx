@@ -8,6 +8,7 @@ import {
   uploadDocumentoAction,
   type EstadoAcervo,
 } from "@/app/painel/(protegido)/acervo/actions";
+import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 import type { PeriodoId } from "@/data/periodos";
 
 type AcervoPreenchido = {
@@ -194,9 +195,12 @@ export function FormularioAcervo({
 
       <div>
         <p className="meta mb-1 text-chumbo-lt">Documento (PDF)</p>
-        <p className="mb-3 font-serif text-xs text-chumbo-lt">
+        <p className="mb-1 font-serif text-xs text-chumbo-lt">
           O arquivo sobe direto pro banco de dados (Supabase Storage) — vira
           o link de download exibido na página pública.
+        </p>
+        <p className="mb-3 font-serif text-xs text-chumbo-lt">
+          Só PDF — até {TAMANHO_MAXIMO_MB}MB.
         </p>
 
         <input
@@ -257,9 +261,12 @@ export function FormularioAcervo({
 
       <div>
         <p className="meta mb-1 text-chumbo-lt">Imagem de capa (miniatura)</p>
-        <p className="mb-3 font-serif text-xs text-chumbo-lt">
+        <p className="mb-1 font-serif text-xs text-chumbo-lt">
           Aparece como miniatura nas listagens do acervo — pode ser uma foto
           ou o recorte do topo do documento.
+        </p>
+        <p className="mb-3 font-serif text-xs text-chumbo-lt">
+          Aceita {FORMATOS_IMAGEM_ACEITOS} — até {TAMANHO_MAXIMO_MB}MB.
         </p>
 
         <input

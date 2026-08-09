@@ -6,7 +6,8 @@ export type CategoriaVideo =
   | "congresso"
   | "simposio"
   | "seminario"
-  | "documentario";
+  | "documentario"
+  | "reportagem";
 
 export type Publicacao = {
   slug: string;

@@ -7,6 +7,7 @@ import {
   type EstadoPublicacaoOpiniao,
 } from "@/app/painel/(protegido)/nova-opiniao/actions";
 import { CampoCorpoMdx } from "@/components/painel/CampoCorpoMdx";
+import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 import type { PeriodoId } from "@/data/periodos";
 
 type OpiniaoPreenchida = {
@@ -147,6 +148,9 @@ export function FormularioOpiniao({
 
       <div>
         <p className="meta mb-1 text-chumbo-lt">Imagem de capa (opcional)</p>
+        <p className="mb-2 font-serif text-xs text-chumbo-lt">
+          Aceita {FORMATOS_IMAGEM_ACEITOS} — até {TAMANHO_MAXIMO_MB}MB.
+        </p>
         <input
           ref={inputArquivoRef}
           type="file"

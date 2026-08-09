@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import type { Database } from "@/types/supabase";
 import { uploadImagemCampoAction } from "@/app/painel/(protegido)/conteudo/actions";
+import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 
 type LinhaConfig = Database["public"]["Tables"]["site_config"]["Row"];
 
@@ -115,8 +116,11 @@ function CampoImagem({
     <div>
       <label className="meta mb-1 block text-chumbo-lt">{campo.rotulo}</label>
       {campo.ajuda && (
-        <p className="mb-2 font-serif text-xs text-chumbo-lt">{campo.ajuda}</p>
+        <p className="mb-1 font-serif text-xs text-chumbo-lt">{campo.ajuda}</p>
       )}
+      <p className="mb-2 font-serif text-xs text-chumbo-lt">
+        Aceita {FORMATOS_IMAGEM_ACEITOS} — até {TAMANHO_MAXIMO_MB}MB.
+      </p>
 
       <input type="hidden" name={campo.chave} value={valor} />
       <input

@@ -3,6 +3,7 @@
 import { useActionState, useRef, useState } from "react";
 import { periodosOrdenados, type PeriodoId } from "@/data/periodos";
 import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
+import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 import type { EstadoTotem } from "@/app/painel/(protegido)/totem/actions";
 
 type Frase = { periodo: PeriodoId | ""; texto: string; imagem_url: string };
@@ -153,6 +154,9 @@ export function FormularioTotem({
                   <label className="meta mb-1 block text-chumbo-lt">
                     Imagem (opcional)
                   </label>
+                  <p className="mb-2 font-serif text-xs text-chumbo-lt">
+                    Aceita {FORMATOS_IMAGEM_ACEITOS} — até {TAMANHO_MAXIMO_MB}MB.
+                  </p>
 
                   <input
                     ref={(el) => {

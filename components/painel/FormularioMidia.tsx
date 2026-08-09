@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import type { EstadoMidia } from "@/app/painel/(protegido)/obra/midia-actions";
 import type { Database } from "@/types/supabase";
 import type { CategoriaVideo } from "@/lib/obra";
+import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 
 type Midia = Database["public"]["Tables"]["acervo_midia"]["Row"];
 
@@ -13,6 +14,7 @@ const CATEGORIAS: CategoriaVideo[] = [
   "simposio",
   "seminario",
   "documentario",
+  "reportagem",
 ];
 
 export function FormularioMidia({
@@ -97,6 +99,9 @@ export function FormularioMidia({
             <label htmlFor="arquivo" className="meta mb-1 block text-chumbo-lt">
               {midia ? "Substituir foto (opcional)" : "Foto"}
             </label>
+            <p className="mb-2 font-serif text-xs text-chumbo-lt">
+              Aceita {FORMATOS_IMAGEM_ACEITOS} — até {TAMANHO_MAXIMO_MB}MB.
+            </p>
             <input
               id="arquivo"
               name="arquivo"

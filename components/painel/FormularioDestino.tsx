@@ -10,6 +10,7 @@ import {
   ESFERAS_PROTECAO,
 } from "@/lib/destinos";
 import { SeletorCoordenadas } from "@/components/painel/SeletorCoordenadas";
+import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 import type { Database } from "@/types/supabase";
 
 type Destino = Database["public"]["Tables"]["destinos"]["Row"];
@@ -306,6 +307,9 @@ export function FormularioDestino({
 
       <div>
         <p className="meta mb-1 text-chumbo-lt">Foto (opcional)</p>
+        <p className="mb-2 font-serif text-xs text-chumbo-lt">
+          Aceita {FORMATOS_IMAGEM_ACEITOS} — até {TAMANHO_MAXIMO_MB}MB.
+        </p>
         <input
           ref={inputArquivoRef}
           type="file"

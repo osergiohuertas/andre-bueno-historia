@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
 import { CampoCorpoMdx } from "@/components/painel/CampoCorpoMdx";
+import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 import type { EstadoArtigo } from "@/components/painel/editor/NovoArtigoWizard";
 
 export function EtapaConteudo({
@@ -51,7 +52,10 @@ export function EtapaConteudo({
       />
 
       <div>
-        <p className="meta mb-2 text-chumbo-lt">Imagens</p>
+        <p className="meta mb-1 text-chumbo-lt">Imagens</p>
+        <p className="mb-2 font-serif text-xs text-chumbo-lt">
+          Aceita {FORMATOS_IMAGEM_ACEITOS} — até {TAMANHO_MAXIMO_MB}MB.
+        </p>
         <input
           ref={inputArquivoRef}
           type="file"

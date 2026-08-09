@@ -3,6 +3,7 @@
 import { useActionState, useRef, useState } from "react";
 import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
 import type { EstadoEvento } from "@/app/painel/(protegido)/agenda/actions";
+import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 import type { Database } from "@/types/supabase";
 
 type Evento = Database["public"]["Tables"]["eventos"]["Row"];
@@ -223,6 +224,9 @@ export function FormularioEvento({
 
       <div>
         <p className="meta mb-1 text-chumbo-lt">Imagem de capa (opcional)</p>
+        <p className="mb-2 font-serif text-xs text-chumbo-lt">
+          Aceita {FORMATOS_IMAGEM_ACEITOS} — até {TAMANHO_MAXIMO_MB}MB.
+        </p>
 
         <input
           ref={inputArquivoRef}

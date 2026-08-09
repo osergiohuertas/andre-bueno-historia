@@ -3,6 +3,7 @@
 import { useActionState, useRef, useState } from "react";
 import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
 import type { EstadoPublicacao } from "@/app/painel/(protegido)/obra/publicacoes/actions";
+import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 import type { Database } from "@/types/supabase";
 
 type Publicacao = Database["public"]["Tables"]["publicacoes"]["Row"];
@@ -152,9 +153,12 @@ export function FormularioPublicacao({
 
       <div>
         <p className="meta mb-1 text-chumbo-lt">Imagem de capa (opcional)</p>
-        <p className="mb-3 font-serif text-xs text-chumbo-lt">
+        <p className="mb-1 font-serif text-xs text-chumbo-lt">
           A identidade visual do seminário, congresso, evento ou da própria
           publicação. Sem imagem, o card mostra o ano no lugar.
+        </p>
+        <p className="mb-3 font-serif text-xs text-chumbo-lt">
+          Aceita {FORMATOS_IMAGEM_ACEITOS} — até {TAMANHO_MAXIMO_MB}MB.
         </p>
 
         <input

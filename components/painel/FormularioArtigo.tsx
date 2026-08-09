@@ -5,6 +5,7 @@ import { SeletorPeriodoVisual } from "@/components/painel/editor/SeletorPeriodoV
 import { CampoCorpoMdx } from "@/components/painel/CampoCorpoMdx";
 import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
 import type { EstadoArtigoEdicao } from "@/app/painel/(protegido)/artigos/actions";
+import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 import type { PeriodoId } from "@/data/periodos";
 
 type ArtigoPreenchido = {
@@ -224,6 +225,9 @@ export function FormularioArtigo({
 
       <div>
         <p className="meta mb-1 text-chumbo-lt">Imagem de capa</p>
+        <p className="mb-2 font-serif text-xs text-chumbo-lt">
+          Aceita {FORMATOS_IMAGEM_ACEITOS} — até {TAMANHO_MAXIMO_MB}MB.
+        </p>
         <input
           ref={inputArquivoRef}
           type="file"
