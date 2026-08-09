@@ -23,7 +23,7 @@ export default async function EditarAcervoPage({
     <div>
       <div className="flex items-center justify-between">
         <Link
-          href="/painel/acervo"
+          href="/painel/acervo/documentos"
           className="meta text-chumbo hover:text-lacre"
         >
           ← Trabalhos técnicos

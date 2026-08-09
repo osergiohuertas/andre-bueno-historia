@@ -6,7 +6,10 @@ import { contarAcervoPorPeriodo } from "@/lib/acervo";
 export default function NovoAcervoPage() {
   return (
     <div>
-      <Link href="/painel/acervo" className="meta text-chumbo hover:text-lacre">
+      <Link
+        href="/painel/acervo/documentos"
+        className="meta text-chumbo hover:text-lacre"
+      >
         ← Trabalhos técnicos
       </Link>
       <h1 className="mt-3 font-display text-3xl text-ink">

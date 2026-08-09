@@ -11,8 +11,8 @@ export default async function FotosPainelPage() {
 
   return (
     <div>
-      <Link href="/painel/obra" className="meta text-chumbo hover:text-lacre">
-        ← Obra
+      <Link href="/painel/acervo" className="meta text-chumbo hover:text-lacre">
+        ← Acervo
       </Link>
       <div className="mt-3 flex items-center justify-between">
         <h1 className="font-display text-3xl text-ink">Fotos</h1>

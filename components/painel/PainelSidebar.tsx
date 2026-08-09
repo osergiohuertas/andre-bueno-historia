@@ -11,7 +11,6 @@ import {
   IconeAcervo,
   IconeAgenda,
   IconeDestino,
-  IconeObra,
   IconeTotem,
   IconeSite,
   IconeAnalytics,
@@ -34,7 +33,7 @@ const GRUPOS: GrupoNav[] = [
     titulo: "Conteúdo",
     itens: [
       { href: "/painel/series", label: "Séries", icone: <IconeSeries /> },
-      { href: "/painel/acervo", label: "Trabalhos técnicos", icone: <IconeAcervo /> },
+      { href: "/painel/acervo", label: "Acervo", icone: <IconeAcervo /> },
     ],
   },
   {
@@ -43,10 +42,6 @@ const GRUPOS: GrupoNav[] = [
       { href: "/painel/agenda", label: "Agenda", icone: <IconeAgenda /> },
       { href: "/painel/destinos", label: "Destinos", icone: <IconeDestino /> },
     ],
-  },
-  {
-    titulo: "Obra",
-    itens: [{ href: "/painel/obra", label: "Obra", icone: <IconeObra /> }],
   },
   {
     titulo: "Experiência",

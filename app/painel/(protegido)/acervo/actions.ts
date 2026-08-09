@@ -13,6 +13,7 @@ export type EstadoAcervo =
 
 function revalidarAcervo(slug?: string) {
   revalidatePath("/painel/acervo");
+  revalidatePath("/painel/acervo/documentos");
   revalidatePath("/acervo");
   if (slug) revalidatePath(`/acervo/${slug}`);
 }
@@ -170,7 +171,7 @@ export async function apagarAcervoAction(
     return { ok: false, mensagem: resultado.erro };
   }
   revalidarAcervo(slug);
-  redirect("/painel/acervo");
+  redirect("/painel/acervo/documentos");
 }
 
 function formatarValorYaml(valor: unknown): string {

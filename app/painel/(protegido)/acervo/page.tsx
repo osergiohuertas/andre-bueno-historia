@@ -1,54 +1,90 @@
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 import { getTodosAcervoDocumentos } from "@/lib/acervo";
-import { getPeriodo } from "@/data/periodos";
 
-export default function AcervoPainelPage() {
-  const documentos = getTodosAcervoDocumentos();
+export default async function AcervoPainelPage() {
+  const supabase = await createClient();
+  const [
+    { count: livros },
+    { count: publicacoes },
+    { count: videos },
+    { count: fotos },
+  ] = await Promise.all([
+    supabase
+      .from("publicacoes")
+      .select("*", { count: "exact", head: true })
+      .eq("tipo", "livro"),
+    supabase
+      .from("publicacoes")
+      .select("*", { count: "exact", head: true })
+      .neq("tipo", "livro"),
+    supabase
+      .from("acervo_midia")
+      .select("*", { count: "exact", head: true })
+      .eq("tipo", "video"),
+    supabase
+      .from("acervo_midia")
+      .select("*", { count: "exact", head: true })
+      .eq("tipo", "foto"),
+  ]);
+
+  const documentos = getTodosAcervoDocumentos().length;
+
+  const SECOES = [
+    {
+      href: "/painel/acervo/documentos",
+      titulo: "Trabalhos técnicos",
+      descricao: "Dados de cada trabalho e link para download.",
+      contagem: documentos,
+    },
+    {
+      href: "/painel/obra/publicacoes",
+      titulo: "Livros",
+      descricao: "Catálogo completo de livros.",
+      contagem: livros ?? 0,
+    },
+    {
+      href: "/painel/obra/publicacoes",
+      titulo: "Publicações",
+      descricao: "Artigos acadêmicos, capítulos e ensaios.",
+      contagem: publicacoes ?? 0,
+    },
+    {
+      href: "/painel/obra/videos",
+      titulo: "Vídeos",
+      descricao: "Entrevistas, congressos e seminários.",
+      contagem: videos ?? 0,
+    },
+    {
+      href: "/painel/obra/fotos",
+      titulo: "Fotos",
+      descricao: "Galeria de registros públicos.",
+      contagem: fotos ?? 0,
+    },
+  ];
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="meta text-lacre">Painel</p>
-          <h1 className="mt-3 font-display text-3xl text-ink">
-            Trabalhos técnicos desenvolvidos
-          </h1>
-        </div>
-        <Link
-          href="/painel/acervo/novo"
-          className="border border-ink bg-ink px-5 py-2.5 text-ouro hover:bg-lacre hover:border-lacre"
-        >
-          <span className="meta text-ouro">Novo item</span>
-        </Link>
-      </div>
-
-      <p className="mt-4 font-serif text-sm text-chumbo-lt">
-        Itens são arquivos MDX publicados via commit no GitHub — a Vercel
-        observa o repo e o deploy acontece sozinho depois do push.
+      <p className="meta text-lacre">Painel</p>
+      <h1 className="mt-3 font-display text-3xl text-ink">Acervo</h1>
+      <p className="mt-4 max-w-prose font-serif text-sm text-chumbo-lt">
+        Tudo que aparece em /acervo no site: documentos originais, livros,
+        publicações, vídeos e fotos. O Atlas não tem cadastro próprio — os
+        pontos vêm de Artigos e Destinos.
       </p>
 
-      <div className="mt-10 flex flex-col gap-3">
-        {documentos.length === 0 && (
-          <p className="meta text-chumbo-lt">Nenhum documento ainda.</p>
-        )}
-        {documentos.map((doc) => (
+      <div className="mt-10 grid gap-px border border-borda bg-borda sm:grid-cols-2 lg:grid-cols-3">
+        {SECOES.map((secao) => (
           <Link
-            key={doc.slug}
-            href={`/painel/acervo/${doc.slug}`}
-            className="flex items-center justify-between border border-borda p-6 hover:border-lacre"
+            key={secao.titulo}
+            href={secao.href}
+            className="flex flex-col gap-2 bg-paper p-8 hover:bg-paper-mid"
           >
-            <div>
-              <p className="meta text-chumbo-lt">
-                {getPeriodo(doc.periodo).label}
-              </p>
-              <p className="mt-1 font-display text-xl text-ink">
-                {doc.titulo}
-              </p>
-            </div>
-            <span className="meta text-chumbo-lt">
-              {doc.imagemCapa ? "Com imagem" : "Sem imagem"} ·{" "}
-              {doc.publicado ? "Publicado" : "Rascunho"}
-            </span>
+            <p className="meta text-chumbo-lt">{secao.contagem} itens</p>
+            <h2 className="font-display text-xl text-ink">{secao.titulo}</h2>
+            <p className="font-serif text-sm text-chumbo">
+              {secao.descricao}
+            </p>
           </Link>
         ))}
       </div>
