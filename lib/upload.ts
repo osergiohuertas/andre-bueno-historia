@@ -4,10 +4,10 @@ import { randomUUID } from "node:crypto";
 const BUCKET = "uploads";
 
 /**
- * Upload de imagens do painel — bucket público no Supabase Storage
- * (mesmo projeto que já hospeda o banco, sem depender de uma conta
- * externa como a Cloudinary). Escrita sempre via service role key,
- * nunca exposta ao cliente; o bucket é público só para LEITURA.
+ * Upload de arquivos do painel (imagens e documentos) — bucket público no
+ * Supabase Storage (mesmo projeto que já hospeda o banco, sem depender de
+ * uma conta externa como a Cloudinary). Escrita sempre via service role
+ * key, nunca exposta ao cliente; o bucket é público só para LEITURA.
  */
 export async function uploadImagem(
   arquivo: Buffer,
@@ -66,9 +66,12 @@ function tipoMimePorExtensao(extensao: string): string {
       return "image/webp";
     case ".gif":
       return "image/gif";
+    case ".pdf":
+      return "application/pdf";
     case ".jpg":
     case ".jpeg":
-    default:
       return "image/jpeg";
+    default:
+      return "application/octet-stream";
   }
 }

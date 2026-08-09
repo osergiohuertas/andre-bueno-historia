@@ -4,6 +4,7 @@ import { useActionState, useRef, useState } from "react";
 import { SeletorPeriodoVisual } from "@/components/painel/editor/SeletorPeriodoVisual";
 import {
   uploadImagemCapaAction,
+  uploadDocumentoAction,
   type EstadoAcervo,
 } from "@/app/painel/(protegido)/acervo/actions";
 import type { PeriodoId } from "@/data/periodos";
@@ -47,6 +48,11 @@ export function FormularioAcervo({
   const [erroImagem, setErroImagem] = useState<string | null>(null);
   const inputArquivoRef = useRef<HTMLInputElement | null>(null);
 
+  const [pdfUrl, setPdfUrl] = useState(acervo?.pdfUrl ?? "");
+  const [enviandoPdf, setEnviandoPdf] = useState(false);
+  const [erroPdf, setErroPdf] = useState<string | null>(null);
+  const inputPdfRef = useRef<HTMLInputElement | null>(null);
+
   async function lidarComUpload(arquivo: File) {
     setEnviandoImagem(true);
     setErroImagem(null);
@@ -62,6 +68,21 @@ export function FormularioAcervo({
     setImagemCapa(resultado.url);
   }
 
+  async function lidarComUploadPdf(arquivo: File) {
+    setEnviandoPdf(true);
+    setErroPdf(null);
+    const formData = new FormData();
+    formData.append("arquivo", arquivo);
+    const resultado = await uploadDocumentoAction(formData);
+    setEnviandoPdf(false);
+
+    if (!resultado.ok) {
+      setErroPdf(resultado.erro);
+      return;
+    }
+    setPdfUrl(resultado.url);
+  }
+
   return (
     <form action={formAction} className="mt-8 flex flex-col gap-6">
       <input type="hidden" name="periodo" value={periodo ?? ""} />
@@ -71,6 +92,7 @@ export function FormularioAcervo({
         value={periodosSecundarios.join(",")}
       />
       <input type="hidden" name="imagemCapa" value={imagemCapa} />
+      <input type="hidden" name="pdfUrl" value={pdfUrl} />
       {acervo && (
         <input type="hidden" name="dataOriginal" value={acervo.data} />
       )}
@@ -170,17 +192,66 @@ export function FormularioAcervo({
       </div>
 
       <div>
-        <label htmlFor="pdfUrl" className="meta mb-1 block text-chumbo-lt">
-          Link para download do documento (PDF)
-        </label>
+        <p className="meta mb-1 text-chumbo-lt">Documento (PDF)</p>
+        <p className="mb-3 font-serif text-xs text-chumbo-lt">
+          O arquivo sobe direto pro banco de dados (Supabase Storage) — vira
+          o link de download exibido na página pública.
+        </p>
+
         <input
-          id="pdfUrl"
-          name="pdfUrl"
-          type="url"
-          defaultValue={acervo?.pdfUrl}
-          required
-          className="w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
+          ref={inputPdfRef}
+          type="file"
+          accept="application/pdf"
+          className="hidden"
+          onChange={(e) => {
+            const arquivo = e.target.files?.[0];
+            if (arquivo) lidarComUploadPdf(arquivo);
+            e.target.value = "";
+          }}
         />
+
+        {pdfUrl && (
+          <div className="mb-3 flex items-center gap-4">
+            <a
+              href={pdfUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="meta text-lacre hover:underline"
+            >
+              Ver PDF enviado
+            </a>
+            <button
+              type="button"
+              onClick={() => setPdfUrl("")}
+              className="meta text-chumbo hover:text-lacre"
+            >
+              Remover
+            </button>
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={() => inputPdfRef.current?.click()}
+          disabled={enviandoPdf}
+          className="border border-borda px-4 py-2 text-ink hover:border-lacre disabled:opacity-50"
+        >
+          <span className="meta">
+            {enviandoPdf
+              ? "Enviando…"
+              : pdfUrl
+                ? "Trocar documento"
+                : "Escolher documento PDF"}
+          </span>
+        </button>
+        {erroPdf && (
+          <p className="mt-2 font-serif text-xs text-lacre">{erroPdf}</p>
+        )}
+        {!pdfUrl && (
+          <p className="mt-2 font-serif text-xs text-chumbo-lt">
+            Obrigatório pra publicar.
+          </p>
+        )}
       </div>
 
       <div>
@@ -282,7 +353,7 @@ export function FormularioAcervo({
       <div className="flex items-center gap-4">
         <button
           type="submit"
-          disabled={pendente || !periodo}
+          disabled={pendente || !periodo || !pdfUrl}
           className="border border-ink bg-ink px-6 py-3 text-ouro transition-colors hover:bg-lacre hover:border-lacre disabled:cursor-not-allowed disabled:opacity-50"
         >
           <span className="meta text-ouro">

@@ -29,6 +29,18 @@ export async function uploadImagemCapaAction(
   return uploadImagem(buffer, arquivo.name);
 }
 
+export async function uploadDocumentoAction(
+  formData: FormData,
+): Promise<{ ok: true; url: string } | { ok: false; erro: string }> {
+  const arquivo = formData.get("arquivo");
+  if (!(arquivo instanceof File)) {
+    return { ok: false, erro: "Nenhum arquivo enviado." };
+  }
+
+  const buffer = Buffer.from(await arquivo.arrayBuffer());
+  return uploadImagem(buffer, arquivo.name);
+}
+
 function lerFormulario(formData: FormData) {
   return {
     titulo: String(formData.get("titulo") ?? "").trim(),

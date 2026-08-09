@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useRef, useState } from "react";
+import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
 import type { EstadoEvento } from "@/app/painel/(protegido)/agenda/actions";
 import type { Database } from "@/types/supabase";
 
@@ -20,8 +21,29 @@ export function FormularioEvento({
 }) {
   const [estado, formAction, pendente] = useActionState(action, null);
 
+  const [imagemCapa, setImagemCapa] = useState(evento?.imagem_capa ?? "");
+  const [enviandoImagem, setEnviandoImagem] = useState(false);
+  const [erroImagem, setErroImagem] = useState<string | null>(null);
+  const inputArquivoRef = useRef<HTMLInputElement | null>(null);
+
+  async function lidarComUpload(arquivo: File) {
+    setEnviandoImagem(true);
+    setErroImagem(null);
+    const formData = new FormData();
+    formData.append("arquivo", arquivo);
+    const resultado = await uploadImagemAction(formData);
+    setEnviandoImagem(false);
+
+    if (!resultado.ok) {
+      setErroImagem(resultado.erro);
+      return;
+    }
+    setImagemCapa(resultado.url);
+  }
+
   return (
     <form action={formAction} className="mt-8 flex flex-col gap-6">
+      <input type="hidden" name="imagem_capa" value={imagemCapa} />
       <div>
         <label htmlFor="titulo" className="meta mb-1 block text-chumbo-lt">
           Título
@@ -200,16 +222,55 @@ export function FormularioEvento({
       </div>
 
       <div>
-        <label htmlFor="imagem_capa" className="meta mb-1 block text-chumbo-lt">
-          URL da imagem de capa (opcional)
-        </label>
+        <p className="meta mb-1 text-chumbo-lt">Imagem de capa (opcional)</p>
+
         <input
-          id="imagem_capa"
-          name="imagem_capa"
-          type="url"
-          defaultValue={evento?.imagem_capa ?? ""}
-          className="w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
+          ref={inputArquivoRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const arquivo = e.target.files?.[0];
+            if (arquivo) lidarComUpload(arquivo);
+            e.target.value = "";
+          }}
         />
+
+        {imagemCapa && (
+          <div className="mb-3 flex items-center gap-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={imagemCapa}
+              alt=""
+              className="h-24 w-40 border border-borda object-cover"
+            />
+            <button
+              type="button"
+              onClick={() => setImagemCapa("")}
+              className="meta text-chumbo hover:text-lacre"
+            >
+              Remover
+            </button>
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={() => inputArquivoRef.current?.click()}
+          disabled={enviandoImagem}
+          className="border border-borda px-4 py-2 text-ink hover:border-lacre disabled:opacity-50"
+        >
+          <span className="meta">
+            {enviandoImagem
+              ? "Enviando…"
+              : imagemCapa
+                ? "Trocar imagem"
+                : "Escolher imagem de capa"}
+          </span>
+        </button>
+        {erroImagem && (
+          <p className="mt-2 font-serif text-xs text-lacre">{erroImagem}</p>
+        )}
       </div>
 
       <label className="flex items-center gap-3">
