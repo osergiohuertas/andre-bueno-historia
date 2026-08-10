@@ -34,6 +34,9 @@ export const metadata: Metadata = {
   title: "André Bueno — História",
   description:
     "Plataforma editorial do historiador André Bueno: artigos, acervo documental e ferramentas de pesquisa sobre a história do Brasil.",
+  // Sem `images`: herda automaticamente do `openGraph.images` de cada
+  // página (comportamento padrão do Next) — cobre o site inteiro de graça.
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({
