@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Hero } from "@/components/home/Hero";
 import { RecentArticlesGrid } from "@/components/home/RecentArticlesGrid";
 import { TimelinePreview } from "@/components/home/TimelinePreview";
@@ -9,6 +10,14 @@ import {
   getSeries,
 } from "@/lib/artigos";
 import { getHomeConfig } from "@/lib/home";
+import { canonicalPara } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "André Bueno — História do Brasil: artigos, acervo e pesquisa",
+  description:
+    "Artigos, acervo documental, linha do tempo, destinos históricos e agenda do historiador André Bueno — pesquisa sobre a história do Brasil, da colônia à ditadura.",
+  alternates: { canonical: canonicalPara("/") },
+};
 
 export default async function Home() {
   const artigos = getArtigosPublicados();
