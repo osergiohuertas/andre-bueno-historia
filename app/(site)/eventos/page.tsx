@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { PaginaEventosFiltrada } from "@/components/eventos/PaginaEventosFiltrada";
 import { getEventosFuturos } from "@/lib/eventos";
+import { canonicalPara } from "@/lib/site";
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Agenda — André Bueno",
   description: "Eventos culturais e acadêmicos, com curadoria ou participação direta de André Bueno.",
+  alternates: { canonical: canonicalPara("/eventos") },
 };
 
 export default async function EventosPage() {

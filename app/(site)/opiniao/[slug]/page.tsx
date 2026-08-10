@@ -16,6 +16,7 @@ import {
 import { getPeriodo } from "@/data/periodos";
 import { formatarData } from "@/lib/format";
 import { opinionSchema } from "@/lib/schema";
+import { canonicalPara } from "@/lib/site";
 
 export function generateStaticParams() {
   return getOpinioesPublicadas().map((opiniao) => ({ slug: opiniao.slug }));
@@ -33,6 +34,7 @@ export async function generateMetadata({
   return {
     title: `${opiniao.titulo} — Opinião — André Bueno`,
     description: opiniao.excerpt,
+    alternates: { canonical: canonicalPara(opiniao.url) },
   };
 }
 

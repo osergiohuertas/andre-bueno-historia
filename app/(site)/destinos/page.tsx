@@ -4,12 +4,14 @@ import { Section } from "@/components/ui/Section";
 import { DestinoCard } from "@/components/destinos/DestinoCard";
 import { DestinoTabs } from "@/components/destinos/DestinoTabs";
 import { getDestinos, getTipologiasComDestinos } from "@/lib/destinos";
+import { canonicalPara } from "@/lib/site";
 
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "Destinos — André Bueno",
   description: "Museus, patrimônio cultural e lugares de relevância histórica.",
+  alternates: { canonical: canonicalPara("/destinos") },
 };
 
 export default async function DestinosPage() {

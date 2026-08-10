@@ -10,6 +10,7 @@ import { FotosSection } from "@/components/acervo/FotosSection";
 import { getAcervoPublicado, getPeriodosComAcervo } from "@/lib/acervo";
 import { getPontosArtigos, getPontosDestinos, type PontoDestino } from "@/lib/atlas";
 import { getPublicacoes, getAcervoMidia, type CategoriaVideo } from "@/lib/obra";
+import { canonicalPara } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
   title: "Acervo — André Bueno",
   description:
     "Tudo que preservo e produzo sobre a história do Brasil: documentos, atlas, livros, publicações, vídeos e fotos.",
+  alternates: { canonical: canonicalPara("/acervo") },
 };
 
 type Secao =

@@ -21,6 +21,7 @@ import {
 import { formatarData } from "@/lib/format";
 import { getLivroConfig } from "@/lib/livro";
 import { articleSchema } from "@/lib/schema";
+import { canonicalPara } from "@/lib/site";
 
 export function generateStaticParams() {
   return getArtigosPublicados().map((artigo) => ({ slug: artigo.slug }));
@@ -38,6 +39,7 @@ export async function generateMetadata({
   return {
     title: `${artigo.titulo} — André Bueno`,
     description: artigo.excerpt,
+    alternates: { canonical: canonicalPara(artigo.url) },
   };
 }
 

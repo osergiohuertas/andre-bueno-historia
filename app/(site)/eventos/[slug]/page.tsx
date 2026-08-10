@@ -9,6 +9,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { getEventoPorSlug } from "@/lib/eventos";
 import { formatarData } from "@/lib/format";
 import { eventSchema } from "@/lib/schema";
+import { canonicalPara } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -24,6 +25,7 @@ export async function generateMetadata({
   return {
     title: `${evento.titulo} — André Bueno`,
     description: evento.descricao,
+    alternates: { canonical: canonicalPara(`/eventos/${evento.slug}`) },
   };
 }
 

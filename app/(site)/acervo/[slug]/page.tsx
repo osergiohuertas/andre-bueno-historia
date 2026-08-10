@@ -9,6 +9,7 @@ import { MDXContent } from "@/components/mdx/MDXContent";
 import { PDFViewer } from "@/components/acervo/PDFViewer";
 import { getAcervoPorSlug, getAcervoPublicado } from "@/lib/acervo";
 import { formatarData } from "@/lib/format";
+import { canonicalPara } from "@/lib/site";
 
 export function generateStaticParams() {
   return getAcervoPublicado().map((item) => ({ slug: item.slug }));
@@ -26,6 +27,7 @@ export async function generateMetadata({
   return {
     title: `${item.titulo} — André Bueno`,
     description: item.excerpt,
+    alternates: { canonical: canonicalPara(item.url) },
   };
 }
 

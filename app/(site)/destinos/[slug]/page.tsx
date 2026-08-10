@@ -14,6 +14,7 @@ import {
 import { getArtigoBySlug } from "@/lib/artigos";
 import { formatarData } from "@/lib/format";
 import { destinoSchema } from "@/lib/schema";
+import { canonicalPara } from "@/lib/site";
 
 export const revalidate = 86400;
 
@@ -29,6 +30,7 @@ export async function generateMetadata({
   return {
     title: `${destino.nome} — André Bueno`,
     description: `${destino.nome}, ${destino.cidade}.`,
+    alternates: { canonical: canonicalPara(`/destinos/${destino.slug}`) },
   };
 }
 

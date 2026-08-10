@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { VoltarButton } from "@/components/ui/VoltarButton";
 import { getPublicacaoPorSlug, type Publicacao } from "@/lib/obra";
+import { canonicalPara } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -27,6 +28,9 @@ export async function generateMetadata({
   return {
     title: `${publicacao.titulo} — André Bueno`,
     description: publicacao.resumo ?? `${publicacao.veiculo}, ${publicacao.ano}.`,
+    alternates: {
+      canonical: canonicalPara(`/acervo/publicacoes/${publicacao.slug}`),
+    },
   };
 }
 

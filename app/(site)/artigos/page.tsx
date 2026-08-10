@@ -9,10 +9,12 @@ import {
   getTagsComConteudo,
 } from "@/lib/artigos";
 import type { PeriodoId } from "@/data/periodos";
+import { canonicalPara } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Artigos — André Bueno",
   description: "Todos os artigos, filtráveis por período, região e tema.",
+  alternates: { canonical: canonicalPara("/artigos") },
 };
 
 export default async function ArtigosPage({

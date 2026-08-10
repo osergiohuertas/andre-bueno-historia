@@ -6,11 +6,13 @@ import {
   getOpinioesPublicadas,
   getOpiniaoDestaque,
 } from "@/lib/opinioes";
+import { canonicalPara } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Opinião — André Bueno",
   description:
     "Artigos de opinião de André Bueno — análise do presente com contexto histórico. A voz do autor, sempre distinta da exposição documentada.",
+  alternates: { canonical: canonicalPara("/opiniao") },
 };
 
 export default function OpiniaoPage() {
