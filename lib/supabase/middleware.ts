@@ -77,6 +77,14 @@ export async function updateSession(request: NextRequest) {
       url.pathname = "/painel/login";
       return NextResponse.redirect(url);
     }
+    // "/painel" sozinho não tem página própria (só as sub-rotas, tipo
+    // /painel/conteudo) — sem isso, um admin já logado batendo direto em
+    // /painel cai no Next.js sem achar rota e toma 404 de verdade.
+    if (pathname === "/painel") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/painel/conteudo";
+      return NextResponse.redirect(url);
+    }
   }
 
   if (emLoginPainel && user && !ehLeitor) {
