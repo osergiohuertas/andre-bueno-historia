@@ -62,53 +62,54 @@ export default async function PublicacaoPage({
       <Container className="max-w-3xl">
         <VoltarButton fallbackHref="/acervo?secao=publicacoes" className="mb-8" />
 
-        <div className="flex flex-col gap-8 md:flex-row">
-          <div className="relative aspect-[3/4] w-full shrink-0 overflow-hidden border border-borda bg-paper-mid md:w-56">
-            {publicacao.capa ? (
-              <Image
-                src={publicacao.capa}
-                alt={publicacao.titulo}
-                fill
-                className="object-cover"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center">
-                <span className="font-display text-4xl text-borda">
-                  {publicacao.ano}
-                </span>
-              </div>
-            )}
-          </div>
+        <div className="relative aspect-[4/3] w-full overflow-hidden border border-borda bg-paper-mid">
+          {publicacao.capa ? (
+            <Image
+              src={publicacao.capa}
+              alt={publicacao.titulo}
+              fill
+              priority
+              className="object-cover"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center">
+              <span className="font-display text-5xl text-borda">
+                {publicacao.ano}
+              </span>
+            </div>
+          )}
+          <span className="meta absolute left-4 top-4 bg-ink/75 px-2.5 py-1.5 text-paper backdrop-blur-sm">
+            {LABEL_TIPO[publicacao.tipo]}
+          </span>
+        </div>
 
-          <div className="flex flex-1 flex-col gap-3">
-            <p className="meta text-lacre">{LABEL_TIPO[publicacao.tipo]}</p>
-            <h1 className="font-display text-3xl leading-tight text-ink md:text-4xl">
-              {publicacao.titulo}
-            </h1>
-            <p className="meta text-chumbo-lt">
-              {publicacao.veiculo} · {publicacao.ano}
-              {publicacao.coautores ? ` · com ${publicacao.coautores}` : ""}
+        <div className="mt-8 flex flex-col gap-3">
+          <h1 className="font-display text-3xl leading-tight text-ink md:text-4xl">
+            {publicacao.titulo}
+          </h1>
+          <p className="meta text-chumbo-lt">
+            {publicacao.veiculo} · {publicacao.ano}
+            {publicacao.coautores ? ` · com ${publicacao.coautores}` : ""}
+          </p>
+
+          {publicacao.resumo && (
+            <p className="mt-2 font-serif text-[17px] leading-relaxed text-chumbo">
+              {publicacao.resumo}
             </p>
+          )}
 
-            {publicacao.resumo && (
-              <p className="mt-2 font-serif text-[17px] leading-relaxed text-chumbo">
-                {publicacao.resumo}
-              </p>
-            )}
-
-            {publicacao.link && (
-              <a
-                href={publicacao.link}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-4 inline-flex w-fit items-center gap-2 border border-ink bg-ink px-6 py-3 text-ouro transition-colors hover:bg-lacre hover:border-lacre"
-              >
-                <span className="meta text-ouro">
-                  Ver fonte — publicação original ↗
-                </span>
-              </a>
-            )}
-          </div>
+          {publicacao.link && (
+            <a
+              href={publicacao.link}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 inline-flex w-fit items-center gap-2 border border-ink bg-ink px-6 py-3 text-ouro transition-colors hover:bg-lacre hover:border-lacre"
+            >
+              <span className="meta text-ouro">
+                Ver fonte — publicação original ↗
+              </span>
+            </a>
+          )}
         </div>
       </Container>
     </Section>

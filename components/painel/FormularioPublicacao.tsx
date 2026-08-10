@@ -21,6 +21,7 @@ export function FormularioPublicacao({
   const [estado, formAction, pendente] = useActionState(action, null);
 
   const [capa, setCapa] = useState(publicacao?.capa ?? "");
+  const [tipo, setTipo] = useState(publicacao?.tipo ?? "livro");
   const [enviandoCapa, setEnviandoCapa] = useState(false);
   const [erroCapa, setErroCapa] = useState<string | null>(null);
   const inputArquivoRef = useRef<HTMLInputElement | null>(null);
@@ -73,6 +74,7 @@ export function FormularioPublicacao({
                 name="tipo"
                 value={opcao.valor}
                 defaultChecked={(publicacao?.tipo ?? "livro") === opcao.valor}
+                onChange={() => setTipo(opcao.valor)}
               />
               <span className="text-ink">{opcao.label}</span>
             </label>
@@ -156,6 +158,11 @@ export function FormularioPublicacao({
         <p className="mb-1 font-serif text-xs text-chumbo-lt">
           A identidade visual do seminário, congresso, evento ou da própria
           publicação. Sem imagem, o card mostra o ano no lugar.
+        </p>
+        <p className="mb-1 font-serif text-xs text-chumbo-lt">
+          {tipo === "livro"
+            ? "Formato retrato (3:4) funciona melhor aqui — como a capa de um livro."
+            : "Formato paisagem (4:3) funciona melhor aqui — evite imagens muito verticais, elas serão cortadas nas laterais."}
         </p>
         <p className="mb-3 font-serif text-xs text-chumbo-lt">
           Aceita {FORMATOS_IMAGEM_ACEITOS} — até {TAMANHO_MAXIMO_MB}MB.

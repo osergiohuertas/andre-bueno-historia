@@ -1,4 +1,4 @@
-import { PublicacaoCard } from "@/components/obra/PublicacaoCard";
+import { ArtigoAcademicoCard } from "@/components/obra/ArtigoAcademicoCard";
 import type { Publicacao } from "@/lib/obra";
 
 export function PublicacoesSection({
@@ -14,7 +14,9 @@ export function PublicacoesSection({
           Publicações acadêmicas
         </h2>
         <p className="mt-4 max-w-prose font-serif text-chumbo">
-          Artigos acadêmicos, capítulos e ensaios.
+          Artigos acadêmicos, capítulos e ensaios — {publicacoes.length}{" "}
+          {publicacoes.length === 1 ? "publicação" : "publicações"} no
+          catálogo.
         </p>
       </div>
 
@@ -23,9 +25,9 @@ export function PublicacoesSection({
           Nenhuma publicação cadastrada ainda.
         </p>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {publicacoes.map((publicacao) => (
-            <PublicacaoCard key={publicacao.slug} publicacao={publicacao} />
+            <ArtigoAcademicoCard key={publicacao.slug} publicacao={publicacao} />
           ))}
         </div>
       )}
