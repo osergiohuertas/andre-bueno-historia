@@ -42,3 +42,25 @@ export function parseVideoUrl(url: string): VideoEmbedInfo | null {
     return null;
   }
 }
+
+/**
+ * Nome amigável da origem pra links que não têm embed público suportado
+ * (ex.: Globoplay) — usado como rótulo do botão "Assistir no X" em vez de
+ * deixar o card sem player nenhum, silenciosamente quebrado.
+ */
+export function nomeProvedorVideo(url: string): string {
+  try {
+    const hostname = new URL(url).hostname.replace(/^www\./, "");
+    if (hostname.includes("globoplay") || hostname.includes("globo.com")) {
+      return "Globoplay";
+    }
+    if (hostname.includes("facebook.com") || hostname.includes("fb.watch")) {
+      return "Facebook";
+    }
+    if (hostname.includes("instagram.com")) return "Instagram";
+    if (hostname.includes("tiktok.com")) return "TikTok";
+    return hostname;
+  } catch {
+    return "site original";
+  }
+}

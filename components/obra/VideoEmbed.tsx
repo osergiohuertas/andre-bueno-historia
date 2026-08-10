@@ -2,13 +2,36 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { parseVideoUrl } from "@/lib/video";
+import { parseVideoUrl, nomeProvedorVideo } from "@/lib/video";
 
 export function VideoEmbed({ url, titulo }: { url: string; titulo: string }) {
   const [carregado, setCarregado] = useState(false);
   const info = parseVideoUrl(url);
 
-  if (!info) return null;
+  if (!info) {
+    // Origem sem embed público suportado (ex.: Globoplay) — em vez de não
+    // mostrar nada (o card ficava com um espaço vazio, sem aviso), deixa
+    // claro que esse aqui abre no site original, diferente dos que tocam
+    // direto na página.
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noreferrer"
+        className="flex aspect-video w-full flex-col items-center justify-center gap-3 border border-borda bg-paper-mid text-center"
+        aria-label={`Assistir no ${nomeProvedorVideo(url)}: ${titulo}`}
+      >
+        <span className="flex h-14 w-14 items-center justify-center rounded-full border border-lacre text-lacre">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden>
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        </span>
+        <span className="meta text-lacre">
+          Assistir no {nomeProvedorVideo(url)} ↗
+        </span>
+      </a>
+    );
+  }
 
   if (carregado) {
     return (
