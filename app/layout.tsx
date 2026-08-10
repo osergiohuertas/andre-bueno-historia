@@ -4,6 +4,7 @@ import { Playfair_Display, Source_Serif_4, Inter } from "next/font/google";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { personSchema, websiteSchema } from "@/lib/schema";
 import { SITE_URL } from "@/lib/site";
+import { getSeoConfig } from "@/lib/seo";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -29,15 +30,22 @@ const inter = Inter({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: "André Bueno — História",
-  description:
-    "Plataforma editorial do historiador André Bueno: artigos, acervo documental e ferramentas de pesquisa sobre a história do Brasil.",
-  // Sem `images`: herda automaticamente do `openGraph.images` de cada
-  // página (comportamento padrão do Next) — cobre o site inteiro de graça.
-  twitter: { card: "summary_large_image" },
-};
+// generateMetadata (não `export const metadata` estático) pra poder ler
+// title/description do grupo "seo" do site_config — editável em
+// Configurações → SEO no painel, com fallback pro texto fixo se estiver
+// vazio (ex.: ambiente sem Supabase configurado).
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getSeoConfig();
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: seo.tituloPadrao,
+    description: seo.descricaoPadrao,
+    // Sem `images`: herda automaticamente do `openGraph.images` de cada
+    // página (comportamento padrão do Next) — cobre o site inteiro de graça.
+    twitter: { card: "summary_large_image" },
+  };
+}
 
 export default function RootLayout({
   children,
