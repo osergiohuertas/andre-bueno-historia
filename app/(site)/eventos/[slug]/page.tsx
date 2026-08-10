@@ -8,7 +8,7 @@ import { VoltarButton } from "@/components/ui/VoltarButton";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getEventoPorSlug } from "@/lib/eventos";
 import { formatarData } from "@/lib/format";
-import { eventSchema } from "@/lib/schema";
+import { eventSchema, breadcrumbSchema } from "@/lib/schema";
 import { canonicalPara } from "@/lib/site";
 
 export const revalidate = 3600;
@@ -46,6 +46,13 @@ export default async function EventoPage({
   return (
     <Section>
       <JsonLd data={eventSchema(evento)} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { nome: "Início", url: "/" },
+          { nome: "Agenda", url: "/eventos" },
+          { nome: evento.titulo, url: `/eventos/${evento.slug}` },
+        ])}
+      />
       <Container className="max-w-3xl">
         <VoltarButton fallbackHref="/eventos" className="mb-8" />
 

@@ -13,7 +13,7 @@ import {
 } from "@/lib/destinos";
 import { getArtigoBySlug } from "@/lib/artigos";
 import { formatarData } from "@/lib/format";
-import { destinoSchema } from "@/lib/schema";
+import { destinoSchema, breadcrumbSchema } from "@/lib/schema";
 import { canonicalPara } from "@/lib/site";
 
 export const revalidate = 86400;
@@ -54,6 +54,13 @@ export default async function DestinoPage({
   return (
     <Section>
       <JsonLd data={destinoSchema(destino)} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { nome: "Início", url: "/" },
+          { nome: "Destinos", url: "/destinos" },
+          { nome: destino.nome, url: `/destinos/${destino.slug}` },
+        ])}
+      />
       <Container className="max-w-3xl">
         <VoltarButton fallbackHref="/destinos" className="mb-8" />
 

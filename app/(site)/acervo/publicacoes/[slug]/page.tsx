@@ -4,8 +4,10 @@ import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { VoltarButton } from "@/components/ui/VoltarButton";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getPublicacaoPorSlug, type Publicacao } from "@/lib/obra";
 import { canonicalPara } from "@/lib/site";
+import { publicacaoSchema, breadcrumbSchema } from "@/lib/schema";
 
 export const revalidate = 3600;
 
@@ -46,6 +48,17 @@ export default async function PublicacaoPage({
 
   return (
     <Section>
+      <JsonLd data={publicacaoSchema(publicacao)} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { nome: "Início", url: "/" },
+          { nome: "Publicações", url: "/acervo?secao=publicacoes" },
+          {
+            nome: publicacao.titulo,
+            url: `/acervo/publicacoes/${publicacao.slug}`,
+          },
+        ])}
+      />
       <Container className="max-w-3xl">
         <VoltarButton fallbackHref="/acervo?secao=publicacoes" className="mb-8" />
 

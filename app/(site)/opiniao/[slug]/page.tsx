@@ -15,7 +15,7 @@ import {
 } from "@/lib/opinioes";
 import { getPeriodo } from "@/data/periodos";
 import { formatarData } from "@/lib/format";
-import { opinionSchema } from "@/lib/schema";
+import { opinionSchema, breadcrumbSchema } from "@/lib/schema";
 import { canonicalPara } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -52,6 +52,13 @@ export default async function OpiniaoPage({
   return (
     <>
       <JsonLd data={opinionSchema(opiniao)} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { nome: "Início", url: "/" },
+          { nome: "Opinião", url: "/opiniao" },
+          { nome: opiniao.titulo, url: opiniao.url },
+        ])}
+      />
       <ReadingProgress targetId="conteudo-opiniao" />
 
       <article id="conteudo-opiniao">

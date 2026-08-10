@@ -20,7 +20,7 @@ import {
 } from "@/lib/artigos";
 import { formatarData } from "@/lib/format";
 import { getLivroConfig } from "@/lib/livro";
-import { articleSchema } from "@/lib/schema";
+import { articleSchema, breadcrumbSchema } from "@/lib/schema";
 import { canonicalPara } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -59,6 +59,13 @@ export default async function ArtigoPage({
   return (
     <>
       <JsonLd data={articleSchema(artigo)} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { nome: "Início", url: "/" },
+          { nome: "Artigos", url: "/artigos" },
+          { nome: artigo.titulo, url: artigo.url },
+        ])}
+      />
       <ReadingProgress targetId="conteudo-artigo" />
 
       <article id="conteudo-artigo">

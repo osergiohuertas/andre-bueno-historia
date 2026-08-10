@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Playfair_Display, Source_Serif_4, Inter } from "next/font/google";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { personSchema } from "@/lib/schema";
+import { personSchema, websiteSchema } from "@/lib/schema";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -51,6 +51,7 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <JsonLd data={personSchema()} />
+        <JsonLd data={websiteSchema()} />
         {children}
 
         {umamiSrc && umamiWebsiteId && (

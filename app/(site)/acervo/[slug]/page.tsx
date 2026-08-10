@@ -7,9 +7,11 @@ import { PeriodoBadge } from "@/components/ui/PeriodoBadge";
 import { VoltarButton } from "@/components/ui/VoltarButton";
 import { MDXContent } from "@/components/mdx/MDXContent";
 import { PDFViewer } from "@/components/acervo/PDFViewer";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getAcervoPorSlug, getAcervoPublicado } from "@/lib/acervo";
 import { formatarData } from "@/lib/format";
 import { canonicalPara } from "@/lib/site";
+import { acervoDocumentoSchema, breadcrumbSchema } from "@/lib/schema";
 
 export function generateStaticParams() {
   return getAcervoPublicado().map((item) => ({ slug: item.slug }));
@@ -43,6 +45,14 @@ export default async function AcervoDocumentoPage({
 
   return (
     <Section>
+      <JsonLd data={acervoDocumentoSchema(item)} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { nome: "Início", url: "/" },
+          { nome: "Trabalhos técnicos", url: "/acervo?secao=documentos" },
+          { nome: item.titulo, url: item.url },
+        ])}
+      />
       <Container className="max-w-3xl">
         <VoltarButton fallbackHref="/acervo" className="mb-8" />
 
