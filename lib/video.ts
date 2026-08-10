@@ -1,5 +1,5 @@
 export type VideoEmbedInfo = {
-  provider: "youtube" | "vimeo";
+  provider: "youtube" | "vimeo" | "globoplay";
   id: string;
   thumbnailUrl: string | null;
   embedUrl: string;
@@ -34,6 +34,25 @@ export function parseVideoUrl(url: string): VideoEmbedInfo | null {
         id,
         thumbnailUrl: null,
         embedUrl: `https://player.vimeo.com/video/${id}?autoplay=1`,
+      };
+    }
+
+    // Globoplay não tem embed público documentado como o do YouTube/Vimeo
+    // — este é o padrão mais convencional (/v/{id}/ -> /embed/v/{id}/), sem
+    // confirmação de que a Globo permite embutir em terceiros. Por isso
+    // VideoEmbed.tsx mantém o link "Assistir no Globoplay" sempre visível
+    // junto do iframe, como alternativa caso não carregue.
+    if (u.hostname.includes("globoplay.globo.com")) {
+      const partes = u.pathname.split("/").filter(Boolean);
+      const idx = partes.indexOf("v");
+      const id = idx !== -1 ? partes[idx + 1] : undefined;
+      if (!id) return null;
+
+      return {
+        provider: "globoplay",
+        id,
+        thumbnailUrl: null,
+        embedUrl: `https://globoplay.globo.com/embed/v/${id}/`,
       };
     }
 
