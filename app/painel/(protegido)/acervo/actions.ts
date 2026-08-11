@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { slugUnico } from "@/lib/slug";
 import { uploadImagem } from "@/lib/upload";
+import { TAMANHO_MAXIMO_PDF_MB } from "@/lib/uploadConfig";
 import { redirect } from "next/navigation";
 import { commitAcervoDocumentoMdx, apagarAcervoDocumentoMdx } from "@/lib/github";
 import { getAcervoPorSlug } from "@/lib/acervo";
@@ -40,7 +41,7 @@ export async function uploadDocumentoAction(
   }
 
   const buffer = Buffer.from(await arquivo.arrayBuffer());
-  return uploadImagem(buffer, arquivo.name);
+  return uploadImagem(buffer, arquivo.name, TAMANHO_MAXIMO_PDF_MB);
 }
 
 function lerFormulario(formData: FormData) {

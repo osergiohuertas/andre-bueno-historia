@@ -5,3 +5,9 @@
 // mesma informação como ajuda antes de escolher o arquivo.
 export const FORMATOS_IMAGEM_ACEITOS = "JPEG, PNG, WebP, GIF, BMP, AVIF ou TIFF";
 export const TAMANHO_MAXIMO_MB = 20;
+
+// Limite de PDF pedido pelo André é 150MB, mas o bucket não pode passar do
+// teto global de upload do projeto Supabase (testado: 50MB passa, 60MB+
+// falha com 413 — é o limite de plano, só sobe via Dashboard → Project
+// Settings → Storage). Refletir aqui o que de fato funciona hoje.
+export const TAMANHO_MAXIMO_PDF_MB = 50;

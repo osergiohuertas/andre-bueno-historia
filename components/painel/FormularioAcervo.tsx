@@ -8,7 +8,11 @@ import {
   uploadDocumentoAction,
   type EstadoAcervo,
 } from "@/app/painel/(protegido)/acervo/actions";
-import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
+import {
+  FORMATOS_IMAGEM_ACEITOS,
+  TAMANHO_MAXIMO_MB,
+  TAMANHO_MAXIMO_PDF_MB,
+} from "@/lib/uploadConfig";
 import type { PeriodoId } from "@/data/periodos";
 
 type AcervoPreenchido = {
@@ -200,7 +204,7 @@ export function FormularioAcervo({
           o link de download exibido na página pública.
         </p>
         <p className="mb-3 font-serif text-xs text-chumbo-lt">
-          Só PDF — até {TAMANHO_MAXIMO_MB}MB.
+          Só PDF — até {TAMANHO_MAXIMO_PDF_MB}MB.
         </p>
 
         <input

@@ -13,6 +13,7 @@ const BUCKET = "uploads";
 export async function uploadImagem(
   arquivo: Buffer,
   nomeArquivo: string,
+  limiteMb: number = TAMANHO_MAXIMO_MB,
 ): Promise<{ ok: true; url: string } | { ok: false; erro: string }> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -53,7 +54,7 @@ export async function uploadImagem(
       if (resposta.status === 413 || erro?.error === "Payload too large") {
         return {
           ok: false,
-          erro: `Arquivo maior que o limite de ${TAMANHO_MAXIMO_MB}MB.`,
+          erro: `Arquivo maior que o limite de ${limiteMb}MB.`,
         };
       }
 
