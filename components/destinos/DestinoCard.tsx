@@ -26,7 +26,7 @@ export function DestinoCard({ destino }: { destino: Destino }) {
       </div>
 
       <div className="flex flex-1 flex-col gap-2 p-6">
-        <p className="meta text-lacre">{destino.tipologia}</p>
+        <p className="meta text-lacre">{destino.tipologias.join(" · ")}</p>
         <h3 className="font-display text-xl leading-snug text-ink">
           {destino.nome}
         </h3>

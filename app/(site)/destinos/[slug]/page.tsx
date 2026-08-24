@@ -71,12 +71,15 @@ export default async function DestinoPage({
         )}
 
         <div className="flex flex-wrap items-center gap-3">
-          <Link
-            href={`/destinos/tipo/${encodeURIComponent(destino.tipologia)}`}
-            className="meta border border-lacre px-2 py-1 text-lacre hover:bg-lacre hover:text-ouro"
-          >
-            {destino.tipologia}
-          </Link>
+          {destino.tipologias.map((tipologia) => (
+            <Link
+              key={tipologia}
+              href={`/destinos/tipo/${encodeURIComponent(tipologia)}`}
+              className="meta border border-lacre px-2 py-1 text-lacre hover:bg-lacre hover:text-ouro"
+            >
+              {tipologia}
+            </Link>
+          ))}
           <Link
             href={`/destinos/cidade/${encodeURIComponent(destino.cidade)}`}
             className="meta text-chumbo-lt hover:text-lacre"

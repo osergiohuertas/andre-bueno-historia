@@ -14,7 +14,7 @@ export type Destino = {
   telefone: string | null;
   site: string | null;
   foto: string | null;
-  tipologia: string;
+  tipologias: string[];
   categoriaProtecao: "Inventário" | "Tombamento" | "Registro" | null;
   anoReconhecimento: number | null;
   esferaProtecao: "Municipal" | "Estadual" | "Federal" | null;
@@ -59,7 +59,11 @@ async function getTodosOsDestinos(): Promise<Destino[]> {
       telefone: d.telefone,
       site: d.site,
       foto: d.foto,
-      tipologia: d.tipologia,
+      // Fallback pro tempo entre o deploy e a migration
+      // 20260811000001 rodar no Supabase (coluna nova) — sem isso, o
+      // build/render quebra em `.join()` enquanto o banco ainda não tem
+      // `tipologias`.
+      tipologias: d.tipologias ?? [],
       categoriaProtecao: d.categoria_protecao,
       anoReconhecimento: d.ano_reconhecimento,
       esferaProtecao: d.esfera_protecao,
@@ -95,8 +99,8 @@ export async function getDestinosPorTipologia(
   tipologia: string,
 ): Promise<Destino[]> {
   const destinos = await getDestinos();
-  return destinos.filter(
-    (d) => slugificar(d.tipologia) === slugificar(tipologia),
+  return destinos.filter((d) =>
+    d.tipologias.some((t) => slugificar(t) === slugificar(tipologia)),
   );
 }
 
@@ -107,7 +111,7 @@ export async function getCidadesComDestinos(): Promise<string[]> {
 
 export async function getTipologiasComDestinos(): Promise<string[]> {
   const destinos = await getDestinos();
-  return Array.from(new Set(destinos.map((d) => d.tipologia))).sort();
+  return Array.from(new Set(destinos.flatMap((d) => d.tipologias))).sort();
 }
 
 /**

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { periodosOrdenados, type PeriodoId } from "@/data/periodos";
-import type { PontoArtigo, PontoDestino } from "@/lib/atlas";
+import type { PontoArtigo, PontoDestino, PontoFoto } from "@/lib/atlas";
 
 // MapLibre é open-source e não pede conta/token pra funcionar — o estilo
 // vem de um provedor de tiles livre por padrão (OpenFreeMap), mas dá pra
@@ -38,7 +38,22 @@ function destinosParaGeoJSON(pontos: PontoDestino[]) {
       properties: {
         slug: p.slug,
         titulo: p.titulo,
-        tipologia: p.tipologia,
+        tipologias: p.tipologias.join(" · "),
+        url: p.url,
+      },
+    })),
+  };
+}
+
+function fotosParaGeoJSON(pontos: PontoFoto[]) {
+  return {
+    type: "FeatureCollection" as const,
+    features: pontos.map((p) => ({
+      type: "Feature" as const,
+      geometry: { type: "Point" as const, coordinates: [p.lng, p.lat] },
+      properties: {
+        slug: p.id,
+        titulo: p.titulo,
         url: p.url,
       },
     })),
@@ -47,6 +62,7 @@ function destinosParaGeoJSON(pontos: PontoDestino[]) {
 
 const CAMADAS_ARTIGOS = ["artigos-cluster", "artigos-cluster-count", "artigos-ponto"];
 const CAMADAS_DESTINOS = ["destinos-cluster", "destinos-cluster-count", "destinos-ponto"];
+const CAMADAS_FOTOS = ["fotos-cluster", "fotos-cluster-count", "fotos-ponto"];
 
 const CENTRO_INICIAL: [number, number] = [-47, -15];
 const ZOOM_INICIAL = 3.2;
@@ -54,12 +70,15 @@ const ZOOM_INICIAL = 3.2;
 export function AtlasMapa({
   pontosArtigos,
   pontosDestinos,
+  pontosFotos = [],
   modoQuiosque = false,
   onSelecionarPonto,
   mensagemIndisponivel,
 }: {
   pontosArtigos: PontoArtigo[];
   pontosDestinos: PontoDestino[];
+  /** Opcional — o totem ainda não sabe abrir uma ficha de foto, então não passa essa prop. */
+  pontosFotos?: PontoFoto[];
   /** Desabilita gestos de mouse/multitoque (rotação, inclinação) e troca o chrome por controles maiores — para o totem (Fase 6). */
   modoQuiosque?: boolean;
   /** Se definido, tocar num ponto chama isto em vez de abrir o popup com link — o totem decide se mostra a ficha do destino ou a prévia do artigo. */
@@ -76,6 +95,7 @@ export function AtlasMapa({
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [camadaArtigos, setCamadaArtigos] = useState(true);
   const [camadaDestinos, setCamadaDestinos] = useState(true);
+  const [camadaFotos, setCamadaFotos] = useState(true);
   const [periodoFiltro, setPeriodoFiltro] = useState<PeriodoId | null>(null);
   // Diferente do Mapbox, não há token pra checar de antemão — a
   // indisponibilidade só aparece se o carregamento do estilo/tiles falhar
@@ -120,6 +140,12 @@ export function AtlasMapa({
       map.addSource("destinos", {
         type: "geojson",
         data: destinosParaGeoJSON(pontosDestinos),
+        cluster: true,
+        clusterRadius: 40,
+      });
+      map.addSource("fotos", {
+        type: "geojson",
+        data: fotosParaGeoJSON(pontosFotos),
         cluster: true,
         clusterRadius: 40,
       });
@@ -180,6 +206,58 @@ export function AtlasMapa({
         },
       });
 
+      map.addLayer({
+        id: "fotos-cluster",
+        type: "circle",
+        source: "fotos",
+        filter: ["has", "point_count"],
+        paint: { "circle-color": "#8A2E2E", "circle-radius": 16, "circle-opacity": 0.85 },
+      });
+      map.addLayer({
+        id: "fotos-cluster-count",
+        type: "symbol",
+        source: "fotos",
+        filter: ["has", "point_count"],
+        layout: { "text-field": "{point_count_abbreviated}", "text-size": 12, "text-font": ["DIN Pro Bold"] },
+        paint: { "text-color": "#F7F3EC" },
+      });
+      map.addLayer({
+        id: "fotos-ponto",
+        type: "circle",
+        source: "fotos",
+        filter: ["!", ["has", "point_count"]],
+        paint: {
+          "circle-color": "#8A2E2E",
+          "circle-radius": 7,
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "#F7F3EC",
+        },
+      });
+
+      // Fotos não têm ficha própria (nem no site, nem no totem) — o clique
+      // sempre abre um popup com a miniatura, nunca passa por
+      // onSelecionarPonto (cujo contrato só cobre artigo | destino).
+      map.on("click", "fotos-ponto", (e) => {
+        const feature = e.features?.[0];
+        if (!feature || feature.geometry.type !== "Point") return;
+        const coords = feature.geometry.coordinates.slice(0, 2) as [number, number];
+        const titulo = String(feature.properties?.titulo ?? "");
+        const url = String(feature.properties?.url ?? "");
+
+        new maplibregl.Popup({ closeButton: true, offset: 12 })
+          .setLngLat(coords)
+          .setHTML(
+            `<img src="${url}" alt="${titulo}" style="display:block;width:160px;height:120px;object-fit:cover;" /><p style="font-family: Inter, sans-serif; font-size: 12px; color: #0E1B33; margin-top:6px;">${titulo}</p>`,
+          )
+          .addTo(map);
+      });
+      map.on("mouseenter", "fotos-ponto", () => {
+        map.getCanvas().style.cursor = "pointer";
+      });
+      map.on("mouseleave", "fotos-ponto", () => {
+        map.getCanvas().style.cursor = "";
+      });
+
       for (const layerId of ["artigos-ponto", "destinos-ponto"] as const) {
         map.on("click", layerId, (e) => {
           const feature = e.features?.[0];
@@ -216,6 +294,7 @@ export function AtlasMapa({
       for (const [layerId, sourceId] of [
         ["artigos-cluster", "artigos"],
         ["destinos-cluster", "destinos"],
+        ["fotos-cluster", "fotos"],
       ] as const) {
         map.on("click", layerId, (e) => {
           const feature = e.features?.[0];
@@ -256,6 +335,15 @@ export function AtlasMapa({
       if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", visibilidade);
     }
   }, [camadaDestinos]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !map.isStyleLoaded()) return;
+    const visibilidade = camadaFotos ? "visible" : "none";
+    for (const id of CAMADAS_FOTOS) {
+      if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", visibilidade);
+    }
+  }, [camadaFotos]);
 
   // Filtro temporal só afeta a camada de artigos — destinos não têm
   // `periodo` (são atemporais: o destino existe hoje, independente do
@@ -369,6 +457,22 @@ export function AtlasMapa({
           <span className="inline-block h-3 w-3 rounded-full bg-ouro" aria-hidden />
           <span className="meta text-chumbo">Destinos</span>
         </label>
+        {pontosFotos.length > 0 && (
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={camadaFotos}
+              onChange={(e) => setCamadaFotos(e.target.checked)}
+              className="h-4 w-4"
+            />
+            <span
+              className="inline-block h-3 w-3 rounded-full"
+              style={{ backgroundColor: "#8A2E2E" }}
+              aria-hidden
+            />
+            <span className="meta text-chumbo">Fotos</span>
+          </label>
+        )}
       </div>
 
       <div className="mb-4 flex flex-wrap gap-2">

@@ -1,5 +1,6 @@
 import { getArtigosPublicados } from "@/lib/artigos";
 import { getDestinos } from "@/lib/destinos";
+import { getAcervoMidia } from "@/lib/obra";
 import type { PeriodoId } from "@/data/periodos";
 
 export type PontoArtigo = {
@@ -17,10 +18,19 @@ export type PontoDestino = {
   tipo: "destino";
   slug: string;
   titulo: string;
-  tipologia: string;
+  tipologias: string[];
   lat: number;
   lng: number;
   url: string;
+};
+
+export type PontoFoto = {
+  tipo: "foto";
+  id: string;
+  titulo: string;
+  url: string;
+  lat: number;
+  lng: number;
 };
 
 /**
@@ -50,9 +60,27 @@ export async function getPontosDestinos(): Promise<PontoDestino[]> {
     tipo: "destino" as const,
     slug: d.slug,
     titulo: d.nome,
-    tipologia: d.tipologia,
+    tipologias: d.tipologias,
     lat: d.coordenadas.lat,
     lng: d.coordenadas.lng,
     url: `/destinos/${d.slug}`,
   }));
+}
+
+/**
+ * Fotos com local de registro (lat/lng) preenchido no painel — só essas
+ * aparecem no Atlas, o resto do acervo de fotos continua só em /acervo.
+ */
+export async function getPontosFotos(): Promise<PontoFoto[]> {
+  const fotos = await getAcervoMidia("foto");
+  return fotos
+    .filter((f) => f.lat != null && f.lng != null)
+    .map((f) => ({
+      tipo: "foto" as const,
+      id: f.id,
+      titulo: f.titulo,
+      url: f.url,
+      lat: f.lat as number,
+      lng: f.lng as number,
+    }));
 }

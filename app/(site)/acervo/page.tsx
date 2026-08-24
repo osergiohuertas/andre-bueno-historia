@@ -8,7 +8,13 @@ import { PublicacoesSection } from "@/components/acervo/PublicacoesSection";
 import { VideosSection } from "@/components/acervo/VideosSection";
 import { FotosSection } from "@/components/acervo/FotosSection";
 import { getAcervoPublicado, getPeriodosComAcervo } from "@/lib/acervo";
-import { getPontosArtigos, getPontosDestinos, type PontoDestino } from "@/lib/atlas";
+import {
+  getPontosArtigos,
+  getPontosDestinos,
+  getPontosFotos,
+  type PontoDestino,
+  type PontoFoto,
+} from "@/lib/atlas";
 import { getPublicacoes, getAcervoMidia, type CategoriaVideo } from "@/lib/obra";
 import { canonicalPara } from "@/lib/site";
 
@@ -66,7 +72,7 @@ export default async function AcervoPage({
   const comConteudo = getPeriodosComAcervo();
   const pontosArtigos = getPontosArtigos();
 
-  const [livros, publicacoes, videosTodos, fotos, pontosDestinos] =
+  const [livros, publicacoes, videosTodos, fotos, pontosDestinos, pontosFotos] =
     await Promise.all([
       getPublicacoes(["livro"]),
       getPublicacoes(["artigo_academico", "capitulo", "ensaio"]),
@@ -75,6 +81,7 @@ export default async function AcervoPage({
       secao === "atlas"
         ? getPontosDestinos()
         : Promise.resolve([] as PontoDestino[]),
+      secao === "atlas" ? getPontosFotos() : Promise.resolve([] as PontoFoto[]),
     ]);
 
   const videos =
@@ -149,7 +156,11 @@ export default async function AcervoPage({
         />
       )}
       {secao === "atlas" && (
-        <AtlasSection pontosArtigos={pontosArtigos} pontosDestinos={pontosDestinos} />
+        <AtlasSection
+          pontosArtigos={pontosArtigos}
+          pontosDestinos={pontosDestinos}
+          pontosFotos={pontosFotos}
+        />
       )}
       {secao === "livros" && <LivrosSection livros={livros} />}
       {secao === "publicacoes" && (

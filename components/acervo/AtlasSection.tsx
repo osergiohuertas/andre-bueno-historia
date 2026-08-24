@@ -1,12 +1,14 @@
 import { AtlasMapa } from "@/components/atlas/AtlasMapa";
-import type { PontoArtigo, PontoDestino } from "@/lib/atlas";
+import type { PontoArtigo, PontoDestino, PontoFoto } from "@/lib/atlas";
 
 export function AtlasSection({
   pontosArtigos,
   pontosDestinos,
+  pontosFotos,
 }: {
   pontosArtigos: PontoArtigo[];
   pontosDestinos: PontoDestino[];
+  pontosFotos: PontoFoto[];
 }) {
   return (
     <section className="py-10 md:py-14">
@@ -22,7 +24,11 @@ export function AtlasSection({
         </p>
       </div>
 
-      <AtlasMapa pontosArtigos={pontosArtigos} pontosDestinos={pontosDestinos} />
+      <AtlasMapa
+        pontosArtigos={pontosArtigos}
+        pontosDestinos={pontosDestinos}
+        pontosFotos={pontosFotos}
+      />
     </section>
   );
 }

@@ -27,11 +27,15 @@ export function FormularioDestino({
 }) {
   const [estado, formAction, pendente] = useActionState(action, null);
 
-  const tipologiaInicial = destino?.tipologia ?? "";
-  const eraPadrao = (TIPOLOGIAS_DESTINO as readonly string[]).includes(
-    tipologiaInicial,
+  const [categorias, setCategorias] = useState<string[]>(
+    destino?.tipologias ?? [],
   );
-  const [categoria, setCategoria] = useState(eraPadrao ? tipologiaInicial : "");
+
+  function alternarCategoria(tipologia: string, marcada: boolean) {
+    setCategorias((atual) =>
+      marcada ? [...atual, tipologia] : atual.filter((t) => t !== tipologia),
+    );
+  }
 
   const [foto, setFoto] = useState(destino?.foto ?? "");
   const [lat, setLat] = useState(destino?.coordenadas?.lat ?? 0);
@@ -57,7 +61,9 @@ export function FormularioDestino({
 
   return (
     <form action={formAction} className="mt-8 flex flex-col gap-6">
-      <input type="hidden" name="tipologia" value={categoria} />
+      {categorias.map((t) => (
+        <input key={t} type="hidden" name="tipologias" value={t} />
+      ))}
       <input type="hidden" name="foto" value={foto} />
 
       <div>
@@ -87,29 +93,26 @@ export function FormularioDestino({
           />
         </div>
         <div className="flex-1">
-          <label htmlFor="categoria" className="meta mb-1 block text-chumbo-lt">
-            Categoria
-          </label>
-          <select
-            id="categoria"
-            value={categoria}
-            onChange={(e) => setCategoria(e.target.value)}
-            required
-            className="w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
-          >
-            <option value="" disabled>
-              Escolha uma categoria
-            </option>
+          <p className="meta mb-2 text-chumbo-lt">
+            Categoria — pode marcar mais de uma
+          </p>
+          <div className="flex flex-wrap gap-4">
             {TIPOLOGIAS_DESTINO.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
+              <label key={t} className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={categorias.includes(t)}
+                  onChange={(e) => alternarCategoria(t, e.target.checked)}
+                  className="h-4 w-4 border border-borda"
+                />
+                <span className="text-ink">{t}</span>
+              </label>
             ))}
-          </select>
+          </div>
         </div>
       </div>
 
-      {categoria === "Patrimônios Culturais" && (
+      {categorias.includes("Patrimônios Culturais") && (
         <div className="flex flex-col gap-6 border border-borda p-6">
           <p className="meta text-lacre">Proteção do patrimônio</p>
 
@@ -405,7 +408,7 @@ export function FormularioDestino({
       <div className="flex items-center gap-4">
         <button
           type="submit"
-          disabled={pendente || !categoria}
+          disabled={pendente || categorias.length === 0}
           className="border border-ink bg-ink px-6 py-3 text-ouro transition-colors hover:bg-lacre hover:border-lacre disabled:cursor-not-allowed disabled:opacity-50"
         >
           <span className="meta text-ouro">{pendente ? "Salvando…" : "Salvar"}</span>

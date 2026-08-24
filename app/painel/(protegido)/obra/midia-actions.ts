@@ -14,6 +14,9 @@ function revalidarMidia(tipo: "video" | "foto") {
 }
 
 function lerFormulario(formData: FormData, tipo: "video" | "foto") {
+  const lat = formData.get("lat");
+  const lng = formData.get("lng");
+
   return {
     tipo,
     titulo: String(formData.get("titulo") ?? "").trim(),
@@ -22,6 +25,8 @@ function lerFormulario(formData: FormData, tipo: "video" | "foto") {
     url: String(formData.get("url") ?? "").trim(),
     credito: String(formData.get("credito") ?? "").trim() || null,
     data: String(formData.get("data") ?? "").trim() || null,
+    lat: lat != null && lat !== "" ? Number(lat) : null,
+    lng: lng != null && lng !== "" ? Number(lng) : null,
     publicado: formData.get("publicado") === "on",
   };
 }

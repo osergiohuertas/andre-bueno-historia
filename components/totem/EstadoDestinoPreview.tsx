@@ -4,7 +4,7 @@ import { ZonaAlcance } from "@/components/totem/ZonaAlcance";
 export type DestinoPreviewData = {
   slug: string;
   nome: string;
-  tipologia: string;
+  tipologias: string[];
   cidade: string;
   endereco: string;
   horario: string;
@@ -29,7 +29,7 @@ export function EstadoDestinoPreview({
         className="absolute inset-x-0 top-0 flex flex-col items-center justify-end px-10 text-center"
         style={{ height: "20vh" }}
       >
-        <p className="meta text-ouro">{destino.tipologia}</p>
+        <p className="meta text-ouro">{destino.tipologias.join(" · ")}</p>
         <h1 className="mt-2 line-clamp-2 font-display text-xl text-paper">
           {destino.nome}
         </h1>

@@ -27,7 +27,7 @@ function lerFormulario(formData: FormData) {
     telefone: String(formData.get("telefone") ?? "").trim() || null,
     site: String(formData.get("site") ?? "").trim() || null,
     foto: String(formData.get("foto") ?? "").trim() || null,
-    tipologia: String(formData.get("tipologia") ?? "").trim(),
+    tipologias: formData.getAll("tipologias").map((t) => String(t).trim()).filter(Boolean),
     categoria_protecao:
       (String(formData.get("categoria_protecao") ?? "").trim() || null) as
         | "Inventário"
@@ -62,7 +62,7 @@ export async function criarDestino(
     !dados.endereco ||
     !dados.horario ||
     !dados.ingresso ||
-    !dados.tipologia ||
+    dados.tipologias.length === 0 ||
     !dados.data_verificacao
   ) {
     return { ok: false, mensagem: "Preencha todos os campos obrigatórios." };
@@ -101,7 +101,7 @@ export async function atualizarDestino(
     !dados.endereco ||
     !dados.horario ||
     !dados.ingresso ||
-    !dados.tipologia ||
+    dados.tipologias.length === 0 ||
     !dados.data_verificacao
   ) {
     return { ok: false, mensagem: "Preencha todos os campos obrigatórios." };

@@ -1,10 +1,11 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import type { EstadoMidia } from "@/app/painel/(protegido)/obra/midia-actions";
 import type { Database } from "@/types/supabase";
 import type { CategoriaVideo } from "@/lib/obra";
 import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
+import { SeletorCoordenadas } from "@/components/painel/SeletorCoordenadas";
 
 type Midia = Database["public"]["Tables"]["acervo_midia"]["Row"];
 
@@ -28,12 +29,25 @@ export function FormularioMidia({
 }) {
   const [estado, formAction, pendente] = useActionState(action, null);
 
+  const [temLocal, setTemLocal] = useState(
+    midia?.lat != null && midia?.lng != null,
+  );
+  const [lat, setLat] = useState(midia?.lat ?? 0);
+  const [lng, setLng] = useState(midia?.lng ?? 0);
+
   return (
     <form
       action={formAction}
       encType={tipo === "foto" ? "multipart/form-data" : undefined}
       className="mt-8 flex flex-col gap-6"
     >
+      {temLocal && (
+        <>
+          <input type="hidden" name="lat" value={lat} />
+          <input type="hidden" name="lng" value={lng} />
+        </>
+      )}
+
       <div>
         <label htmlFor="titulo" className="meta mb-1 block text-chumbo-lt">
           Título
@@ -132,6 +146,37 @@ export function FormularioMidia({
               defaultValue={midia?.credito ?? ""}
               className="w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
             />
+          </div>
+
+          <div>
+            <label className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={temLocal}
+                onChange={(e) => setTemLocal(e.target.checked)}
+                className="h-5 w-5 border border-borda"
+              />
+              <span className="text-ink">
+                Registrar local no mapa (opcional)
+              </span>
+            </label>
+            <p className="mt-1 font-serif text-xs text-chumbo-lt">
+              Onde a foto foi registrada — marcando, ela aparece como ponto
+              no Atlas junto de artigos e destinos.
+            </p>
+
+            {temLocal && (
+              <div className="mt-3">
+                <SeletorCoordenadas
+                  lat={lat}
+                  lng={lng}
+                  onMudar={(novaLat, novaLng) => {
+                    setLat(novaLat);
+                    setLng(novaLng);
+                  }}
+                />
+              </div>
+            )}
           </div>
         </>
       )}

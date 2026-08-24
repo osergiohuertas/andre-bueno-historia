@@ -56,7 +56,7 @@ export interface Database {
           telefone: string | null;
           site: string | null;
           foto: string | null;
-          tipologia: string;
+          tipologias: string[];
           categoria_protecao: "Inventário" | "Tombamento" | "Registro" | null;
           ano_reconhecimento: number | null;
           esfera_protecao: "Municipal" | "Estadual" | "Federal" | null;
@@ -109,6 +109,8 @@ export interface Database {
           url: string;
           credito: string | null;
           data: string | null;
+          lat: number | null;
+          lng: number | null;
           publicado: boolean;
           created_at: string;
           updated_at: string;

@@ -30,6 +30,8 @@ export type Midia = {
   url: string;
   credito: string | null;
   data: string | null;
+  lat: number | null;
+  lng: number | null;
 };
 
 export async function getPublicacoes(
@@ -78,7 +80,7 @@ export async function getAcervoMidia(
     const supabase = createPublicClient();
     let query = supabase
       .from("acervo_midia")
-      .select("id, tipo, titulo, descricao, categoria, url, credito, data")
+      .select("id, tipo, titulo, descricao, categoria, url, credito, data, lat, lng")
       .eq("publicado", true)
       .eq("tipo", tipo);
 

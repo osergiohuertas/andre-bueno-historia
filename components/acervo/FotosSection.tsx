@@ -27,8 +27,13 @@ export function FotosSection({ fotos }: { fotos: Midia[] }) {
               </div>
               <figcaption className="p-4">
                 <p className="font-serif text-sm text-ink">{foto.titulo}</p>
+                {foto.descricao && (
+                  <p className="mt-1 font-serif text-sm leading-relaxed text-chumbo">
+                    {foto.descricao}
+                  </p>
+                )}
                 {foto.credito && (
-                  <p className="meta mt-1 text-chumbo-lt">
+                  <p className="meta mt-2 text-chumbo-lt">
                     Crédito: {foto.credito}
                   </p>
                 )}

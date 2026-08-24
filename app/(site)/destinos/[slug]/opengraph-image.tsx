@@ -13,6 +13,8 @@ export default async function OpenGraphDestino({
 
   return gerarImagemOg({
     titulo: destino?.nome ?? "André Bueno",
-    eyebrow: destino ? `${destino.tipologia} · ${destino.cidade}` : undefined,
+    eyebrow: destino
+      ? `${destino.tipologias.join(" · ")} · ${destino.cidade}`
+      : undefined,
   });
 }

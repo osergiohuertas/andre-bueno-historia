@@ -88,7 +88,7 @@ export default async function ModoTotemPage() {
     return {
       slug: d.slug,
       nome: d.nome,
-      tipologia: d.tipologia,
+      tipologias: d.tipologias,
       cidade: d.cidade,
       endereco: d.endereco,
       horario: d.horario,
