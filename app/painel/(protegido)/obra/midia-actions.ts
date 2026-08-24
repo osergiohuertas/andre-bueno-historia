@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { uploadImagem } from "@/lib/upload";
+import { exigirAdmin } from "@/lib/painel-auth";
 
 export type EstadoMidia = { ok: boolean; mensagem: string } | null;
 
@@ -36,6 +37,9 @@ export async function criarMidia(
   _estadoAnterior: EstadoMidia,
   formData: FormData,
 ): Promise<EstadoMidia> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const dados = lerFormulario(formData, tipo);
 
   if (!dados.titulo) {
@@ -85,6 +89,9 @@ export async function atualizarMidia(
   _estadoAnterior: EstadoMidia,
   formData: FormData,
 ): Promise<EstadoMidia> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const dados = lerFormulario(formData, tipo);
 
   if (!dados.titulo) {
@@ -123,6 +130,9 @@ export async function apagarMidia(
   id: string,
   tipo: "video" | "foto",
 ): Promise<{ ok: boolean; mensagem: string } | void> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const supabase = await createClient();
   const { error } = await supabase
     .from("acervo_midia")

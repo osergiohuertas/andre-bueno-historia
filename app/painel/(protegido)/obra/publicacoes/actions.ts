@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { gerarSlug } from "@/lib/slug";
+import { exigirAdmin } from "@/lib/painel-auth";
 
 export type EstadoPublicacao = { ok: boolean; mensagem: string } | null;
 
@@ -34,6 +35,9 @@ export async function criarPublicacao(
   _estadoAnterior: EstadoPublicacao,
   formData: FormData,
 ): Promise<EstadoPublicacao> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const dados = lerFormulario(formData);
 
   if (!dados.titulo || !dados.veiculo || !dados.ano) {
@@ -65,6 +69,9 @@ export async function atualizarPublicacao(
   _estadoAnterior: EstadoPublicacao,
   formData: FormData,
 ): Promise<EstadoPublicacao> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const dados = lerFormulario(formData);
 
   if (!dados.titulo || !dados.veiculo || !dados.ano) {
@@ -88,6 +95,9 @@ export async function atualizarPublicacao(
 export async function apagarPublicacao(
   id: string,
 ): Promise<{ ok: boolean; mensagem: string } | void> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const supabase = await createClient();
   const { error } = await supabase.from("publicacoes").delete().eq("id", id);
 

@@ -18,6 +18,8 @@ export type ArtigoMdxBruto = {
   imagemCapa?: string;
   conexaoLivro?: string;
   publicado: boolean;
+  autorId?: string;
+  autorNome?: string;
   data: string;
   corpo: string;
 };
@@ -54,6 +56,8 @@ export function lerArtigoMdxBruto(slug: string): ArtigoMdxBruto | null {
     imagemCapa: fm.imagemCapa ? String(fm.imagemCapa) : undefined,
     conexaoLivro: fm.conexaoLivro ? String(fm.conexaoLivro) : undefined,
     publicado: Boolean(fm.publicado),
+    autorId: fm.autorId ? String(fm.autorId) : undefined,
+    autorNome: fm.autorNome ? String(fm.autorNome) : undefined,
     data: String(fm.data ?? ""),
     corpo: corpo.trim(),
   };

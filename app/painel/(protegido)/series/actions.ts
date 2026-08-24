@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { exigirAdmin } from "@/lib/painel-auth";
 
 export type EstadoSerie = { ok: boolean; mensagem: string } | null;
 
@@ -25,6 +26,9 @@ export async function criarSerie(
   _estadoAnterior: EstadoSerie,
   formData: FormData,
 ): Promise<EstadoSerie> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const dados = lerFormulario(formData);
 
   if (!dados.slug || !dados.numero || !dados.nome) {
@@ -51,6 +55,9 @@ export async function atualizarSerie(
   _estadoAnterior: EstadoSerie,
   formData: FormData,
 ): Promise<EstadoSerie> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const dados = lerFormulario(formData);
 
   if (!dados.slug || !dados.numero || !dados.nome) {
@@ -72,6 +79,9 @@ export async function atualizarSerie(
 export async function apagarSerie(
   id: string,
 ): Promise<{ ok: boolean; mensagem: string } | void> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const supabase = await createClient();
   const { error } = await supabase.from("series").delete().eq("id", id);
 

@@ -57,6 +57,11 @@ const artigos = defineCollection({
       // pelo André para aquele artigo específico.
       conexaoLivro: s.string().optional(),
       publicado: s.boolean().default(false),
+      // Presentes só em artigos publicados por um colaborador (Fase de
+      // "níveis de usuário no painel") — ausentes nos artigos do André,
+      // que continua sendo o autor padrão (NOME_AUTOR em lib/schema.ts).
+      autorId: s.string().optional(),
+      autorNome: s.string().optional(),
       data: s.isodate(),
       body: s.mdx(),
       toc: s.toc({ maxDepth: 3 }),

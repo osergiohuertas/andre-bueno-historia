@@ -179,6 +179,23 @@ export interface Database {
         Update: never;
         Relationships: [];
       };
+      colaboradores: {
+        Row: {
+          id: string;
+          nome: string;
+          email: string;
+          ativo: boolean;
+          criado_em: string;
+        };
+        Insert: Omit<
+          Database["public"]["Tables"]["colaboradores"]["Row"],
+          "criado_em" | "ativo"
+        > & { ativo?: boolean };
+        Update: Partial<
+          Pick<Database["public"]["Tables"]["colaboradores"]["Row"], "ativo">
+        >;
+        Relationships: [];
+      };
       series: {
         Row: {
           id: string;

@@ -87,6 +87,12 @@ export default async function ArtigoPage({
                   </p>
                 )}
                 <div className="meta mt-6 flex flex-wrap gap-x-4 gap-y-2 text-chumbo-lt">
+                  {artigo.autorNome && (
+                    <>
+                      <span>Por {artigo.autorNome}</span>
+                      <span aria-hidden>·</span>
+                    </>
+                  )}
                   <span>{formatarData(artigo.data)}</span>
                   <span aria-hidden>·</span>
                   <span>{artigo.leituraMinutos} min de leitura</span>

@@ -53,7 +53,7 @@ export function articleSchema(artigo: Artigo) {
     headline: artigo.titulo,
     description: artigo.excerpt,
     datePublished: artigo.data,
-    author: { "@type": "Person", name: NOME_AUTOR },
+    author: { "@type": "Person", name: artigo.autorNome ?? NOME_AUTOR },
     url: `${SITE_URL}${artigo.url}`,
     ...(artigo.imagemCapa ? { image: artigo.imagemCapa } : {}),
   };

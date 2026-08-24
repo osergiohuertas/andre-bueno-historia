@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { slugUnico } from "@/lib/slug";
 import { commitGlossarioJson, apagarGlossarioJson } from "@/lib/github";
 import { lerTermoGlossarioBruto } from "@/lib/glossarioAdmin";
+import { exigirAdmin } from "@/lib/painel-auth";
 
 export type EstadoGlossario =
   | { ok: boolean; mensagem: string; url?: string }
@@ -36,6 +37,9 @@ export async function criarTermoGlossario(
   _estadoAnterior: EstadoGlossario,
   formData: FormData,
 ): Promise<EstadoGlossario> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const dados = lerFormulario(formData);
   const erro = validar(dados);
   if (erro) return { ok: false, mensagem: erro };
@@ -61,6 +65,9 @@ export async function atualizarTermoGlossario(
   _estadoAnterior: EstadoGlossario,
   formData: FormData,
 ): Promise<EstadoGlossario> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const dados = lerFormulario(formData);
   const erro = validar(dados);
   if (erro) return { ok: false, mensagem: erro };
@@ -79,6 +86,9 @@ export async function atualizarTermoGlossario(
 export async function apagarTermoGlossarioAction(
   slug: string,
 ): Promise<{ ok: boolean; mensagem: string } | void> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const resultado = await apagarGlossarioJson(slug);
   if (!resultado.ok) {
     return { ok: false, mensagem: resultado.erro };

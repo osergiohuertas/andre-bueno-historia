@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { sanitizarTextoRico } from "@/lib/textoRico";
 import { revalidarPorGrupo } from "@/lib/revalidacao";
 import { uploadImagem } from "@/lib/upload";
+import { exigirAdmin } from "@/lib/painel-auth";
 
 export type EstadoSalvar = { ok: boolean; mensagem: string } | null;
 
@@ -24,6 +25,9 @@ export async function salvarGrupo(
   _estadoAnterior: EstadoSalvar,
   formData: FormData,
 ): Promise<EstadoSalvar> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const supabase = await createClient();
 
   const { data: campos, error: erroCampos } = await supabase
@@ -76,6 +80,9 @@ export async function salvarGrupo(
  * (o próprio update já vira uma entrada nova no histórico via trigger).
  */
 export async function reverterCampo(chave: string, valor: string) {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return;
+
   const supabase = await createClient();
 
   const { data: config } = await supabase

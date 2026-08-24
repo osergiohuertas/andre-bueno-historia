@@ -4,6 +4,7 @@ import { uploadImagem } from "@/lib/upload";
 import { commitOpiniaoMdx } from "@/lib/github";
 import { slugUnico } from "@/lib/slug";
 import { getOpiniaoBySlug } from "@/lib/opinioes";
+import { exigirAdmin } from "@/lib/painel-auth";
 import type { PeriodoId } from "@/data/periodos";
 
 export async function uploadImagemCapaAction(
@@ -27,6 +28,9 @@ export async function publicarOpiniaoAction(
   _estado: EstadoPublicacaoOpiniao,
   formData: FormData,
 ): Promise<EstadoPublicacaoOpiniao> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const titulo = (formData.get("titulo") as string)?.trim();
   const subtitulo = (formData.get("subtitulo") as string)?.trim();
   const excerpt = (formData.get("excerpt") as string)?.trim();

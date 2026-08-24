@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { gerarSlug } from "@/lib/slug";
+import { exigirAdmin } from "@/lib/painel-auth";
 
 export type EstadoDestino = { ok: boolean; mensagem: string } | null;
 
@@ -54,6 +55,9 @@ export async function criarDestino(
   _estadoAnterior: EstadoDestino,
   formData: FormData,
 ): Promise<EstadoDestino> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const dados = lerFormulario(formData);
 
   if (
@@ -93,6 +97,9 @@ export async function atualizarDestino(
   _estadoAnterior: EstadoDestino,
   formData: FormData,
 ): Promise<EstadoDestino> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const dados = lerFormulario(formData);
 
   if (
@@ -127,6 +134,9 @@ export async function atualizarDestino(
 export async function apagarDestino(
   id: string,
 ): Promise<{ ok: boolean; mensagem: string } | void> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const supabase = await createClient();
 
   // Apaga primeiro os vínculos com artigos (evita violar FK caso não haja
@@ -148,6 +158,9 @@ export async function alternarVinculoArtigo(
   artigoSlug: string,
   vincular: boolean,
 ): Promise<{ ok: boolean }> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return { ok: false };
+
   const supabase = await createClient();
 
   if (vincular) {

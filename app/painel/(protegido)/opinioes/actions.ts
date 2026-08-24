@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { commitOpiniaoMdx, apagarOpiniaoMdx } from "@/lib/github";
+import { exigirAdmin } from "@/lib/painel-auth";
 import type { PeriodoId } from "@/data/periodos";
 import type { EstadoPublicacaoOpiniao } from "@/app/painel/(protegido)/nova-opiniao/actions";
 
@@ -17,6 +18,9 @@ export async function atualizarOpiniaoAction(
   _estado: EstadoPublicacaoOpiniao,
   formData: FormData,
 ): Promise<EstadoPublicacaoOpiniao> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const titulo = (formData.get("titulo") as string)?.trim();
   const subtitulo = (formData.get("subtitulo") as string)?.trim();
   const excerpt = (formData.get("excerpt") as string)?.trim();
@@ -89,6 +93,9 @@ export async function atualizarOpiniaoAction(
 export async function apagarOpiniaoAction(
   slug: string,
 ): Promise<{ ok: boolean; mensagem: string } | void> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const resultado = await apagarOpiniaoMdx(slug);
   if (!resultado.ok) {
     return { ok: false, mensagem: resultado.erro };

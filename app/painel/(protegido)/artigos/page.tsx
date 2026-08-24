@@ -2,16 +2,24 @@ import Link from "next/link";
 import { getTodosArtigos } from "@/lib/artigos";
 import { getPeriodo } from "@/data/periodos";
 import { ListaFiltravel } from "@/components/painel/ListaFiltravel";
+import { getSessaoPainel } from "@/lib/painel-auth";
 
-export default function ArtigosPainelPage() {
-  const artigos = getTodosArtigos();
+export default async function ArtigosPainelPage() {
+  const sessao = await getSessaoPainel();
+  const todosArtigos = getTodosArtigos();
+  const artigos =
+    sessao?.papel === "colaborador"
+      ? todosArtigos.filter((a) => a.autorId === sessao.userId)
+      : todosArtigos;
 
   return (
     <div>
       <div className="flex items-center justify-between">
         <div>
           <p className="meta text-lacre">Painel</p>
-          <h1 className="mt-3 font-display text-3xl text-ink">Artigos</h1>
+          <h1 className="mt-3 font-display text-3xl text-ink">
+            {sessao?.papel === "colaborador" ? "Meus artigos" : "Artigos"}
+          </h1>
         </div>
         <Link
           href="/painel/novo-artigo"

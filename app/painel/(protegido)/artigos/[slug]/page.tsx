@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { FormularioArtigo } from "@/components/painel/FormularioArtigo";
 import { ConfirmarExclusao } from "@/components/painel/ConfirmarExclusao";
@@ -9,6 +9,7 @@ import {
 } from "@/app/painel/(protegido)/artigos/actions";
 import { contarArtigosPorPeriodo } from "@/lib/artigos";
 import { lerArtigoMdxBruto } from "@/lib/artigoAdmin";
+import { getSessaoPainel } from "@/lib/painel-auth";
 
 export default async function EditarArtigoPage({
   params,
@@ -19,6 +20,11 @@ export default async function EditarArtigoPage({
   const artigo = lerArtigoMdxBruto(slug);
 
   if (!artigo) notFound();
+
+  const sessao = await getSessaoPainel();
+  if (sessao?.papel === "colaborador" && artigo.autorId !== sessao.userId) {
+    redirect("/painel/artigos");
+  }
 
   const supabase = await createClient();
   const { data: series } = await supabase

@@ -8,6 +8,7 @@ import { getSeguidoresDaSerie } from "@/lib/series-seguidas";
 import { enviarEmailNotificacaoSerie } from "@/lib/brevo";
 import { SITE_URL } from "@/lib/site";
 import { getArtigoBySlug } from "@/lib/artigos";
+import { getSessaoPainel } from "@/lib/painel-auth";
 import type { PeriodoId } from "@/data/periodos";
 
 export async function uploadImagemAction(
@@ -51,6 +52,15 @@ export async function publicarArtigoAction(input: {
   if (!input.titulo || !input.corpoMdx) {
     return { status: "erro", mensagem: "Título e corpo são obrigatórios." };
   }
+
+  // Autoria vem da sessão do servidor, nunca de input do formulário — um
+  // colaborador não pode assinar como outra pessoa. Artigo do André
+  // (admin) continua sem esses campos, igual sempre foi.
+  const sessao = await getSessaoPainel();
+  const autor =
+    sessao?.papel === "colaborador"
+      ? { autorId: sessao.userId, autorNome: sessao.nome }
+      : null;
 
   const slug = slugUnico(input.titulo, (s) => !!getArtigoBySlug(s));
   const publicado = input.publicado ?? true;
@@ -97,6 +107,7 @@ export async function publicarArtigoAction(input: {
     tags: input.tags,
     ...(input.serie ? { serie: input.serie, serieOrdem } : {}),
     ...(input.imagemCapa ? { imagemCapa: input.imagemCapa } : {}),
+    ...(autor ? { autorId: autor.autorId, autorNome: autor.autorNome } : {}),
     publicado,
     data: new Date().toISOString().slice(0, 10),
   };

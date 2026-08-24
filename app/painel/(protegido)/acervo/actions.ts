@@ -7,6 +7,7 @@ import { TAMANHO_MAXIMO_PDF_MB } from "@/lib/uploadConfig";
 import { redirect } from "next/navigation";
 import { commitAcervoDocumentoMdx, apagarAcervoDocumentoMdx } from "@/lib/github";
 import { getAcervoPorSlug } from "@/lib/acervo";
+import { exigirAdmin } from "@/lib/painel-auth";
 import type { PeriodoId } from "@/data/periodos";
 
 export type EstadoAcervo =
@@ -121,6 +122,9 @@ export async function criarAcervo(
   _estadoAnterior: EstadoAcervo,
   formData: FormData,
 ): Promise<EstadoAcervo> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const dados = lerFormulario(formData);
   const erro = validar(dados);
   if (erro) return { ok: false, mensagem: erro };
@@ -148,6 +152,9 @@ export async function atualizarAcervo(
   _estadoAnterior: EstadoAcervo,
   formData: FormData,
 ): Promise<EstadoAcervo> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const dados = lerFormulario(formData);
   const erro = validar(dados);
   if (erro) return { ok: false, mensagem: erro };
@@ -168,6 +175,9 @@ export async function atualizarAcervo(
 export async function apagarAcervoAction(
   slug: string,
 ): Promise<{ ok: boolean; mensagem: string } | void> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const resultado = await apagarAcervoDocumentoMdx(slug);
   if (!resultado.ok) {
     return { ok: false, mensagem: resultado.erro };

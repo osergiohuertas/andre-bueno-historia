@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { commitArtigoMdx, apagarArtigoMdx } from "@/lib/github";
 import { createClient } from "@/lib/supabase/server";
+import { lerArtigoMdxBruto } from "@/lib/artigoAdmin";
+import { getSessaoPainel } from "@/lib/painel-auth";
 import type { PeriodoId } from "@/data/periodos";
 
 export type EstadoArtigoEdicao =
@@ -62,6 +64,15 @@ export async function atualizarArtigoAction(
   _estadoAnterior: EstadoArtigoEdicao,
   formData: FormData,
 ): Promise<EstadoArtigoEdicao> {
+  const existente = lerArtigoMdxBruto(slug);
+  const sessao = await getSessaoPainel();
+  if (
+    sessao?.papel === "colaborador" &&
+    existente?.autorId !== sessao.userId
+  ) {
+    return { ok: false, mensagem: "Sem permissão." };
+  }
+
   const dados = lerFormulario(formData);
   const erro = validar(dados);
   if (erro) return { ok: false, mensagem: erro };
@@ -108,6 +119,9 @@ export async function atualizarArtigoAction(
     ...(dados.serie ? { serie: dados.serie, serieOrdem } : {}),
     ...(dados.imagemCapa ? { imagemCapa: dados.imagemCapa } : {}),
     ...(dados.conexaoLivro ? { conexaoLivro: dados.conexaoLivro } : {}),
+    ...(existente?.autorId
+      ? { autorId: existente.autorId, autorNome: existente.autorNome }
+      : {}),
     publicado: dados.publicado,
     data,
   };
@@ -134,6 +148,15 @@ export async function atualizarArtigoAction(
 export async function apagarArtigoAction(
   slug: string,
 ): Promise<{ ok: boolean; mensagem: string } | void> {
+  const existente = lerArtigoMdxBruto(slug);
+  const sessao = await getSessaoPainel();
+  if (
+    sessao?.papel === "colaborador" &&
+    existente?.autorId !== sessao.userId
+  ) {
+    return { ok: false, mensagem: "Sem permissão." };
+  }
+
   const resultado = await apagarArtigoMdx(slug);
   if (!resultado.ok) {
     return { ok: false, mensagem: resultado.erro };

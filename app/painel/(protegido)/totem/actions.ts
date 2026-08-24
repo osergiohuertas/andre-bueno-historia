@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { exigirAdmin } from "@/lib/painel-auth";
 import type { PeriodoId } from "@/data/periodos";
 
 export type EstadoTotem = { ok: boolean; mensagem: string } | null;
@@ -26,6 +27,9 @@ export async function salvarTotemConfig(
   _estadoAnterior: EstadoTotem,
   formData: FormData,
 ): Promise<EstadoTotem> {
+  const guarda = await exigirAdmin();
+  if (!guarda.ok) return guarda;
+
   const nomeLocal = String(formData.get("nome_local") ?? "").trim();
   const resetSegundos = Number(formData.get("reset_segundos") ?? 45);
   const utmCampaign = String(formData.get("utm_campaign") ?? "").trim();

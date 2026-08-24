@@ -17,6 +17,7 @@ import {
   IconeFoto,
   IconeTotem,
   IconeSite,
+  IconeColaboradores,
   IconeAnalytics,
 } from "@/components/painel/PainelIcons";
 
@@ -63,6 +64,7 @@ const GRUPOS: GrupoNav[] = [
     titulo: "Site",
     itens: [
       { href: "/painel/conteudo", label: "Configurações", icone: <IconeSite /> },
+      { href: "/painel/colaboradores", label: "Colaboradores", icone: <IconeColaboradores /> },
     ],
   },
 ];
@@ -94,11 +96,32 @@ function ItemLink({ item, ativo, onClick }: { item: ItemNav; ativo: boolean; onC
   );
 }
 
-function ConteudoSidebar({ pathname, onNavegar }: { pathname: string; onNavegar?: () => void }) {
+const GRUPOS_COLABORADOR: GrupoNav[] = [
+  {
+    titulo: "Publicar",
+    itens: [
+      { href: "/painel/artigos", label: "Meus artigos", icone: <IconeArtigo /> },
+      { href: "/painel/novo-artigo", label: "Novo artigo", icone: <IconeArtigo /> },
+    ],
+  },
+];
+
+function ConteudoSidebar({
+  pathname,
+  papel,
+  onNavegar,
+}: {
+  pathname: string;
+  papel: "admin" | "colaborador";
+  onNavegar?: () => void;
+}) {
+  const grupos = papel === "colaborador" ? GRUPOS_COLABORADOR : GRUPOS;
+  const homeHref = papel === "colaborador" ? "/painel/artigos" : "/painel/conteudo";
+
   return (
     <>
       <Link
-        href="/painel/conteudo"
+        href={homeHref}
         onClick={onNavegar}
         className="mb-8 block font-display text-lg text-ink"
       >
@@ -106,7 +129,7 @@ function ConteudoSidebar({ pathname, onNavegar }: { pathname: string; onNavegar?
       </Link>
 
       <nav className="flex flex-1 flex-col gap-6 overflow-y-auto">
-        {GRUPOS.map((grupo) => (
+        {grupos.map((grupo) => (
           <div key={grupo.titulo}>
             <p className="meta mb-2 px-3 text-chumbo-lt">{grupo.titulo}</p>
             <div className="flex flex-col gap-0.5">
@@ -124,11 +147,13 @@ function ConteudoSidebar({ pathname, onNavegar }: { pathname: string; onNavegar?
       </nav>
 
       <div className="mt-6 flex flex-col gap-0.5 border-t border-borda pt-4">
-        <ItemLink
-          item={ANALYTICS}
-          ativo={ehAtivo(pathname, ANALYTICS.href)}
-          onClick={onNavegar}
-        />
+        {papel === "admin" && (
+          <ItemLink
+            item={ANALYTICS}
+            ativo={ehAtivo(pathname, ANALYTICS.href)}
+            onClick={onNavegar}
+          />
+        )}
         <Link
           href="/"
           onClick={onNavegar}
@@ -149,20 +174,21 @@ function ConteudoSidebar({ pathname, onNavegar }: { pathname: string; onNavegar?
   );
 }
 
-export function PainelSidebar() {
+export function PainelSidebar({ papel }: { papel: "admin" | "colaborador" }) {
   const pathname = usePathname();
   const [aberto, setAberto] = useState(false);
+  const homeHref = papel === "colaborador" ? "/painel/artigos" : "/painel/conteudo";
 
   return (
     <>
       {/* Desktop: sidebar fixa */}
       <aside className="hidden w-64 shrink-0 flex-col border-r border-borda bg-paper px-4 py-6 md:flex">
-        <ConteudoSidebar pathname={pathname} />
+        <ConteudoSidebar pathname={pathname} papel={papel} />
       </aside>
 
       {/* Mobile: barra superior com hambúrguer + drawer */}
       <div className="flex items-center justify-between border-b border-borda bg-paper px-4 py-3 md:hidden">
-        <Link href="/painel/conteudo" className="font-display text-lg text-ink">
+        <Link href={homeHref} className="font-display text-lg text-ink">
           Painel
         </Link>
         <button
@@ -201,7 +227,11 @@ export function PainelSidebar() {
             className="absolute inset-0 bg-ink/40"
           />
           <aside className="absolute inset-y-0 left-0 flex w-72 flex-col bg-paper px-4 py-6 shadow-xl">
-            <ConteudoSidebar pathname={pathname} onNavegar={() => setAberto(false)} />
+            <ConteudoSidebar
+              pathname={pathname}
+              papel={papel}
+              onNavegar={() => setAberto(false)}
+            />
           </aside>
         </div>
       )}
