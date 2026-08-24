@@ -37,7 +37,7 @@ export default async function DestinosPainelPage() {
               >
                 <div>
                   <p className="meta text-chumbo-lt">
-                    {destino.tipologias.join(" · ")} · {destino.cidade}
+                    {(destino.tipologias ?? []).join(" · ")} · {destino.cidade}
                   </p>
                   <p className="mt-1 font-display text-xl text-ink">
                     {destino.nome}
