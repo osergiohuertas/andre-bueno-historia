@@ -90,6 +90,26 @@ export async function getAcervoMidia(
 
     const { data, error } = await query.order("data", { ascending: false });
 
+    // `lat`/`lng` só existem depois da migration 20260811000001 rodar no
+    // Supabase — até lá, pedir essas colunas quebra a query inteira
+    // (42703 "column does not exist") e some com todo vídeo/foto do
+    // site, não só os novos. Refaz sem elas nesse cenário específico, pra
+    // não deixar a listagem inteira refém de uma migration pendente.
+    if (error?.code === "42703") {
+      let querySemLocal = supabase
+        .from("acervo_midia")
+        .select("id, tipo, titulo, descricao, categoria, url, credito, data")
+        .eq("publicado", true)
+        .eq("tipo", tipo);
+      if (categoria) {
+        querySemLocal = querySemLocal.eq("categoria", categoria);
+      }
+      const { data: dataSemLocal, error: erroSemLocal } =
+        await querySemLocal.order("data", { ascending: false });
+      if (erroSemLocal || !dataSemLocal) return [];
+      return dataSemLocal.map((m) => ({ ...m, lat: null, lng: null }));
+    }
+
     if (error || !data) return [];
     return data;
   } catch {
