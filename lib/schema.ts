@@ -13,7 +13,7 @@ export function personSchema() {
     name: NOME_AUTOR,
     jobTitle: "Historiador",
     description:
-      "Pesquisa, escrita e acervo sobre a história do Brasil — da colônia à ditadura.",
+      "Pesquisa, memória e patrimônio cultural — histórias, pessoas e lugares do Brasil.",
     url: SITE_URL,
   };
 }

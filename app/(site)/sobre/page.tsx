@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { ImagemSegura as Image } from "@/components/ui/ImagemSegura";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { JsonLd } from "@/components/seo/JsonLd";

@@ -11,7 +11,7 @@ insert into public.site_config (chave, valor, tipo, grupo, rotulo, ajuda, max_ch
   -- home
   ('home.hero.eyebrow', 'Historiador · Pesquisador', 'texto', 'home', 'Selo acima do título (home)', 'Aparece como primeira linha do site, acima do título principal.', 60),
   ('home.hero.titulo', 'História do Brasil, contada com <em>rigor</em> e fontes reais.', 'texto_rico', 'home', 'Título principal (home)', 'O título grande da home. Só a palavra em <em> aparece destacada na cor de destaque.', 90),
-  ('home.hero.descricao', 'Artigos, acervo documental e ferramentas de pesquisa sobre a história do Brasil — da colônia à ditadura, sempre com fonte declarada.', 'texto_longo', 'home', 'Descrição (home)', 'Parágrafo abaixo do título principal da home.', 280),
+  ('home.hero.descricao', 'Artigos, acervo documental e ferramentas de pesquisa sobre patrimônio cultural, memória e história do Brasil, sempre com fonte declarada.', 'texto_longo', 'home', 'Descrição (home)', 'Parágrafo abaixo do título principal da home.', 280),
   ('home.hero.cta_primario', 'Ler os artigos', 'texto', 'home', 'Botão principal (home)', 'Texto do primeiro botão da home, leva para /artigos.', 30),
   ('home.hero.cta_secundario', 'Explorar a linha do tempo', 'texto', 'home', 'Botão secundário (home)', 'Texto do segundo botão da home, leva para /linha-do-tempo.', 30),
   ('home.stats.1.label', 'Artigos publicados', 'texto', 'home', 'Rótulo do 1º número (home)', 'O número em si é sempre calculado — você só edita o texto abaixo dele.', 30),
@@ -51,7 +51,7 @@ insert into public.site_config (chave, valor, tipo, grupo, rotulo, ajuda, max_ch
   ('livro.revelacao.6.texto', '[O que o leitor descobre]', 'texto_longo', 'livro', 'Revelação 6 — texto', '', 300),
 
   -- rodape
-  ('rodape.descricao', 'Pesquisa, escrita e acervo sobre a história do Brasil — da colônia à ditadura.', 'texto_longo', 'rodape', 'Descrição do rodapé', 'Texto abaixo do nome, no rodapé de todas as páginas.', 300),
+  ('rodape.descricao', 'Pesquisa, memória e patrimônio cultural — histórias, pessoas e lugares do Brasil.', 'texto_longo', 'rodape', 'Descrição do rodapé', 'Texto abaixo do nome, no rodapé de todas as páginas.', 300),
   ('rodape.social.twitter', '', 'url', 'rodape', 'Twitter/X', '', null),
   ('rodape.social.instagram', '', 'url', 'rodape', 'Instagram', '', null),
   ('rodape.social.youtube', '', 'url', 'rodape', 'YouTube', '', null),

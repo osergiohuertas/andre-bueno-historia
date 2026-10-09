@@ -15,7 +15,7 @@ import { canonicalPara } from "@/lib/site";
 export const metadata: Metadata = {
   title: "André Bueno — História do Brasil: artigos, acervo e pesquisa",
   description:
-    "Artigos, acervo documental, linha do tempo, destinos históricos e agenda do historiador André Bueno — pesquisa sobre a história do Brasil, da colônia à ditadura.",
+    "Artigos, acervo documental, linha do tempo, destinos históricos e agenda do historiador André Bueno — pesquisa sobre patrimônio cultural, memória e história do Brasil.",
   alternates: { canonical: canonicalPara("/") },
 };
 

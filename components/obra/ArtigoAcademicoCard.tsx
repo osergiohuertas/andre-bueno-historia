@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { ImagemSegura as Image } from "@/components/ui/ImagemSegura";
 import type { Publicacao } from "@/lib/obra";
 
 const LABEL_TIPO: Record<Publicacao["tipo"], string> = {

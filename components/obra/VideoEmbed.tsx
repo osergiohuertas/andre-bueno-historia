@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import { ImagemSegura as Image } from "@/components/ui/ImagemSegura";
 import { parseVideoUrl, nomeProvedorVideo } from "@/lib/video";
 
 export function VideoEmbed({ url, titulo }: { url: string; titulo: string }) {

@@ -12,7 +12,7 @@ const PORTAS = [
     id: "timeline" as const,
     Icone: IconeLinhaDoTempo,
     titulo: "Linha do Tempo",
-    subtitulo: "Da colônia à ditadura, período a período",
+    subtitulo: "Do território ao presente, período a período",
   },
   {
     id: "acervo" as const,

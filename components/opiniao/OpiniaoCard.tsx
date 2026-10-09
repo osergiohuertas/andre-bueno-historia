@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { ImagemSegura as Image } from "@/components/ui/ImagemSegura";
 import { formatarData } from "@/lib/format";
 import { SeloOpiniao } from "@/components/opiniao/SeloOpiniao";
 

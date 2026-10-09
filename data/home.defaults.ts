@@ -7,7 +7,7 @@ export const HOME_DEFAULTS = {
   heroTitulo:
     "História do Brasil, contada com <em>rigor</em> e fontes reais.",
   heroDescricao:
-    "Artigos, acervo documental e ferramentas de pesquisa sobre a história do Brasil — da colônia à ditadura, sempre com fonte declarada.",
+    "Artigos, acervo documental e ferramentas de pesquisa sobre patrimônio cultural, memória e história do Brasil, sempre com fonte declarada.",
   ctaPrimario: "Ler os artigos",
   ctaSecundario: "Explorar a linha do tempo",
   stat1Label: "Artigos publicados",

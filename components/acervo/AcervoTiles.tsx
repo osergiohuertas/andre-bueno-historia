@@ -17,16 +17,16 @@ export function AcervoTiles({
   return (
     <nav
       aria-label="Categorias do acervo"
-      className="grid grid-cols-2 gap-px border border-borda bg-borda sm:grid-cols-3"
+      className="grid grid-cols-2 border-l border-t border-borda sm:grid-cols-3"
     >
-      {tiles.map((tile) => {
+      {tiles.filter((t) => t.contagem !== 0 || t.id === ativa).map((tile) => {
         const ativo = tile.id === ativa;
         return (
           <Link
             key={tile.id}
             href={`/acervo?secao=${tile.id}`}
             aria-current={ativo ? "true" : undefined}
-            className={`group flex flex-col gap-2 p-6 transition-colors md:p-8 ${
+            className={`group flex flex-col gap-2 border-b border-r border-borda p-6 transition-colors md:p-8 ${
               ativo ? "bg-ink" : "bg-paper hover:bg-paper-mid"
             }`}
           >

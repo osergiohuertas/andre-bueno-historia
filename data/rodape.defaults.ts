@@ -4,7 +4,7 @@
 
 export const RODAPE_DEFAULTS = {
   descricao:
-    "Pesquisa, escrita e acervo sobre a história do Brasil — da colônia à ditadura.",
+    "Pesquisa, memória e patrimônio cultural — histórias, pessoas e lugares do Brasil.",
   socialTwitter: "",
   socialInstagram: "",
   socialYoutube: "",

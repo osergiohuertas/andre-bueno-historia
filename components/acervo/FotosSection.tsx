@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { ImagemSegura as Image } from "@/components/ui/ImagemSegura";
 import type { Midia } from "@/lib/obra";
 
 export function FotosSection({ fotos }: { fotos: Midia[] }) {

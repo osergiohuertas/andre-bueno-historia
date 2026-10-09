@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { ImagemSegura as Image } from "@/components/ui/ImagemSegura";
 import type { Evento } from "@/lib/eventos";
 import { SeloEvento } from "@/components/eventos/SeloEvento";
 import { formatarData } from "@/lib/format";

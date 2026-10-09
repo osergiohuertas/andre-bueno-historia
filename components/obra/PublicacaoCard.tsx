@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { ImagemSegura as Image } from "@/components/ui/ImagemSegura";
 import Link from "next/link";
 import type { Publicacao } from "@/lib/obra";
 

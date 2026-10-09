@@ -20,7 +20,7 @@ export function TimelinePreview({ artigos }: { artigos: Artigo[] }) {
           <div>
             <p className="meta text-ouro">Linha do tempo</p>
             <h2 className="mt-3 font-display text-3xl text-paper">
-              Da colônia à ditadura, em ordem.
+              Cada história no seu tempo.
             </h2>
           </div>
           <Link

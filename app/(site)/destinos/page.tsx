@@ -24,7 +24,7 @@ export default async function DestinosPage() {
     <Section>
       <Container>
         <div className="mb-12">
-          <p className="meta text-lacre">Autoridade</p>
+          <p className="meta text-lacre">PatrimÃ´nio e memÃ³ria</p>
           <h1 className="mt-3 font-display text-4xl text-ink md:text-5xl">
             Destinos
           </h1>

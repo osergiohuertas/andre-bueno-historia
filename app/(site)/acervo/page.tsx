@@ -133,7 +133,7 @@ export default async function AcervoPage({
 
   return (
     <Container className="py-16 md:py-24">
-      <p className="meta text-lacre">Autoridade</p>
+      <p className="meta text-lacre">Pesquisa e produÃ§Ã£o</p>
       <h1 className="mt-3 font-display text-4xl text-ink md:text-5xl">
         Acervo
       </h1>

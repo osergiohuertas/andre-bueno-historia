@@ -18,7 +18,7 @@ export default function LinhaDoTempoPage() {
     <>
       <div className="border-b border-borda py-12">
         <Container>
-          <p className="meta text-lacre">Autoridade</p>
+          <p className="meta text-lacre">Cronologia</p>
           <h1 className="mt-3 font-display text-4xl text-ink md:text-5xl">
             Linha do Tempo
           </h1>
