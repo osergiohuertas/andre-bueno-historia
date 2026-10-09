@@ -1,3 +1,4 @@
+import { VerNoSite } from "@/components/painel/VerNoSite";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -41,7 +42,10 @@ export default async function EditarArtigoPage({
         >
           ← Artigos
         </Link>
-        <ConfirmarExclusao action={apagarArtigoAction.bind(null, slug)} />
+        <div className="flex items-center gap-6">
+          <VerNoSite href={`/artigos/${slug}`} publicado={artigo.publicado} />
+          <ConfirmarExclusao action={apagarArtigoAction.bind(null, slug)} />
+        </div>
       </div>
       <h1 className="mt-3 font-display text-3xl text-ink">{artigo.titulo}</h1>
 

@@ -24,5 +24,5 @@ export async function login(_estadoAnterior: string | null, formData: FormData) 
     return "E-mail ou senha incorretos.";
   }
 
-  redirect("/painel/conteudo");
+  redirect("/painel");
 }

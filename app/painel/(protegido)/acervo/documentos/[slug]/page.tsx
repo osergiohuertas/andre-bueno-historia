@@ -1,3 +1,4 @@
+import { VerNoSite } from "@/components/painel/VerNoSite";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FormularioAcervo } from "@/components/painel/FormularioAcervo";
@@ -28,7 +29,10 @@ export default async function EditarAcervoPage({
         >
           ← Trabalhos técnicos
         </Link>
-        <ConfirmarExclusao action={apagarAcervoAction.bind(null, slug)} />
+        <div className="flex items-center gap-6">
+          <VerNoSite href={`/acervo/${slug}`} publicado={acervo.publicado} />
+          <ConfirmarExclusao action={apagarAcervoAction.bind(null, slug)} />
+        </div>
       </div>
       <h1 className="mt-3 font-display text-3xl text-ink">{acervo.titulo}</h1>
 

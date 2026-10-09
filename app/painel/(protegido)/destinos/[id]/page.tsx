@@ -1,3 +1,4 @@
+import { VerNoSite } from "@/components/painel/VerNoSite";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -39,7 +40,10 @@ export default async function EditarDestinoPage({
         >
           ← Destinos
         </Link>
-        <ConfirmarExclusao action={apagarDestino.bind(null, id)} />
+        <div className="flex items-center gap-6">
+          <VerNoSite href={`/destinos/${destino.slug}`} publicado={destino.publicado} />
+          <ConfirmarExclusao action={apagarDestino.bind(null, id)} />
+        </div>
       </div>
       <h1 className="mt-3 font-display text-3xl text-ink">{destino.nome}</h1>
 

@@ -1,3 +1,4 @@
+import { VerNoSite } from "@/components/painel/VerNoSite";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FormularioOpiniao } from "@/components/painel/FormularioOpiniao";
@@ -35,7 +36,10 @@ export default async function EditarOpiniaoPage({
         >
           ← Opiniões
         </Link>
-        <ConfirmarExclusao action={apagarOpiniaoAction.bind(null, slug)} />
+        <div className="flex items-center gap-6">
+          <VerNoSite href={`/opiniao/${slug}`} publicado={opiniao.publicado} />
+          <ConfirmarExclusao action={apagarOpiniaoAction.bind(null, slug)} />
+        </div>
       </div>
       <h1 className="mt-3 font-display text-3xl text-ink">{opiniao.titulo}</h1>
 

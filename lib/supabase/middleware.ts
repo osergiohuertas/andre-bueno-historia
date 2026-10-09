@@ -116,7 +116,7 @@ export async function updateSession(request: NextRequest) {
     // /painel cai no Next.js sem achar rota e toma 404 de verdade.
     if (pathname === "/painel") {
       const url = request.nextUrl.clone();
-      url.pathname = ehColaborador ? "/painel/artigos" : "/painel/conteudo";
+      url.pathname = ehColaborador ? "/painel/artigos" : "/painel/inicio";
       return NextResponse.redirect(url);
     }
     if (ehColaborador && !dentroDoAlcanceDoColaborador) {
@@ -134,7 +134,7 @@ export async function updateSession(request: NextRequest) {
       .eq("ativo", true)
       .maybeSingle();
     const url = request.nextUrl.clone();
-    url.pathname = colaborador ? "/painel/artigos" : "/painel/conteudo";
+    url.pathname = colaborador ? "/painel/artigos" : "/painel/inicio";
     return NextResponse.redirect(url);
   }
 

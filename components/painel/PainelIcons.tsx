@@ -132,6 +132,26 @@ export function IconeSite() {
   );
 }
 
+export function IconeInicio() {
+  return (
+    <Base>
+      <path d="M3 11 12 4l9 7" />
+      <path d="M5 10v10h14V10" />
+      <path d="M10 20v-6h4v6" />
+    </Base>
+  );
+}
+
+export function IconeMidia() {
+  return (
+    <Base>
+      <rect x="3" y="4" width="18" height="16" rx="1.5" />
+      <circle cx="9" cy="10" r="1.8" />
+      <path d="m21 16-5-5-9 9" />
+    </Base>
+  );
+}
+
 export function IconeColaboradores() {
   return (
     <Base>

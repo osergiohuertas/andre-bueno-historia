@@ -19,12 +19,21 @@ import {
   IconeSite,
   IconeColaboradores,
   IconeAnalytics,
+  IconeInicio,
+  IconeMidia,
 } from "@/components/painel/PainelIcons";
 
 type ItemNav = { href: string; label: string; icone: ReactNode };
 type GrupoNav = { titulo: string; itens: ItemNav[] };
 
 const GRUPOS: GrupoNav[] = [
+  {
+    titulo: "Geral",
+    itens: [
+      { href: "/painel/inicio", label: "Visão geral", icone: <IconeInicio /> },
+      { href: "/painel/midia", label: "Biblioteca de mídia", icone: <IconeMidia /> },
+    ],
+  },
   {
     titulo: "Publicar",
     itens: [
@@ -116,7 +125,7 @@ function ConteudoSidebar({
   onNavegar?: () => void;
 }) {
   const grupos = papel === "colaborador" ? GRUPOS_COLABORADOR : GRUPOS;
-  const homeHref = papel === "colaborador" ? "/painel/artigos" : "/painel/conteudo";
+  const homeHref = papel === "colaborador" ? "/painel/artigos" : "/painel/inicio";
 
   return (
     <>
@@ -177,7 +186,7 @@ function ConteudoSidebar({
 export function PainelSidebar({ papel }: { papel: "admin" | "colaborador" }) {
   const pathname = usePathname();
   const [aberto, setAberto] = useState(false);
-  const homeHref = papel === "colaborador" ? "/painel/artigos" : "/painel/conteudo";
+  const homeHref = papel === "colaborador" ? "/painel/artigos" : "/painel/inicio";
 
   return (
     <>

@@ -1,3 +1,4 @@
+import { VerNoSite } from "@/components/painel/VerNoSite";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -32,7 +33,10 @@ export default async function EditarEventoPage({
         >
           ← Agenda
         </Link>
-        <ConfirmarExclusao action={apagarEvento.bind(null, id)} />
+        <div className="flex items-center gap-6">
+          <VerNoSite href={`/eventos/${evento.slug}`} publicado={evento.publicado} />
+          <ConfirmarExclusao action={apagarEvento.bind(null, id)} />
+        </div>
       </div>
       <h1 className="mt-3 font-display text-3xl text-ink">{evento.titulo}</h1>
 

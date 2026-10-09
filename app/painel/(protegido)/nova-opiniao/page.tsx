@@ -12,7 +12,7 @@ export default function NovaOpiniaoPage() {
 
   return (
     <div>
-      <Link href="/painel/conteudo" className="meta text-chumbo hover:text-lacre">
+      <Link href="/painel/inicio" className="meta text-chumbo hover:text-lacre">
         ← Painel
       </Link>
       <h1 className="mt-3 font-display text-3xl text-ink">Nova opinião</h1>
