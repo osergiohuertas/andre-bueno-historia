@@ -5,6 +5,7 @@ import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions
 import type { EstadoEvento } from "@/app/painel/(protegido)/agenda/actions";
 import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 import type { Database } from "@/types/supabase";
+import { CampoLocalizacao } from "@/components/painel/CampoLocalizacao";
 
 type Evento = Database["public"]["Tables"]["eventos"]["Row"];
 
@@ -191,6 +192,11 @@ export function FormularioEvento({
           className="w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
         />
       </div>
+
+      <CampoLocalizacao
+        inicial={evento?.coordenadas ?? null}
+        ajuda="Marcando, o evento aparece na camada Agenda do Atlas."
+      />
 
       <div>
         <label htmlFor="organizador" className="meta mb-1 block text-chumbo-lt">

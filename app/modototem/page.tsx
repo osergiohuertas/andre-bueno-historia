@@ -4,7 +4,7 @@ import { getIdentidadeConfig } from "@/lib/identidade";
 import { getSobreConfig } from "@/lib/sobre";
 import { getArtigosPorPeriodo, getSeries, type Artigo } from "@/lib/artigos";
 import { getAcervoPorPeriodo, type AcervoDocumento } from "@/lib/acervo";
-import { getPontosArtigos, getPontosDestinos } from "@/lib/atlas";
+import { getPontosAtlas } from "@/lib/atlas";
 import { getDestinos, type Destino } from "@/lib/destinos";
 import { extrairPreviaTexto } from "@/lib/mdxPreview";
 import { periodosOrdenados, getPeriodo } from "@/data/periodos";
@@ -18,17 +18,16 @@ import type { DestinoPreviewData } from "@/components/totem/EstadoDestinoPreview
 export const revalidate = 300;
 
 export default async function ModoTotemPage() {
-  const [config, identidade, sobre, pontosDestinos, series, destinos] = await Promise.all([
+  const [config, identidade, sobre, pontosMapa, series, destinos] = await Promise.all([
     getTotemConfig(),
     getIdentidadeConfig(),
     getSobreConfig(),
-    getPontosDestinos(),
+    getPontosAtlas(),
     getSeries(),
     getDestinos(),
   ]);
 
   const frases = getFrasesComFallback(config);
-  const pontosArtigos = getPontosArtigos();
 
   const serieInfoPorSlug = new Map(
     series.flatMap((serie) =>
@@ -114,8 +113,7 @@ export default async function ModoTotemPage() {
       frases={frases}
       periodos={periodos}
       periodosAcervo={periodosAcervo}
-      pontosArtigos={pontosArtigos}
-      pontosDestinos={pontosDestinos}
+      pontosMapa={pontosMapa}
       destinos={destinosPreview}
       sobre={{
         manifesto: sobre.manifesto,

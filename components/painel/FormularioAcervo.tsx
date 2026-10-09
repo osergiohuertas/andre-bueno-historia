@@ -3,6 +3,7 @@
 import { useActionState, useRef, useState } from "react";
 import { SeletorPeriodoVisual } from "@/components/painel/editor/SeletorPeriodoVisual";
 import { CampoCorpoMdx } from "@/components/painel/CampoCorpoMdx";
+import { CampoLocalizacao } from "@/components/painel/CampoLocalizacao";
 import {
   uploadImagemCapaAction,
   uploadDocumentoAction,
@@ -23,6 +24,7 @@ type AcervoPreenchido = {
   anoInicio: number;
   anoFim?: number;
   regiao?: string;
+  coordenadas?: { lat: number; lng: number };
   excerpt: string;
   fonte?: string;
   pdfUrl: string;
@@ -169,6 +171,11 @@ export function FormularioAcervo({
           className="w-full max-w-sm border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
         />
       </div>
+
+      <CampoLocalizacao
+        inicial={acervo?.coordenadas ?? null}
+        ajuda="Marcando, o trabalho aparece na camada Trabalhos técnicos do Atlas."
+      />
 
       <div>
         <label htmlFor="excerpt" className="meta mb-1 block text-chumbo-lt">

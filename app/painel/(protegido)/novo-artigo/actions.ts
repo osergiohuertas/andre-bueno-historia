@@ -36,6 +36,7 @@ export async function publicarArtigoAction(input: {
   anoInicio: number;
   anoFim?: number;
   regiao?: string;
+  coordenadas?: { lat: number; lng: number };
   serie?: string;
   excerpt: string;
   tags: string[];
@@ -102,6 +103,7 @@ export async function publicarArtigoAction(input: {
     anoInicio: input.anoInicio,
     ...(input.anoFim ? { anoFim: input.anoFim } : {}),
     ...(input.regiao ? { regiao: input.regiao } : {}),
+    ...(input.coordenadas ? { coordenadas: input.coordenadas } : {}),
     excerpt: input.excerpt,
     leituraMinutos,
     tags: input.tags,
@@ -147,6 +149,9 @@ export async function publicarArtigoAction(input: {
 function formatarValorYaml(valor: unknown): string {
   if (Array.isArray(valor)) {
     return `[${valor.map((v) => JSON.stringify(v)).join(", ")}]`;
+  }
+  if (valor && typeof valor === "object") {
+    return `{ ${Object.entries(valor).map(([k, v]) => `${k}: ${JSON.stringify(v)}`).join(", ")} }`;
   }
   if (typeof valor === "string") return JSON.stringify(valor);
   return String(valor);

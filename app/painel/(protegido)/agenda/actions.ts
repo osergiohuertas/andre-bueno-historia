@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { gerarSlug } from "@/lib/slug";
 import { exigirAdmin } from "@/lib/painel-auth";
+import { lerLocalizacao } from "@/lib/localizacao";
 
 export type EstadoEvento = { ok: boolean; mensagem: string } | null;
 
@@ -35,6 +36,7 @@ function lerFormulario(formData: FormData) {
     organizador: String(formData.get("organizador") ?? "").trim(),
     link_inscricao: String(formData.get("link_inscricao") ?? "").trim() || null,
     imagem_capa: String(formData.get("imagem_capa") ?? "").trim() || null,
+    coordenadas: lerLocalizacao(formData),
     publicado: formData.get("publicado") === "on",
   };
 }
@@ -64,7 +66,6 @@ export async function criarEvento(
   const { error } = await supabase.from("eventos").insert({
     ...dados,
     slug: gerarSlug(dados.titulo),
-    coordenadas: null,
   });
 
   if (error) {

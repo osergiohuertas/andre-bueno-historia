@@ -7,6 +7,7 @@ import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions
 import type { EstadoArtigoEdicao } from "@/app/painel/(protegido)/artigos/actions";
 import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 import type { PeriodoId } from "@/data/periodos";
+import { CampoLocalizacao } from "@/components/painel/CampoLocalizacao";
 
 type ArtigoPreenchido = {
   slug: string;
@@ -17,6 +18,7 @@ type ArtigoPreenchido = {
   anoInicio: number;
   anoFim?: number;
   regiao?: string;
+  coordenadas?: { lat: number; lng: number };
   excerpt: string;
   tags: string[];
   serie?: string;
@@ -170,6 +172,11 @@ export function FormularioArtigo({
           className="w-full max-w-sm border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
         />
       </div>
+
+      <CampoLocalizacao
+        inicial={artigo?.coordenadas ?? null}
+        ajuda="Marque o lugar de que o artigo trata. Sem marcação, ele ainda aparece no Atlas se estiver vinculado a um destino."
+      />
 
       <div>
         <label htmlFor="serie" className="meta mb-1 block text-chumbo-lt">

@@ -84,6 +84,10 @@ const acervoDocumentos = defineCollection({
       anoInicio: s.number(),
       anoFim: s.number().optional(),
       regiao: s.string().optional(),
+      // Opcional: marcado no painel, o trabalho aparece no Atlas.
+      coordenadas: s
+        .object({ lat: s.number(), lng: s.number() })
+        .optional(),
       excerpt: s.string(),
       // Fonte/proveniência do documento (arquivo, acervo físico, etc.).
       fonte: s.string().optional(),

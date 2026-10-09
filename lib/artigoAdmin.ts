@@ -11,6 +11,7 @@ export type ArtigoMdxBruto = {
   anoInicio: number;
   anoFim?: number;
   regiao?: string;
+  coordenadas?: { lat: number; lng: number };
   excerpt: string;
   tags: string[];
   serie?: string;
@@ -49,6 +50,7 @@ export function lerArtigoMdxBruto(slug: string): ArtigoMdxBruto | null {
     anoInicio: Number(fm.anoInicio ?? 0),
     anoFim: fm.anoFim !== undefined ? Number(fm.anoFim) : undefined,
     regiao: fm.regiao ? String(fm.regiao) : undefined,
+    coordenadas: lerCoordenadas(fm.coordenadas),
     excerpt: String(fm.excerpt ?? ""),
     tags: (fm.tags as string[] | undefined) ?? [],
     serie: fm.serie ? String(fm.serie) : undefined,
@@ -77,7 +79,23 @@ function parseYamlSimples(bloco: string): Record<string, unknown> {
   return resultado;
 }
 
+function lerCoordenadas(valor: unknown): { lat: number; lng: number } | undefined {
+  if (!valor || typeof valor !== "object") return undefined;
+  const { lat, lng } = valor as { lat?: unknown; lng?: unknown };
+  return typeof lat === "number" && typeof lng === "number" ? { lat, lng } : undefined;
+}
+
 function parseValorYaml(valor: string): unknown {
+  // Mapa em linha, ex.: { lat: -19.9, lng: -44.1 }
+  if (valor.startsWith("{") && valor.endsWith("}")) {
+    const obj: Record<string, unknown> = {};
+    for (const par of valor.slice(1, -1).split(",")) {
+      const i = par.indexOf(":");
+      if (i === -1) continue;
+      obj[par.slice(0, i).trim()] = parseValorYaml(par.slice(i + 1).trim());
+    }
+    return obj;
+  }
   if (valor.startsWith("[")) {
     try {
       return JSON.parse(valor);

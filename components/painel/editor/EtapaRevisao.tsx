@@ -69,6 +69,10 @@ export function EtapaRevisao({
         anoInicio: Number(estado.anoInicio),
         anoFim: estado.anoFim ? Number(estado.anoFim) : undefined,
         regiao: estado.regiao || undefined,
+        coordenadas:
+          estado.coordenadas && (estado.coordenadas.lat !== 0 || estado.coordenadas.lng !== 0)
+            ? estado.coordenadas
+            : undefined,
         serie: estado.serie || undefined,
         excerpt: estado.excerpt,
         tags,

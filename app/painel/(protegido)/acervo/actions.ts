@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { commitAcervoDocumentoMdx, apagarAcervoDocumentoMdx } from "@/lib/github";
 import { getAcervoPorSlug } from "@/lib/acervo";
 import { exigirAdmin } from "@/lib/painel-auth";
+import { lerLocalizacao } from "@/lib/localizacao";
 import type { PeriodoId } from "@/data/periodos";
 
 export type EstadoAcervo =
@@ -55,6 +56,7 @@ function lerFormulario(formData: FormData) {
     anoInicio: String(formData.get("anoInicio") ?? "").trim(),
     anoFim: String(formData.get("anoFim") ?? "").trim(),
     regiao: String(formData.get("regiao") ?? "").trim(),
+    coordenadas: lerLocalizacao(formData),
     excerpt: String(formData.get("excerpt") ?? "").trim(),
     fonte: String(formData.get("fonte") ?? "").trim(),
     pdfUrl: String(formData.get("pdfUrl") ?? "").trim(),
@@ -98,6 +100,7 @@ function montarFrontmatter(
     anoInicio: Number(dados.anoInicio),
     ...(dados.anoFim ? { anoFim: Number(dados.anoFim) } : {}),
     ...(dados.regiao ? { regiao: dados.regiao } : {}),
+    ...(dados.coordenadas ? { coordenadas: dados.coordenadas } : {}),
     excerpt: dados.excerpt,
     ...(dados.fonte ? { fonte: dados.fonte } : {}),
     pdfUrl: dados.pdfUrl,
@@ -189,6 +192,9 @@ export async function apagarAcervoAction(
 function formatarValorYaml(valor: unknown): string {
   if (Array.isArray(valor)) {
     return `[${valor.map((v) => JSON.stringify(v)).join(", ")}]`;
+  }
+  if (valor && typeof valor === "object") {
+    return `{ ${Object.entries(valor).map(([k, v]) => `${k}: ${JSON.stringify(v)}`).join(", ")} }`;
   }
   if (typeof valor === "string") return JSON.stringify(valor);
   return String(valor);

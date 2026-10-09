@@ -3,6 +3,7 @@
 import { SeletorPeriodoVisual } from "@/components/painel/editor/SeletorPeriodoVisual";
 import type { PeriodoId } from "@/data/periodos";
 import type { EstadoArtigo } from "@/components/painel/editor/NovoArtigoWizard";
+import { SeletorCoordenadas } from "@/components/painel/SeletorCoordenadas";
 
 export function EtapaBasico({
   estado,
@@ -84,6 +85,32 @@ export function EtapaBasico({
           onChange={(e) => atualizar({ regiao: e.target.value })}
           className="w-full max-w-sm border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
         />
+      </div>
+
+      <div>
+        <label className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            checked={!!estado.coordenadas}
+            onChange={(e) =>
+              atualizar({ coordenadas: e.target.checked ? { lat: 0, lng: 0 } : null })
+            }
+            className="h-5 w-5 border border-borda"
+          />
+          <span className="text-ink">Marcar local no mapa (Atlas)</span>
+        </label>
+        <p className="mt-1 font-serif text-xs text-chumbo-lt">
+          Marque o lugar de que o artigo trata — ele aparece como ponto no Atlas.
+        </p>
+        {estado.coordenadas && (
+          <div className="mt-3">
+            <SeletorCoordenadas
+              lat={estado.coordenadas.lat}
+              lng={estado.coordenadas.lng}
+              onMudar={(lat, lng) => atualizar({ coordenadas: { lat, lng } })}
+            />
+          </div>
+        )}
       </div>
 
       <div>

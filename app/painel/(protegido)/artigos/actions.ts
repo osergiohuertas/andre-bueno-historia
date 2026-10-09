@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { lerArtigoMdxBruto } from "@/lib/artigoAdmin";
 import { getSessaoPainel } from "@/lib/painel-auth";
 import type { PeriodoId } from "@/data/periodos";
+import { lerLocalizacao } from "@/lib/localizacao";
 
 export type EstadoArtigoEdicao =
   | { ok: boolean; mensagem: string; url?: string }
@@ -30,6 +31,7 @@ function lerFormulario(formData: FormData) {
     anoInicio: String(formData.get("anoInicio") ?? "").trim(),
     anoFim: String(formData.get("anoFim") ?? "").trim(),
     regiao: String(formData.get("regiao") ?? "").trim(),
+    coordenadas: lerLocalizacao(formData),
     serie: String(formData.get("serie") ?? "").trim(),
     excerpt: String(formData.get("excerpt") ?? "").trim(),
     tags: String(formData.get("tags") ?? "")
@@ -113,6 +115,7 @@ export async function atualizarArtigoAction(
     anoInicio: Number(dados.anoInicio),
     ...(dados.anoFim ? { anoFim: Number(dados.anoFim) } : {}),
     ...(dados.regiao ? { regiao: dados.regiao } : {}),
+    ...(dados.coordenadas ? { coordenadas: dados.coordenadas } : {}),
     excerpt: dados.excerpt,
     leituraMinutos,
     tags: dados.tags,
@@ -168,6 +171,9 @@ export async function apagarArtigoAction(
 function formatarValorYaml(valor: unknown): string {
   if (Array.isArray(valor)) {
     return `[${valor.map((v) => JSON.stringify(v)).join(", ")}]`;
+  }
+  if (valor && typeof valor === "object") {
+    return `{ ${Object.entries(valor).map(([k, v]) => `${k}: ${JSON.stringify(v)}`).join(", ")} }`;
   }
   if (typeof valor === "string") return JSON.stringify(valor);
   return String(valor);

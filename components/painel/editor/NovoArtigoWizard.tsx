@@ -16,6 +16,7 @@ export type EstadoArtigo = {
   anoInicio: string;
   anoFim: string;
   regiao: string;
+  coordenadas: { lat: number; lng: number } | null;
   serie: string;
   imagens: { url: string; legenda: string }[];
   corpoMdx: string;
@@ -32,6 +33,7 @@ const ESTADO_INICIAL: EstadoArtigo = {
   anoInicio: "",
   anoFim: "",
   regiao: "",
+  coordenadas: null,
   serie: "",
   imagens: [],
   corpoMdx: "",

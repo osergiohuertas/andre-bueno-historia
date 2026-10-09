@@ -16,7 +16,7 @@ import { BotaoInicio } from "@/components/totem/BotaoInicio";
 import { ResetAviso } from "@/components/totem/ResetAviso";
 import { TotemErrorBoundary } from "@/components/totem/TotemErrorBoundary";
 import type { FraseAtracao } from "@/lib/totem";
-import type { PontoArtigo, PontoDestino } from "@/lib/atlas";
+import type { PontoAtlas } from "@/lib/atlas";
 
 type Estado =
   | { tipo: "atracao" }
@@ -55,8 +55,7 @@ export function TotemApp({
   frases,
   periodos,
   periodosAcervo,
-  pontosArtigos,
-  pontosDestinos,
+  pontosMapa,
   destinos,
   sobre,
 }: {
@@ -67,8 +66,7 @@ export function TotemApp({
   frases: FraseAtracao[];
   periodos: PeriodoComArtigos[];
   periodosAcervo: PeriodoComAcervo[];
-  pontosArtigos: PontoArtigo[];
-  pontosDestinos: PontoDestino[];
+  pontosMapa: PontoAtlas[];
   destinos: DestinoPreviewData[];
   sobre: { manifesto: string; trajetoria: string; fotoUrl: string };
 }) {
@@ -258,8 +256,7 @@ export function TotemApp({
         {estado.tipo === "mapa" && (
           <TransicaoEstado>
             <EstadoMapa
-              pontosArtigos={pontosArtigos}
-              pontosDestinos={pontosDestinos}
+              pontosMapa={pontosMapa}
               onSelecionarPonto={aoSelecionarPontoNoMapa}
             />
           </TransicaoEstado>
