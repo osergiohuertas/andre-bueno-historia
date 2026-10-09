@@ -23,7 +23,7 @@ export const LIVRO_DEFAULTS = {
     | undefined,
   amazonUrlFisico:
     "https://www.amazon.com.br/COLÔNIA-SANTA-ISABEL-patrimônio-ressignificação/dp/6552035993",
-  amazonUrlKindle: "https://www.amazon.com.br/dp/PLACEHOLDER-KINDLE",
+  amazonUrlKindle: "",
   amazonTagAfiliado: "",
   amostraPdfUrl: undefined as string | undefined,
   revelacoes: [

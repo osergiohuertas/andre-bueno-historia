@@ -3,7 +3,7 @@ import { HOME_DEFAULTS } from "@/data/home.defaults";
 
 export async function getHomeConfig() {
   const cfg = await getConfigGrupo("home");
-  const pega = (chave: string, fallback: string) => cfg[chave] ?? fallback;
+  const pega = (chave: string, fallback: string) => cfg[chave] || fallback;
 
   return {
     heroEyebrow: pega("home.hero.eyebrow", HOME_DEFAULTS.heroEyebrow),

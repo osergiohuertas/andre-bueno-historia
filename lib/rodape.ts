@@ -3,7 +3,7 @@ import { RODAPE_DEFAULTS } from "@/data/rodape.defaults";
 
 export async function getRodapeConfig() {
   const cfg = await getConfigGrupo("rodape");
-  const pega = (chave: string, fallback: string) => cfg[chave] ?? fallback;
+  const pega = (chave: string, fallback: string) => cfg[chave] || fallback;
 
   return {
     descricao: pega("rodape.descricao", RODAPE_DEFAULTS.descricao),
