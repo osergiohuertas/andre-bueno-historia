@@ -427,6 +427,254 @@ create policy "André gerencia vínculos museu-artigo"
   with check (true);
 
 
+-- ==== 20260716000001_totem_config.sql ====
+-- Fase 6 — Modo Totem. Configuração editável pelo André via /painel/totem:
+-- frases do attract loop, tempo de reset por ociosidade, nome do local (vai
+-- no UTM do QR). Uma linha por totem físico — hoje só um, mas o schema já
+-- comporta vários locais no futuro.
+create table public.totem_config (
+  id uuid primary key default gen_random_uuid(),
+  nome_local text not null default 'Totem',
+  ativo boolean not null default true,
+  reset_segundos integer not null default 45,
+  frases jsonb not null default '[]'::jsonb,
+  periodos_destaque text[] not null default '{}',
+  utm_campaign text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+comment on table public.totem_config is
+  'Fase 6: configuração do totem físico de quiosque (/modototem). Se vazia, o attract loop cai no fallback dos artigos publicados de maior destaque — ver lib/totem.ts.';
+
+create trigger set_updated_at
+  before update on public.totem_config
+  for each row execute function public.set_updated_at();
+
+alter table public.totem_config enable row level security;
+
+-- Leitura pública liberada mesmo sem `publicado`: o totem em si é uma
+-- tela pública sem autenticação, precisa ler a config direto (anon).
+create policy "Leitura pública de totem_config ativa"
+  on public.totem_config for select
+  to anon, authenticated
+  using (ativo = true);
+
+-- André gerencia pelo /painel/totem, logado com a própria conta.
+create policy "André gerencia totem_config"
+  on public.totem_config for all
+  to authenticated
+  using (true)
+  with check (true);
+
+
+-- ==== 20260722000001_rename_museus_destinos.sql ====
+-- Renomeia "museus" para "destinos": a categoria deixa de ser só museus e
+-- passa a caber patrimônio cultural e outros lugares (campo `tipologia`,
+-- já texto livre, sem constraint — só padroniza pra "Museu" / "Patrimônio
+-- Cultural" / "Lugar" na UI do painel, sem mudança de schema aqui).
+
+alter table public.museus rename to destinos;
+alter table public.museu_artigos rename to destino_artigos;
+alter table public.destino_artigos rename column museu_id to destino_id;
+
+alter index museus_cidade_idx rename to destinos_cidade_idx;
+alter index museus_tipologia_idx rename to destinos_tipologia_idx;
+alter index museu_artigos_museu_id_idx rename to destino_artigos_destino_id_idx;
+alter index museu_artigos_artigo_slug_idx rename to destino_artigos_artigo_slug_idx;
+
+comment on table public.destinos is
+  'Catálogo de destinos (museus, patrimônio cultural, lugares — Fase 4, renomeado de "museus"). Camada 1: dados práticos. O site oficial é a fonte definitiva — data_verificacao precisa ser exibida sempre.';
+
+comment on table public.destino_artigos is
+  'Vínculo destino <-> artigo (Atlas, camada 3). Artigos vivem em MDX/Git, não no Supabase — o vínculo é pelo slug.';
+
+
+-- ==== 20260809000001_patrimonio_cultural_destinos.sql ====
+-- Campos específicos para destinos da categoria "Patrimônios Culturais":
+-- categoria de proteção, ano de reconhecimento, esfera de proteção e link
+-- para o estudo/dossiê. Nullable porque só se aplicam a essa tipologia —
+-- Museus e Lugares ficam com esses campos vazios.
+--
+-- Idempotente (IF NOT EXISTS / checagem em pg_constraint) porque a primeira
+-- tentativa de rodar isso no SQL Editor do Supabase já criou as colunas
+-- antes de falhar — essa versão pode ser executada de novo sem erro.
+
+alter table public.destinos
+  add column if not exists categoria_protecao text,
+  add column if not exists ano_reconhecimento integer,
+  add column if not exists esfera_protecao text,
+  add column if not exists link_dossie text;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'destinos_categoria_protecao_check'
+  ) then
+    alter table public.destinos
+      add constraint destinos_categoria_protecao_check
+        check (categoria_protecao is null or categoria_protecao in ('Inventário', 'Tombamento', 'Registro'));
+  end if;
+
+  if not exists (
+    select 1 from pg_constraint where conname = 'destinos_esfera_protecao_check'
+  ) then
+    alter table public.destinos
+      add constraint destinos_esfera_protecao_check
+        check (esfera_protecao is null or esfera_protecao in ('Municipal', 'Estadual', 'Federal'));
+  end if;
+end $$;
+
+comment on column public.destinos.categoria_protecao is 'Categoria de proteção do patrimônio cultural: Inventário, Tombamento ou Registro.';
+comment on column public.destinos.ano_reconhecimento is 'Ano de reconhecimento/proteção do bem.';
+comment on column public.destinos.esfera_protecao is 'Esfera responsável pela proteção: Municipal, Estadual ou Federal.';
+comment on column public.destinos.link_dossie is 'Link para o estudo ou dossiê técnico relacionado ao bem.';
+
+
+-- ==== 20260811000001_destinos_multi_tipologia_e_fotos_local.sql ====
+-- Destinos: um lugar pode ser mais de uma coisa ao mesmo tempo (ex.: um
+-- museu que também é patrimônio cultural tombado) — antes `tipologia` só
+-- aceitava uma única string, forçando uma escolha artificial.
+alter table public.destinos
+  add column if not exists tipologias text[];
+
+update public.destinos
+  set tipologias = array[tipologia]
+  where tipologias is null and tipologia is not null;
+
+update public.destinos
+  set tipologias = '{}'
+  where tipologias is null;
+
+alter table public.destinos
+  alter column tipologias set not null,
+  alter column tipologias set default '{}';
+
+alter table public.destinos drop column if exists tipologia;
+
+create index if not exists destinos_tipologias_idx
+  on public.destinos using gin (tipologias);
+
+-- Fotos do acervo: local de registro (onde a foto foi tirada), pra poder
+-- aparecer como ponto no Atlas junto de artigos e destinos. Nullable —
+-- nem toda foto tem (ou precisa de) localização.
+alter table public.acervo_midia
+  add column if not exists lat double precision,
+  add column if not exists lng double precision;
+
+comment on column public.acervo_midia.lat is 'Latitude de onde a foto foi registrada (opcional) — plota a foto no Atlas.';
+comment on column public.acervo_midia.lng is 'Longitude de onde a foto foi registrada (opcional) — plota a foto no Atlas.';
+
+
+-- ==== 20260811000002_colaboradores.sql ====
+-- Nível de usuário "colaborador": outros historiadores podem logar no
+-- painel e publicar os próprios artigos, sem o acesso total que hoje
+-- qualquer conta autenticada (não-leitora) tem. Ver
+-- lib/supabase/middleware.ts (ehLeitor já usa esse mesmo padrão — linha
+-- em tabela == papel) e lib/painel-auth.ts.
+
+create table public.colaboradores (
+  id uuid primary key references auth.users(id) on delete cascade,
+  nome text not null,
+  email text not null,
+  ativo boolean not null default true,
+  criado_em timestamptz not null default now()
+);
+
+comment on table public.colaboradores is
+  'Contas de painel restritas a publicar/editar os próprios artigos — sem policy pra authenticated/anon de propósito, só o client admin (service_role) lê/escreve aqui.';
+
+alter table public.colaboradores enable row level security;
+
+-- Middleware e lib/painel-auth.ts leem isto com o client da sessão do
+-- próprio usuário (não o admin) pra decidir o papel de quem logou — sem
+-- essa policy, RLS bloquearia até o colaborador ler a própria linha.
+create policy "Colaborador lê a própria linha" on public.colaboradores
+  for select to authenticated
+  using (auth.uid() = id);
+
+create or replace function public.is_colaborador(uid uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.colaboradores where id = uid and ativo
+  );
+$$;
+
+-- Endurece as tabelas hoje com "escrita liberada pra qualquer
+-- authenticated" (documentado em supabase/README.md) — colaborador
+-- passa a ser bloqueado de escrever nelas, admin (André) continua igual.
+
+drop policy "André gerencia eventos" on public.eventos;
+create policy "André gerencia eventos" on public.eventos
+  for all to authenticated
+  using (not public.is_colaborador(auth.uid()))
+  with check (not public.is_colaborador(auth.uid()));
+
+drop policy "André gerencia publicações" on public.publicacoes;
+create policy "André gerencia publicações" on public.publicacoes
+  for all to authenticated
+  using (not public.is_colaborador(auth.uid()))
+  with check (not public.is_colaborador(auth.uid()));
+
+drop policy "André gerencia mídia" on public.acervo_midia;
+create policy "André gerencia mídia" on public.acervo_midia
+  for all to authenticated
+  using (not public.is_colaborador(auth.uid()))
+  with check (not public.is_colaborador(auth.uid()));
+
+drop policy "André gerencia museus" on public.destinos;
+create policy "André gerencia museus" on public.destinos
+  for all to authenticated
+  using (not public.is_colaborador(auth.uid()))
+  with check (not public.is_colaborador(auth.uid()));
+
+drop policy "André gerencia vínculos museu-artigo" on public.destino_artigos;
+create policy "André gerencia vínculos museu-artigo" on public.destino_artigos
+  for all to authenticated
+  using (not public.is_colaborador(auth.uid()))
+  with check (not public.is_colaborador(auth.uid()));
+
+drop policy "André gerencia totem_config" on public.totem_config;
+create policy "André gerencia totem_config" on public.totem_config
+  for all to authenticated
+  using (not public.is_colaborador(auth.uid()))
+  with check (not public.is_colaborador(auth.uid()));
+
+drop policy "André atualiza valores de site_config" on public.site_config;
+create policy "André atualiza valores de site_config" on public.site_config
+  for update to authenticated
+  using (not public.is_colaborador(auth.uid()))
+  with check (not public.is_colaborador(auth.uid()));
+
+drop policy "André lê o histórico de site_config" on public.site_config_history;
+create policy "André lê o histórico de site_config" on public.site_config_history
+  for select to authenticated
+  using (not public.is_colaborador(auth.uid()));
+
+-- `series` é diferente das outras: colaborador precisa continuar
+-- LENDO (dropdown de série no wizard de novo artigo), só não pode
+-- escrever. Troca a policy única "for all" por duas.
+drop policy "André gerencia séries" on public.series;
+create policy "Leitura de séries para o painel" on public.series
+  for select to authenticated
+  using (true);
+create policy "André escreve séries" on public.series
+  for insert to authenticated
+  with check (not public.is_colaborador(auth.uid()));
+create policy "André atualiza séries" on public.series
+  for update to authenticated
+  using (not public.is_colaborador(auth.uid()))
+  with check (not public.is_colaborador(auth.uid()));
+create policy "André apaga séries" on public.series
+  for delete to authenticated
+  using (not public.is_colaborador(auth.uid()));
+
+
 -- ==== seed.sql ====
 -- Popula site_config com todos os campos da Fase 1D e a primeira série.
 -- Rode depois das migrations. Os valores de "home"/"identidade" são o
@@ -496,40 +744,3 @@ on conflict (chave) do nothing;
 insert into public.series (slug, numero, nome, descricao, total_partes, publicado, ordem) values
   ('minas-colonial', 'I', 'Minas Colonial', 'A vida, o ouro e as revoltas em Minas Gerais durante o período colonial.', 1, true, 1)
 on conflict (slug) do nothing;
-
--- ==== 20260716000001_totem_config.sql ====
--- Fase 6 — Modo Totem. Configuração editável pelo André via /painel/totem:
--- frases do attract loop, tempo de reset por ociosidade, nome do local (vai
--- no UTM do QR). Uma linha por totem físico — hoje só um, mas o schema já
--- comporta vários locais no futuro.
-create table public.totem_config (
-  id uuid primary key default gen_random_uuid(),
-  nome_local text not null default 'Totem',
-  ativo boolean not null default true,
-  reset_segundos integer not null default 45,
-  frases jsonb not null default '[]'::jsonb,
-  periodos_destaque text[] not null default '{}',
-  utm_campaign text,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
-
-comment on table public.totem_config is
-  'Fase 6: configuração do totem físico de quiosque (/modototem). Se vazia, o attract loop cai no fallback dos artigos publicados de maior destaque — ver lib/totem.ts.';
-
-create trigger set_updated_at
-  before update on public.totem_config
-  for each row execute function public.set_updated_at();
-
-alter table public.totem_config enable row level security;
-
-create policy "Leitura pública de totem_config ativa"
-  on public.totem_config for select
-  to anon, authenticated
-  using (ativo = true);
-
-create policy "André gerencia totem_config"
-  on public.totem_config for all
-  to authenticated
-  using (true)
-  with check (true);
