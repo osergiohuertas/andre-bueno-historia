@@ -56,6 +56,11 @@ export async function enviarEmailNotificacaoSerie(params: {
   return { ok: true, enviados };
 }
 
+/** Newsletter só funciona com as 4 variáveis da Brevo configuradas. */
+export function newsletterConfigurada() {
+  return configuracaoBrevo() !== null;
+}
+
 function configuracaoBrevo() {
   const apiKey = process.env.BREVO_API_KEY;
   const listId = process.env.BREVO_LIST_ID;

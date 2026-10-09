@@ -1,3 +1,4 @@
+import { newsletterConfigurada } from "@/lib/brevo";
 import type { Metadata } from "next";
 import { Hero } from "@/components/home/Hero";
 import { RecentArticlesGrid } from "@/components/home/RecentArticlesGrid";
@@ -60,6 +61,7 @@ export default async function Home() {
       <Newsletter
         titulo={config.newsletterTitulo}
         corpo={config.newsletterCorpo}
+        ativa={newsletterConfigurada()}
       />
     </>
   );

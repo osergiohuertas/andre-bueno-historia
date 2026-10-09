@@ -108,7 +108,7 @@ export default async function ArtigoPage({
                   )}
                 </div>
 
-                <div className="mt-6">
+                <div className="mt-6" data-pagefind-ignore>
                   <AcoesBiblioteca artigoSlug={artigo.slug} />
                 </div>
               </header>

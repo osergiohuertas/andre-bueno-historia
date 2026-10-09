@@ -19,7 +19,7 @@ export default async function SiteLayout({
     <LenisProvider>
       <div className="flex min-h-full flex-col">
         <Header nome={identidade.nome} tagline={identidade.tagline} />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1" data-pagefind-body>{children}</main>
         <Footer nome={identidade.nome} rodape={rodape} />
       </div>
       <BuscaCmdK />

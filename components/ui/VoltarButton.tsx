@@ -34,7 +34,7 @@ export function VoltarButton({
   }
 
   return (
-    <button
+    <button data-pagefind-ignore
       type="button"
       onClick={aoClicar}
       className={`group meta inline-flex items-center gap-2 text-chumbo transition-colors hover:text-lacre ${className}`}

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
@@ -10,9 +11,12 @@ import { inscreverNewsletterAction } from "@/app/(site)/actions";
 export function Newsletter({
   titulo,
   corpo,
+  ativa,
 }: {
   titulo: string;
   corpo: string;
+  /** Sem Brevo configurada, troca o formulário pelo convite de conta de leitor. */
+  ativa: boolean;
 }) {
   const [estado, formAction, pendente] = useActionState(
     inscreverNewsletterAction,
@@ -39,7 +43,20 @@ export function Newsletter({
           </Reveal>
 
           <Reveal>
-            {estado.status === "ok" ? (
+            {!ativa ? (
+              <div>
+                <p className="font-serif text-paper/80">
+                  Crie sua conta de leitor para salvar artigos, seguir séries e
+                  receber os próximos textos.
+                </p>
+                <Link
+                  href="/conta/cadastro"
+                  className="group mt-6 inline-block border border-lacre bg-lacre px-7 py-3.5 transition-colors hover:border-paper hover:bg-paper"
+                >
+                  <span className="meta text-ouro group-hover:text-ink">Criar conta de leitor</span>
+                </Link>
+              </div>
+            ) : estado.status === "ok" ? (
               <p className="font-serif text-paper">
                 Quase lá — confira seu e-mail para confirmar a inscrição.
               </p>
