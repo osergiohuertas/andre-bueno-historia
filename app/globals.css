@@ -84,6 +84,14 @@
     text-align: left;
   }
 
+  /* Letra capitular na abertura do artigo — só no primeiro parágrafo do
+     corpo, não em citações ou listas aninhadas. */
+  .capitular .prose-artigo > p:first-of-type::first-letter {
+    @apply float-left mr-3 mt-1 font-display font-black text-lacre;
+    font-size: 4.6em;
+    line-height: 0.82;
+  }
+
   /* Metadados: Inter, uppercase, tracking largo, tamanho pequeno. */
   .meta {
     @apply font-sans uppercase text-chumbo-lt;

@@ -4,6 +4,7 @@ import { PeriodoBadge } from "@/components/ui/PeriodoBadge";
 import { TextoRico } from "@/components/ui/TextoRico";
 import { Reveal } from "@/components/motion/Reveal";
 import { StatCounter } from "@/components/home/StatCounter";
+import { Monograma } from "@/components/ui/Monograma";
 import type { Artigo } from "@/lib/artigos";
 import type { getHomeConfig } from "@/lib/home";
 
@@ -62,6 +63,13 @@ export function Hero({
       </Reveal>
 
       <Reveal className="relative min-h-[420px] overflow-hidden bg-ink md:min-h-0">
+        {/* Fica por baixo da foto do destaque: sem foto (ou se ela não
+            carregar), o painel continua com identidade em vez de vazio. */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:radial-gradient(circle_at_1px_1px,#F7F3EC_1px,transparent_0)] [background-size:22px_22px]"
+        />
+        <Monograma className="pointer-events-none absolute left-1/2 top-[42%] h-64 w-64 -translate-x-1/2 -translate-y-1/2 text-ouro/25 md:h-80 md:w-80" />
         {destaque.imagemCapa && (
           <Image
             src={destaque.imagemCapa}

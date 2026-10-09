@@ -7,7 +7,8 @@ export function PeriodAxis({ periodo }: { periodo: PeriodoId }) {
   return (
     <div className="sticky top-24 hidden self-start lg:block">
       {transversal ? (
-        <div className="meta -rotate-90 whitespace-nowrap text-ouro">
+        <div className="meta flex rotate-180 items-center gap-3 whitespace-nowrap text-ouro [writing-mode:vertical-rl]">
+          <span className="h-10 w-px bg-ouro/60" aria-hidden />
           Conteúdo transversal
         </div>
       ) : (

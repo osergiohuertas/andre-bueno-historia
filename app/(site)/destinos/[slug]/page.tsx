@@ -166,16 +166,28 @@ export default async function DestinoPage({
           </dl>
         )}
 
-        {destino.site && (
-          <a
-            href={destino.site}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-8 inline-flex border border-ink bg-ink px-6 py-3 text-ouro transition-colors hover:bg-lacre hover:border-lacre"
-          >
-            <span className="meta text-ouro">Site oficial</span>
-          </a>
-        )}
+        <div className="mt-8 flex flex-wrap gap-3">
+          {(destino.coordenadas.lat !== 0 || destino.coordenadas.lng !== 0) && (
+            <a
+              href={`https://www.google.com/maps/dir/?api=1&destination=${destino.coordenadas.lat},${destino.coordenadas.lng}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex border border-ink bg-ink px-6 py-3 text-ouro transition-colors hover:bg-lacre hover:border-lacre"
+            >
+              <span className="meta text-ouro">Como chegar ↗</span>
+            </a>
+          )}
+          {destino.site && (
+            <a
+              href={destino.site}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex border border-ink px-6 py-3 text-ink transition-colors hover:border-lacre hover:text-lacre"
+            >
+              <span className="meta">Site oficial ↗</span>
+            </a>
+          )}
+        </div>
 
         <div className="mt-8 border-t border-borda pt-6">
           <p className="meta text-chumbo-lt">

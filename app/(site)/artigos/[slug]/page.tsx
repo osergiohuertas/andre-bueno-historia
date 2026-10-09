@@ -12,6 +12,9 @@ import { RelatedArticles } from "@/components/article/RelatedArticles";
 import { CardConexaoLivro } from "@/components/article/CardConexaoLivro";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { AcoesBiblioteca } from "@/components/article/AcoesBiblioteca";
+import { CapaArtigo } from "@/components/article/CapaArtigo";
+import { SobreAutor } from "@/components/article/SobreAutor";
+import { getSobreConfig } from "@/lib/sobre";
 import {
   getArtigoBySlug,
   getArtigosPublicados,
@@ -55,6 +58,7 @@ export default async function ArtigoPage({
   const relacionados = getArtigosRelacionados(artigo);
   const serie = artigo.serie ? await getSeriePorSlug(artigo.serie) : undefined;
   const livro = artigo.conexaoLivro ? await getLivroConfig() : null;
+  const sobre = artigo.autorNome ? null : await getSobreConfig();
 
   return (
     <>
@@ -109,7 +113,13 @@ export default async function ArtigoPage({
                 </div>
               </header>
 
-              <MDXContent code={artigo.body} />
+              {artigo.imagemCapa && (
+                <CapaArtigo src={artigo.imagemCapa} alt={artigo.titulo} />
+              )}
+
+              <div className="capitular">
+                <MDXContent code={artigo.body} />
+              </div>
 
               {artigo.conexaoLivro && livro && (
                 <CardConexaoLivro
@@ -117,6 +127,11 @@ export default async function ArtigoPage({
                   tituloLivro={livro.titulo}
                 />
               )}
+
+              <SobreAutor
+                autorNome={artigo.autorNome}
+                fotoUrl={sobre?.fotoUrl || undefined}
+              />
             </div>
 
             <TableOfContents toc={artigo.toc} />

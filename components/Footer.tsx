@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { ContaIcon } from "@/components/ui/ContaIcon";
+import { Monograma } from "@/components/ui/Monograma";
 
 const FOOTER_COLUNAS = [
   {
@@ -54,6 +55,7 @@ export function Footer({
     <footer className="mt-auto border-t border-ouro/40 bg-ink text-paper">
       <Container className="grid gap-12 py-16 sm:grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:gap-10">
         <div className="max-w-sm">
+          <Monograma className="mb-5 h-16 w-16 text-ouro" />
           <p className="font-display text-xl font-bold">{nome}</p>
           <p className="mt-4 font-serif text-sm font-light leading-relaxed text-paper/50">
             {rodape.descricao}
