@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ImagemSegura } from "@/components/ui/ImagemSegura";
 import type { Midia } from "@/lib/obra";
+import { formatarData } from "@/lib/format";
 
 export function FotosSection({ fotos }: { fotos: Midia[] }) {
   const [aberta, setAberta] = useState<number | null>(null);
@@ -45,9 +46,9 @@ export function FotosSection({ fotos }: { fotos: Midia[] }) {
       {fotos.length === 0 ? (
         <p className="meta text-chumbo-lt">Nenhuma foto cadastrada ainda.</p>
       ) : (
-        <div className="gap-6 sm:columns-2 lg:columns-3">
+        <div className="grid items-start gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {fotos.map((foto, i) => (
-            <figure key={foto.id} className="mb-6 break-inside-avoid border border-borda bg-paper">
+            <figure key={foto.id} className="border border-borda bg-paper">
               <button
                 type="button"
                 onClick={() => setAberta(i)}
@@ -67,6 +68,9 @@ export function FotosSection({ fotos }: { fotos: Midia[] }) {
               </button>
               <figcaption className="p-5">
                 <p className="font-display text-lg leading-snug text-ink">{foto.titulo}</p>
+                {foto.data && (
+                  <p className="meta mt-1.5 text-chumbo-lt">{formatarData(foto.data)}</p>
+                )}
                 {foto.descricao && (
                   <p className="mt-2 font-serif text-sm leading-relaxed text-chumbo">
                     {foto.descricao}
@@ -131,6 +135,9 @@ export function FotosSection({ fotos }: { fotos: Midia[] }) {
 
           <div className="mx-auto max-w-3xl px-6 py-6 text-center" onClick={(e) => e.stopPropagation()}>
             <p className="font-display text-xl text-paper">{atual.titulo}</p>
+            {atual.data && (
+              <p className="meta mt-1.5 text-paper/60">{formatarData(atual.data)}</p>
+            )}
             {atual.credito && (
               <p className="meta mt-2 text-paper/60">Crédito: {atual.credito}</p>
             )}
