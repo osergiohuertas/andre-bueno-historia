@@ -3,22 +3,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { sanitizarTextoRico } from "@/lib/textoRico";
 import { revalidarPorGrupo } from "@/lib/revalidacao";
-import { uploadImagem } from "@/lib/upload";
 import { exigirAdmin } from "@/lib/painel-auth";
 
 export type EstadoSalvar = { ok: boolean; mensagem: string } | null;
-
-export async function uploadImagemCampoAction(
-  formData: FormData,
-): Promise<{ ok: true; url: string } | { ok: false; erro: string }> {
-  const arquivo = formData.get("arquivo");
-  if (!(arquivo instanceof File)) {
-    return { ok: false, erro: "Nenhum arquivo enviado." };
-  }
-
-  const buffer = Buffer.from(await arquivo.arrayBuffer());
-  return uploadImagem(buffer, arquivo.name);
-}
 
 export async function salvarGrupo(
   grupo: string,

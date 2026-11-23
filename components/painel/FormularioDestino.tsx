@@ -1,8 +1,8 @@
 "use client";
 
+import { enviarArquivo } from "@/lib/enviarArquivo";
 import { useRef, useState } from "react";
 import { useActionState } from "react";
-import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
 import type { EstadoDestino } from "@/app/painel/(protegido)/destinos/actions";
 import {
   TIPOLOGIAS_DESTINO,
@@ -47,9 +47,7 @@ export function FormularioDestino({
   async function lidarComUploadFoto(arquivo: File) {
     setEnviandoFoto(true);
     setErroFoto(null);
-    const formData = new FormData();
-    formData.append("arquivo", arquivo);
-    const resultado = await uploadImagemAction(formData);
+    const resultado = await enviarArquivo(arquivo);
     setEnviandoFoto(false);
 
     if (!resultado.ok) {

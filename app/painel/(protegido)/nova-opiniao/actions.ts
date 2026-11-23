@@ -1,23 +1,10 @@
 "use server";
 
-import { uploadImagem } from "@/lib/upload";
 import { commitOpiniaoMdx } from "@/lib/github";
 import { slugUnico } from "@/lib/slug";
 import { getOpiniaoBySlug } from "@/lib/opinioes";
 import { exigirAdmin } from "@/lib/painel-auth";
 import type { PeriodoId } from "@/data/periodos";
-
-export async function uploadImagemCapaAction(
-  formData: FormData,
-): Promise<{ ok: true; url: string } | { ok: false; erro: string }> {
-  const arquivo = formData.get("arquivo");
-  if (!(arquivo instanceof File)) {
-    return { ok: false, erro: "Nenhum arquivo enviado." };
-  }
-
-  const buffer = Buffer.from(await arquivo.arrayBuffer());
-  return uploadImagem(buffer, arquivo.name);
-}
 
 export type EstadoPublicacaoOpiniao =
   | { ok: true; mensagem: string; url: string; slug: string }

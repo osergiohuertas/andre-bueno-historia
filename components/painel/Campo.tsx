@@ -1,8 +1,8 @@
 "use client";
 
+import { enviarArquivo } from "@/lib/enviarArquivo";
 import { useRef, useState } from "react";
 import type { Database } from "@/types/supabase";
-import { uploadImagemCampoAction } from "@/app/painel/(protegido)/conteudo/actions";
 import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 
 type LinhaConfig = Database["public"]["Tables"]["site_config"]["Row"];
@@ -100,9 +100,7 @@ function CampoImagem({
   async function lidarComUpload(arquivo: File) {
     setEnviando(true);
     setErro(null);
-    const formData = new FormData();
-    formData.append("arquivo", arquivo);
-    const resultado = await uploadImagemCampoAction(formData);
+    const resultado = await enviarArquivo(arquivo);
     setEnviando(false);
 
     if (!resultado.ok) {

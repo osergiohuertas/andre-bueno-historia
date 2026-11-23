@@ -1,6 +1,5 @@
 "use server";
 
-import { uploadImagem } from "@/lib/upload";
 import { commitArtigoMdx } from "@/lib/github";
 import { createClient } from "@/lib/supabase/server";
 import { slugUnico } from "@/lib/slug";
@@ -10,18 +9,6 @@ import { SITE_URL } from "@/lib/site";
 import { getArtigoBySlug } from "@/lib/artigos";
 import { getSessaoPainel } from "@/lib/painel-auth";
 import type { PeriodoId } from "@/data/periodos";
-
-export async function uploadImagemAction(
-  formData: FormData,
-): Promise<{ ok: true; url: string } | { ok: false; erro: string }> {
-  const arquivo = formData.get("arquivo");
-  if (!(arquivo instanceof File)) {
-    return { ok: false, erro: "Nenhum arquivo enviado." };
-  }
-
-  const buffer = Buffer.from(await arquivo.arrayBuffer());
-  return uploadImagem(buffer, arquivo.name);
-}
 
 export type EstadoPublicacao =
   | { status: "idle" }

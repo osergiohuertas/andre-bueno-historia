@@ -11,3 +11,30 @@ export const TAMANHO_MAXIMO_MB = 20;
 // falha com 413 — é o limite de plano, só sobe via Dashboard → Project
 // Settings → Storage). Refletir aqui o que de fato funciona hoje.
 export const TAMANHO_MAXIMO_PDF_MB = 50;
+
+const MIME_POR_EXTENSAO: Record<string, string> = {
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".jfif": "image/jpeg",
+  ".webp": "image/webp",
+  ".gif": "image/gif",
+  ".bmp": "image/bmp",
+  ".avif": "image/avif",
+  ".tif": "image/tiff",
+  ".tiff": "image/tiff",
+  ".pdf": "application/pdf",
+};
+
+export function extensaoDe(nome: string): string {
+  const i = nome.lastIndexOf(".");
+  return i === -1 ? "" : nome.slice(i).toLowerCase();
+}
+
+/**
+ * Precisa bater com o `allowed_mime_types` do bucket "uploads" — tipo fora
+ * da lista é recusado pelo Storage. `null` = formato não aceito.
+ */
+export function tipoMimePorNome(nome: string): string | null {
+  return MIME_POR_EXTENSAO[extensaoDe(nome)] ?? null;
+}

@@ -1,7 +1,7 @@
 "use client";
 
+import { enviarArquivo } from "@/lib/enviarArquivo";
 import { useActionState, useRef, useState } from "react";
-import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
 import type { EstadoEvento } from "@/app/painel/(protegido)/agenda/actions";
 import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 import type { Database } from "@/types/supabase";
@@ -31,9 +31,7 @@ export function FormularioEvento({
   async function lidarComUpload(arquivo: File) {
     setEnviandoImagem(true);
     setErroImagem(null);
-    const formData = new FormData();
-    formData.append("arquivo", arquivo);
-    const resultado = await uploadImagemAction(formData);
+    const resultado = await enviarArquivo(arquivo);
     setEnviandoImagem(false);
 
     if (!resultado.ok) {

@@ -1,12 +1,11 @@
 "use client";
 
+import { enviarArquivo } from "@/lib/enviarArquivo";
 import { useActionState, useRef, useState } from "react";
 import { SeletorPeriodoVisual } from "@/components/painel/editor/SeletorPeriodoVisual";
 import { CampoCorpoMdx } from "@/components/painel/CampoCorpoMdx";
 import { CampoLocalizacao } from "@/components/painel/CampoLocalizacao";
 import {
-  uploadImagemCapaAction,
-  uploadDocumentoAction,
   type EstadoAcervo,
 } from "@/app/painel/(protegido)/acervo/actions";
 import {
@@ -64,9 +63,7 @@ export function FormularioAcervo({
   async function lidarComUpload(arquivo: File) {
     setEnviandoImagem(true);
     setErroImagem(null);
-    const formData = new FormData();
-    formData.append("arquivo", arquivo);
-    const resultado = await uploadImagemCapaAction(formData);
+    const resultado = await enviarArquivo(arquivo);
     setEnviandoImagem(false);
 
     if (!resultado.ok) {
@@ -79,9 +76,7 @@ export function FormularioAcervo({
   async function lidarComUploadPdf(arquivo: File) {
     setEnviandoPdf(true);
     setErroPdf(null);
-    const formData = new FormData();
-    formData.append("arquivo", arquivo);
-    const resultado = await uploadDocumentoAction(formData);
+    const resultado = await enviarArquivo(arquivo, { somentePdf: true });
     setEnviandoPdf(false);
 
     if (!resultado.ok) {

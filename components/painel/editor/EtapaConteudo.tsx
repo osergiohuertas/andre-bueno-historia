@@ -1,7 +1,7 @@
 "use client";
 
+import { enviarArquivo } from "@/lib/enviarArquivo";
 import { useRef, useState } from "react";
-import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
 import { CampoCorpoMdx } from "@/components/painel/CampoCorpoMdx";
 import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 import type { EstadoArtigo } from "@/components/painel/editor/NovoArtigoWizard";
@@ -24,9 +24,7 @@ export function EtapaConteudo({
   async function lidarComUpload(arquivo: File) {
     setEnviandoImagem(true);
     setErroImagem(null);
-    const formData = new FormData();
-    formData.append("arquivo", arquivo);
-    const resultado = await uploadImagemAction(formData);
+    const resultado = await enviarArquivo(arquivo);
     setEnviandoImagem(false);
 
     if (!resultado.ok) {

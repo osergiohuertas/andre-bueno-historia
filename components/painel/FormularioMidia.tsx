@@ -6,6 +6,7 @@ import type { Database } from "@/types/supabase";
 import type { CategoriaVideo } from "@/lib/obra";
 import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 import { SeletorCoordenadas } from "@/components/painel/SeletorCoordenadas";
+import { enviarArquivo } from "@/lib/enviarArquivo";
 
 type Midia = Database["public"]["Tables"]["acervo_midia"]["Row"];
 
@@ -34,6 +35,23 @@ export function FormularioMidia({
   );
   const [lat, setLat] = useState(midia?.lat ?? 0);
   const [lng, setLng] = useState(midia?.lng ?? 0);
+  // Foto sobe direto do navegador pro Storage ao ser escolhida; o form só
+  // manda a URL — arquivo grande não passa pelo servidor do site.
+  const [fotoUrl, setFotoUrl] = useState(tipo === "foto" ? (midia?.url ?? "") : "");
+  const [enviandoFoto, setEnviandoFoto] = useState(false);
+  const [erroFoto, setErroFoto] = useState<string | null>(null);
+
+  async function aoEscolherFoto(arquivo: File) {
+    setEnviandoFoto(true);
+    setErroFoto(null);
+    const resultado = await enviarArquivo(arquivo);
+    setEnviandoFoto(false);
+    if (!resultado.ok) {
+      setErroFoto(resultado.erro);
+      return;
+    }
+    setFotoUrl(resultado.url);
+  }
 
   return (
     <form
@@ -116,17 +134,24 @@ export function FormularioMidia({
             <p className="mb-2 font-serif text-xs text-chumbo-lt">
               Aceita {FORMATOS_IMAGEM_ACEITOS} — até {TAMANHO_MAXIMO_MB}MB.
             </p>
+            <input type="hidden" name="url" value={fotoUrl} />
             <input
               id="arquivo"
-              name="arquivo"
               type="file"
               accept="image/*"
+              disabled={enviandoFoto}
+              onChange={(e) => {
+                const arquivo = e.target.files?.[0];
+                if (arquivo) aoEscolherFoto(arquivo);
+              }}
               className="w-full border border-borda bg-paper px-4 py-3 text-ink focus:border-lacre focus:outline-none"
             />
-            {midia?.url && (
+            {enviandoFoto && <p className="meta mt-2 text-chumbo">Enviando foto…</p>}
+            {erroFoto && <p className="mt-2 font-serif text-xs text-lacre">{erroFoto}</p>}
+            {fotoUrl && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={midia.url}
+                src={fotoUrl}
                 alt=""
                 className="mt-3 aspect-video w-full max-w-xs border border-borda object-cover"
               />
@@ -207,7 +232,7 @@ export function FormularioMidia({
       <div className="flex items-center gap-4">
         <button
           type="submit"
-          disabled={pendente}
+          disabled={pendente || enviandoFoto}
           className="border border-ink bg-ink px-6 py-3 text-ouro transition-colors hover:bg-lacre hover:border-lacre disabled:opacity-50"
         >
           <span className="meta text-ouro">{pendente ? "Salvando…" : "Salvar"}</span>

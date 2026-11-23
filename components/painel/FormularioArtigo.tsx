@@ -1,9 +1,9 @@
 "use client";
 
+import { enviarArquivo } from "@/lib/enviarArquivo";
 import { useActionState, useRef, useState } from "react";
 import { SeletorPeriodoVisual } from "@/components/painel/editor/SeletorPeriodoVisual";
 import { CampoCorpoMdx } from "@/components/painel/CampoCorpoMdx";
-import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
 import type { EstadoArtigoEdicao } from "@/app/painel/(protegido)/artigos/actions";
 import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 import type { PeriodoId } from "@/data/periodos";
@@ -59,9 +59,7 @@ export function FormularioArtigo({
   async function lidarComUpload(arquivo: File) {
     setEnviandoImagem(true);
     setErroImagem(null);
-    const formData = new FormData();
-    formData.append("arquivo", arquivo);
-    const resultado = await uploadImagemAction(formData);
+    const resultado = await enviarArquivo(arquivo);
     setEnviandoImagem(false);
 
     if (!resultado.ok) {

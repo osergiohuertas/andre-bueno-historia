@@ -2,8 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { slugUnico } from "@/lib/slug";
-import { uploadImagem } from "@/lib/upload";
-import { TAMANHO_MAXIMO_PDF_MB } from "@/lib/uploadConfig";
 import { redirect } from "next/navigation";
 import { commitAcervoDocumentoMdx, apagarAcervoDocumentoMdx } from "@/lib/github";
 import { getAcervoPorSlug } from "@/lib/acervo";
@@ -20,30 +18,6 @@ function revalidarAcervo(slug?: string) {
   revalidatePath("/painel/acervo/documentos");
   revalidatePath("/acervo");
   if (slug) revalidatePath(`/acervo/${slug}`);
-}
-
-export async function uploadImagemCapaAction(
-  formData: FormData,
-): Promise<{ ok: true; url: string } | { ok: false; erro: string }> {
-  const arquivo = formData.get("arquivo");
-  if (!(arquivo instanceof File)) {
-    return { ok: false, erro: "Nenhum arquivo enviado." };
-  }
-
-  const buffer = Buffer.from(await arquivo.arrayBuffer());
-  return uploadImagem(buffer, arquivo.name);
-}
-
-export async function uploadDocumentoAction(
-  formData: FormData,
-): Promise<{ ok: true; url: string } | { ok: false; erro: string }> {
-  const arquivo = formData.get("arquivo");
-  if (!(arquivo instanceof File)) {
-    return { ok: false, erro: "Nenhum arquivo enviado." };
-  }
-
-  const buffer = Buffer.from(await arquivo.arrayBuffer());
-  return uploadImagem(buffer, arquivo.name, TAMANHO_MAXIMO_PDF_MB);
 }
 
 function lerFormulario(formData: FormData) {

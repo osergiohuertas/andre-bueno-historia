@@ -1,8 +1,8 @@
 "use client";
 
+import { enviarArquivo } from "@/lib/enviarArquivo";
 import { useActionState, useRef, useState } from "react";
 import { periodosOrdenados, type PeriodoId } from "@/data/periodos";
-import { uploadImagemAction } from "@/app/painel/(protegido)/novo-artigo/actions";
 import { FORMATOS_IMAGEM_ACEITOS, TAMANHO_MAXIMO_MB } from "@/lib/uploadConfig";
 import type { EstadoTotem } from "@/app/painel/(protegido)/totem/actions";
 
@@ -50,9 +50,7 @@ export function FormularioTotem({
   async function lidarComUploadFrase(i: number, arquivo: File) {
     setEnviandoImagem((atual) => ({ ...atual, [i]: true }));
     setErroImagem((atual) => ({ ...atual, [i]: "" }));
-    const formData = new FormData();
-    formData.append("arquivo", arquivo);
-    const resultado = await uploadImagemAction(formData);
+    const resultado = await enviarArquivo(arquivo);
     setEnviandoImagem((atual) => ({ ...atual, [i]: false }));
 
     if (!resultado.ok) {

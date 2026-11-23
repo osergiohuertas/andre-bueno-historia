@@ -1,8 +1,8 @@
 "use client";
 
+import { enviarArquivo } from "@/lib/enviarArquivo";
 import { useActionState, useRef, useState } from "react";
 import {
-  uploadImagemCapaAction,
   publicarOpiniaoAction,
   type EstadoPublicacaoOpiniao,
 } from "@/app/painel/(protegido)/nova-opiniao/actions";
@@ -57,9 +57,7 @@ export function FormularioOpiniao({
   async function lidarComUpload(arquivo: File) {
     setEnviandoImagem(true);
     setErroImagem(null);
-    const formData = new FormData();
-    formData.append("arquivo", arquivo);
-    const resultado = await uploadImagemCapaAction(formData);
+    const resultado = await enviarArquivo(arquivo);
     setEnviandoImagem(false);
     if (!resultado.ok) {
       setErroImagem(resultado.erro);

@@ -3,7 +3,6 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { uploadImagem } from "@/lib/upload";
 import { exigirAdmin } from "@/lib/painel-auth";
 
 export type EstadoMidia = { ok: boolean; mensagem: string } | null;
@@ -46,19 +45,8 @@ export async function criarMidia(
     return { ok: false, mensagem: "Título é obrigatório." };
   }
 
-  let url = dados.url;
+  const url = dados.url;
 
-  if (tipo === "foto") {
-    const arquivo = formData.get("arquivo");
-    if (arquivo instanceof File && arquivo.size > 0) {
-      const buffer = Buffer.from(await arquivo.arrayBuffer());
-      const resultado = await uploadImagem(buffer, arquivo.name);
-      if (!resultado.ok) {
-        return { ok: false, mensagem: resultado.erro };
-      }
-      url = resultado.url;
-    }
-  }
 
   if (!url) {
     return {
@@ -98,19 +86,8 @@ export async function atualizarMidia(
     return { ok: false, mensagem: "Título é obrigatório." };
   }
 
-  let url = dados.url || undefined;
+  const url = dados.url || undefined;
 
-  if (tipo === "foto") {
-    const arquivo = formData.get("arquivo");
-    if (arquivo instanceof File && arquivo.size > 0) {
-      const buffer = Buffer.from(await arquivo.arrayBuffer());
-      const resultado = await uploadImagem(buffer, arquivo.name);
-      if (!resultado.ok) {
-        return { ok: false, mensagem: resultado.erro };
-      }
-      url = resultado.url;
-    }
-  }
 
   const supabase = await createClient();
   const { error } = await supabase
